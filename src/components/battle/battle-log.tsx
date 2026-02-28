@@ -4,12 +4,11 @@ import type { BattleLogEntry } from "@/types/battle";
 import type { SkillType } from "@/types/skill";
 
 function formatLogEntry(entry: BattleLogEntry): string {
-  const subj = josa(entry.actor, "이", "가");
   switch (entry.skillType) {
     case "attack":
       return `${entry.actor}의 ${entry.skillName}! ${entry.value} 데미지`;
     case "defend":
-      return `${entry.actor}${subj} 방어 태세`;
+      return `${entry.actor}${josa(entry.actor, "이", "가")} 방어 태세`;
     case "heal":
       return `${entry.actor}의 ${entry.skillName}! HP ${entry.value} 회복`;
     case "buff":
