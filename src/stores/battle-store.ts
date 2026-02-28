@@ -44,11 +44,9 @@ function executeAttack(
   defender: BattleCharacter,
   skill: Skill,
 ): { attacker: BattleCharacter; defender: BattleCharacter } {
+  // 방어는 라운드 시작 시 선적용되므로 여기서는 무시
   if (skill.type === "defend") {
-    return {
-      attacker: { ...attacker, isDefending: true },
-      defender,
-    };
+    return { attacker, defender };
   }
 
   const multiplier = skill.type === "attack" ? skill.multiplier : 1.0;
@@ -104,6 +102,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
     // 적은 항상 기본 공격 (index 0)
     const enemySkill = enemy.skills[0];
+    if (!enemySkill) return;
     if (enemySkill.type === "defend") {
       enemy = { ...enemy, isDefending: true };
     }
@@ -117,7 +116,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
-        set({ player, enemy, outcome: midCheck });
+        set({ player, enemy, round: round + 1, outcome: midCheck });
         return;
       }
 
@@ -131,7 +130,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
-        set({ player, enemy, outcome: midCheck });
+        set({ player, enemy, round: round + 1, outcome: midCheck });
         return;
       }
 
