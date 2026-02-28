@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import { ENEMIES } from "@/constants/enemies";
 import { checkBattleEnd } from "@/logic/battle-result";
-import { calculateDamage } from "@/logic/damage";
+import { tickBuffs } from "@/logic/buff";
+import { decideEnemyAction } from "@/logic/enemy-ai";
+import { resolveSkillEffect } from "@/logic/skill-effect";
 import { determineFirstMover } from "@/logic/turn";
 import type { BattleCharacter } from "@/types/battle";
 import type { Stats } from "@/types/character";
@@ -36,30 +38,7 @@ function createCharacter(
     currentMp: stats.mp,
     skills,
     isDefending: false,
-  };
-}
-
-function executeAttack(
-  attacker: BattleCharacter,
-  defender: BattleCharacter,
-  skill: Skill,
-): { attacker: BattleCharacter; defender: BattleCharacter } {
-  // 방어는 라운드 시작 시 선적용되므로 여기서는 무시
-  if (skill.type === "defend") {
-    return { attacker, defender };
-  }
-
-  const multiplier = skill.type === "attack" ? skill.multiplier : 1.0;
-  const damage = calculateDamage(attacker, defender, multiplier);
-  return {
-    attacker: {
-      ...attacker,
-      currentMp: attacker.currentMp - skill.mpCost,
-    },
-    defender: {
-      ...defender,
-      currentHp: Math.max(0, defender.currentHp - damage),
-    },
+    buffs: [],
   };
 }
 
@@ -93,26 +72,27 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
     const round = state.round;
 
+    // 적 AI로 스킬 결정
+    const enemySkillIndex = decideEnemyAction(state.enemy);
+    const enemySkill = state.enemy.skills[enemySkillIndex];
+    if (!enemySkill) return;
+
     // 방어 상태 초기화 후, 이번 라운드 방어 선적용
     let player: BattleCharacter = {
       ...state.player,
       isDefending: playerSkill.type === "defend",
     };
-    let enemy: BattleCharacter = { ...state.enemy, isDefending: false };
-
-    // 적은 항상 기본 공격 (index 0)
-    const enemySkill = enemy.skills[0];
-    if (!enemySkill) return;
-    if (enemySkill.type === "defend") {
-      enemy = { ...enemy, isDefending: true };
-    }
+    let enemy: BattleCharacter = {
+      ...state.enemy,
+      isDefending: enemySkill.type === "defend",
+    };
 
     const firstMover = determineFirstMover(player, enemy);
 
     if (firstMover === "player") {
-      const p = executeAttack(player, enemy, playerSkill);
-      player = p.attacker;
-      enemy = p.defender;
+      const p = resolveSkillEffect(player, enemy, playerSkill);
+      player = p.user;
+      enemy = p.target;
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
@@ -120,13 +100,13 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         return;
       }
 
-      const e = executeAttack(enemy, player, enemySkill);
-      enemy = e.attacker;
-      player = e.defender;
+      const e = resolveSkillEffect(enemy, player, enemySkill);
+      enemy = e.user;
+      player = e.target;
     } else {
-      const e = executeAttack(enemy, player, enemySkill);
-      enemy = e.attacker;
-      player = e.defender;
+      const e = resolveSkillEffect(enemy, player, enemySkill);
+      enemy = e.user;
+      player = e.target;
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
@@ -134,10 +114,14 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         return;
       }
 
-      const p = executeAttack(player, enemy, playerSkill);
-      player = p.attacker;
-      enemy = p.defender;
+      const p = resolveSkillEffect(player, enemy, playerSkill);
+      player = p.user;
+      enemy = p.target;
     }
+
+    // 라운드 종료 시 버프 틱
+    player = tickBuffs(player);
+    enemy = tickBuffs(enemy);
 
     const nextRound = round + 1;
     const endCheck = checkBattleEnd(player, enemy, nextRound);
