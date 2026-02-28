@@ -116,11 +116,11 @@ PR 생성 후 셀프 코드 리뷰를 수행한다. 아래 관점에서 검토�
 
 ## CI 자동 검증
 
-GitHub Actions로 모든 PR에 대해 자동 검증을 수행할 예정입니다.
+GitHub Actions(`.github/workflows/ci.yml`)로 모든 PR과 main push에 대해 자동 검증을 수행한다.
 
 검증 항목:
-- **lint**: biome check (코드 스타일, 잠재적 문제)
-- **test**: vitest run (단위 테스트, 통합 테스트)
-- **build**: vite build (빌드 성공 여부)
+- **lint**: `pnpm lint` (biome check)
+- **test**: `pnpm test` (vitest run)
+- **build**: `pnpm build` (tsc + vite build)
 
-> CI 워크플로우 파일(`.github/workflows/ci.yml`)은 프로젝트 초기 설정 후 구현 예정
+CI job 이름은 `ci`이며, branch protection rule에서 required status check로 설정되어 있다.
