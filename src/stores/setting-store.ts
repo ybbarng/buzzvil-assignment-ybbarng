@@ -14,6 +14,8 @@ interface SettingState {
   setStep: (step: SettingStep) => void;
   setName: (name: string) => void;
   setStats: (stats: Stats) => void;
+  addSkill: (skill: Skill) => void;
+  removeSkill: (index: number) => void;
   reset: () => void;
 }
 
@@ -30,6 +32,11 @@ export const useSettingStore = create<SettingState>((set) => ({
   setStep: (step) => set({ step }),
   setName: (name) => set({ name }),
   setStats: (stats) => set({ stats }),
+  addSkill: (skill) => set((state) => ({ skills: [...state.skills, skill] })),
+  removeSkill: (index) =>
+    set((state) => ({
+      skills: state.skills.filter((_, i) => i !== index),
+    })),
   reset: () =>
     set({
       ...initialState,
