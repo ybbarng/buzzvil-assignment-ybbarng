@@ -1,7 +1,10 @@
-import { STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
-import type { StatKey, Stats } from "@/types/character";
-
-const STAT_KEYS: StatKey[] = ["hp", "mp", "atk", "def", "spd"];
+import {
+  DEFAULT_STATS,
+  STAT_KEYS,
+  STAT_RANGES,
+  TOTAL_POINTS,
+} from "@/constants/stats";
+import type { Stats } from "@/types/character";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -13,10 +16,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export function generateRandomStats(): Stats {
-  const stats = {} as Stats;
-  for (const key of STAT_KEYS) {
-    stats[key] = STAT_RANGES[key].min;
-  }
+  const stats = { ...DEFAULT_STATS };
 
   const minTotal = STAT_KEYS.reduce((s, k) => s + STAT_RANGES[k].min, 0);
   let remaining = TOTAL_POINTS - minTotal;

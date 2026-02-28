@@ -1,5 +1,7 @@
 import type { StatKey, Stats } from "@/types/character";
 
+export const STAT_KEYS: StatKey[] = ["hp", "mp", "atk", "def", "spd"];
+
 export const TOTAL_POINTS = 200;
 
 export const STAT_RANGES: Record<StatKey, { min: number; max: number }> = {

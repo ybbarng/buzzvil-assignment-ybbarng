@@ -1,12 +1,15 @@
 import { Dices } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { STAT_LABELS, STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
+import {
+  STAT_KEYS,
+  STAT_LABELS,
+  STAT_RANGES,
+  TOTAL_POINTS,
+} from "@/constants/stats";
 import { cn } from "@/lib/utils";
 import { generateRandomStats } from "@/logic/random-stats";
 import type { StatKey, Stats } from "@/types/character";
-
-const STAT_KEYS: StatKey[] = ["hp", "mp", "atk", "def", "spd"];
 
 interface StatAllocatorProps {
   stats: Stats;
