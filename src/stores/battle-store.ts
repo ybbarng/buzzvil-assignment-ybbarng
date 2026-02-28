@@ -6,6 +6,7 @@ import { tickBuffs } from "@/logic/buff";
 import { decideEnemyAction } from "@/logic/enemy-ai";
 import { resolveSkillEffect } from "@/logic/skill-effect";
 import { determineFirstMover } from "@/logic/turn";
+import { useGameStore } from "@/stores/game-store";
 import type { BattleCharacter, BattleLogEntry } from "@/types/battle";
 import type { Stats } from "@/types/character";
 import type { BattleOutcome, Difficulty } from "@/types/game";
@@ -109,6 +110,17 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       return result;
     }
 
+    const finishBattle = (outcome: BattleOutcome) => {
+      set({
+        player,
+        enemy,
+        round: round + 1,
+        outcome,
+        logs: [...state.logs, ...roundLogs],
+      });
+      useGameStore.getState().showResult(outcome, round);
+    };
+
     if (firstMover === "player") {
       const p = applyAction(player, enemy, playerSkill);
       player = p.user;
@@ -116,13 +128,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
-        set({
-          player,
-          enemy,
-          round: round + 1,
-          outcome: midCheck,
-          logs: [...state.logs, ...roundLogs],
-        });
+        finishBattle(midCheck);
         return;
       }
 
@@ -136,13 +142,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
-        set({
-          player,
-          enemy,
-          round: round + 1,
-          outcome: midCheck,
-          logs: [...state.logs, ...roundLogs],
-        });
+        finishBattle(midCheck);
         return;
       }
 
@@ -155,14 +155,18 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     player = tickBuffs(player);
     enemy = tickBuffs(enemy);
 
-    const nextRound = round + 1;
-    const endCheck = checkBattleEnd(player, enemy, nextRound);
+    const endCheck = checkBattleEnd(player, enemy, round + 1);
+
+    if (endCheck) {
+      finishBattle(endCheck);
+      return;
+    }
 
     set({
       player,
       enemy,
-      round: nextRound,
-      outcome: endCheck,
+      round: round + 1,
+      outcome: null,
       logs: [...state.logs, ...roundLogs],
     });
   },
