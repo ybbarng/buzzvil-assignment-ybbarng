@@ -44,16 +44,15 @@ export function distributeRandomToStat(
   currentStats: Stats,
   key: StatKey,
 ): Stats {
-  const stats = { ...currentStats };
-  const used = STAT_KEYS.reduce((s, k) => s + stats[k], 0);
+  const used = STAT_KEYS.reduce((s, k) => s + currentStats[k], 0);
   const remaining = TOTAL_POINTS - used;
-  const room = STAT_RANGES[key].max - stats[key];
+  const room = STAT_RANGES[key].max - currentStats[key];
   const upper = Math.min(room, remaining);
 
-  if (upper <= 0) return stats;
+  if (upper <= 0) return currentStats;
 
-  stats[key] += Math.floor(Math.random() * (upper + 1));
-  return stats;
+  const add = Math.floor(Math.random() * upper) + 1;
+  return { ...currentStats, [key]: currentStats[key] + add };
 }
 
 export function clearStat(currentStats: Stats, key: StatKey): Stats {
