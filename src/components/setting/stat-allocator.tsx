@@ -104,7 +104,7 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                 size="icon-xs"
                 type="button"
                 title={`${STAT_LABELS[key]} 랜덤 배분`}
-                disabled={remaining === 0 && stats[key] >= max}
+                disabled={remaining === 0 || stats[key] >= max}
                 onClick={() => onChange(distributeRandomToStat(stats, key))}
               >
                 <Dices />
