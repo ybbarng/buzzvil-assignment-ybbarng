@@ -17,11 +17,7 @@ describe("generateRandomStats", () => {
     vi.restoreAllMocks();
   });
 
-  it("총합이 정확히 TOTAL_POINTS(200)이어야 한다", () => {
-    expectValidStats(generateRandomStats());
-  });
-
-  it("각 스탯이 STAT_RANGES의 min/max 범위 내여야 한다", () => {
+  it("총합이 TOTAL_POINTS이고 각 스탯이 범위 내여야 한다", () => {
     expectValidStats(generateRandomStats());
   });
 
