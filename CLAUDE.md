@@ -19,7 +19,7 @@
 - PR 생성 후 셀프 코드 리뷰 수행 — 가독성, 재사용성, 효율성, 보안, 버그 가능성, 안정성 관점에서 검토 댓글 작성
 - PR 병합은 **squash merge**를 기본으로 사용
 - CI 통과 후 병합 (CI는 프로젝트 초기 설정 후 구현 예정)
-- PR 템플릿은 프로젝트 초기 설정 후 추가 예정 (`.github/PULL_REQUEST_TEMPLATE.md`)
+- PR 본문은 `.github/PULL_REQUEST_TEMPLATE.md` 템플릿을 따름
 
 ## 커밋 컨벤션
 
