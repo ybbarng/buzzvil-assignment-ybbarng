@@ -17,7 +17,11 @@ function resetStores() {
   useBattleStore.getState().reset();
 }
 
-/** 스탯 인풋의 값을 변경한다 */
+/**
+ * 스탯 인풋의 값을 변경한다.
+ * react-hook-form의 controlled input은 userEvent.type으로 값을 지정하기
+ * 어려우므로, fireEvent.change로 값을 직접 설정한다.
+ */
 function setStatValue(testId: string, value: number) {
   fireEvent.change(screen.getByTestId(testId), {
     target: { value: String(value) },
