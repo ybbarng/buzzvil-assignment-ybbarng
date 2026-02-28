@@ -57,6 +57,7 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
             variant="outline"
             size="xs"
             type="button"
+            disabled={remaining === 0}
             onClick={() => onChange(distributeRemainingStats(stats))}
           >
             <Dices />
