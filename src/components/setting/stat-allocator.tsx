@@ -8,7 +8,7 @@ import {
   TOTAL_POINTS,
 } from "@/constants/stats";
 import { cn } from "@/lib/utils";
-import { generateRandomStats } from "@/logic/random-stats";
+import { distributeRemainingStats } from "@/logic/random-stats";
 import type { StatKey, Stats } from "@/types/character";
 
 interface StatAllocatorProps {
@@ -53,7 +53,7 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
             variant="outline"
             size="xs"
             type="button"
-            onClick={() => onChange(generateRandomStats())}
+            onClick={() => onChange(distributeRemainingStats(stats))}
           >
             <Dices />
             랜덤 배분하기
