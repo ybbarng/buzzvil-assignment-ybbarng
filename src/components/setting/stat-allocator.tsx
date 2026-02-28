@@ -104,6 +104,7 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                 variant="ghost"
                 size="icon-xs"
                 type="button"
+                aria-label={`${STAT_LABELS[key]} 랜덤 배분`}
                 title={`${STAT_LABELS[key]} 랜덤 배분`}
                 disabled={remaining === 0 || stats[key] >= max}
                 onClick={() => onChange(distributeRandomToStat(stats, key))}
@@ -114,6 +115,7 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                 variant="ghost"
                 size="icon-xs"
                 type="button"
+                aria-label={`${STAT_LABELS[key]} 초기화`}
                 title={`${STAT_LABELS[key]} 초기화`}
                 disabled={stats[key] <= min}
                 onClick={() => onChange(clearStat(stats, key))}
