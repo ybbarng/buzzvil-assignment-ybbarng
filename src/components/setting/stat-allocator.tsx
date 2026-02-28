@@ -70,13 +70,28 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
         return (
           <div key={key} className="space-y-1">
             <div className="flex items-center justify-between">
+              <label
+                htmlFor={`stat-${key}`}
+                className="text-sm font-medium text-text-primary"
+              >
+                {STAT_LABELS[key]}
+              </label>
               <div className="flex items-center gap-1">
-                <label
-                  htmlFor={`stat-${key}`}
-                  className="text-sm font-medium text-text-primary"
-                >
-                  {STAT_LABELS[key]}
-                </label>
+                <input
+                  id={`stat-${key}`}
+                  data-testid={`stat-${key}`}
+                  type="number"
+                  min={min}
+                  max={max}
+                  value={stats[key]}
+                  onChange={(e) => {
+                    const v = Number.parseInt(e.target.value, 10);
+                    if (!Number.isNaN(v)) {
+                      handleStatChange(key, v);
+                    }
+                  }}
+                  className="w-16 rounded border border-border bg-bg-tertiary px-2 py-1 text-center text-sm text-text-primary outline-none focus:border-accent-orange"
+                />
                 <Button
                   variant="ghost"
                   size="icon-xs"
@@ -98,21 +113,6 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                   <X />
                 </Button>
               </div>
-              <input
-                id={`stat-${key}`}
-                data-testid={`stat-${key}`}
-                type="number"
-                min={min}
-                max={max}
-                value={stats[key]}
-                onChange={(e) => {
-                  const v = Number.parseInt(e.target.value, 10);
-                  if (!Number.isNaN(v)) {
-                    handleStatChange(key, v);
-                  }
-                }}
-                className="w-16 rounded border border-border bg-bg-tertiary px-2 py-1 text-center text-sm text-text-primary outline-none focus:border-accent-orange"
-              />
             </div>
             <Slider
               min={min}
