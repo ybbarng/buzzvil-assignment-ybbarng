@@ -69,9 +69,10 @@ describe("distributeRandomToStat", () => {
   });
 
   it("대상 스탯에만 포인트를 추가하고 나머지는 유지한다", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.5);
     const base: Stats = { hp: 20, mp: 20, atk: 5, def: 5, spd: 5 };
     const result = distributeRandomToStat(base, "hp");
-    expect(result.hp).toBeGreaterThanOrEqual(base.hp);
+    expect(result.hp).toBeGreaterThan(base.hp);
     expect(result.mp).toBe(base.mp);
     expect(result.atk).toBe(base.atk);
     expect(result.def).toBe(base.def);
@@ -98,6 +99,22 @@ describe("distributeRandomToStat", () => {
     const base: Stats = { hp: 100, mp: 20, atk: 5, def: 5, spd: 5 };
     const result = distributeRandomToStat(base, "hp");
     expect(result).toEqual(base);
+  });
+
+  it("항상 최소 1 이상을 배분한다", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const base: Stats = { hp: 20, mp: 20, atk: 5, def: 5, spd: 5 };
+    const result = distributeRandomToStat(base, "hp");
+    expect(result.hp).toBeGreaterThan(base.hp);
+  });
+
+  it("Math.random이 항상 최대에 가까운 값을 반환해도 범위를 초과하지 않는다", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.999999);
+    const base: Stats = { hp: 20, mp: 20, atk: 5, def: 5, spd: 5 };
+    const result = distributeRandomToStat(base, "hp");
+    expect(result.hp).toBeLessThanOrEqual(STAT_RANGES.hp.max);
+    const total = STAT_KEYS.reduce((s, k) => s + result[k], 0);
+    expect(total).toBeLessThanOrEqual(TOTAL_POINTS);
   });
 });
 
