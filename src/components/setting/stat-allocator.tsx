@@ -48,12 +48,12 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
           </span>
           <Button
             variant="outline"
-            size="icon-xs"
+            size="xs"
             type="button"
             onClick={() => onChange(generateRandomStats())}
-            aria-label="랜덤 스탯 배분"
           >
             <Dices />
+            랜덤 배분하기
           </Button>
         </div>
       </div>
