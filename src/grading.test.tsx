@@ -193,7 +193,7 @@ describe("자동 채점 시나리오", () => {
   });
 
   describe("결과 화면", () => {
-    it("승리 시 result-title에 '승리'가 표시된다", async () => {
+    beforeEach(async () => {
       vi.spyOn(Math, "random").mockReturnValue(0.9);
 
       render(<App />);
@@ -210,28 +210,13 @@ describe("자동 채점 시나리오", () => {
         await userEvent.click(button);
       }
       expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
+    });
 
+    it("승리 시 result-title에 '승리'가 표시된다", () => {
       expect(screen.getByTestId("result-title")).toHaveTextContent("승리");
     });
 
     it("restart-button을 누르면 세팅 화면으로 돌아간다", async () => {
-      vi.spyOn(Math, "random").mockReturnValue(0.9);
-
-      render(<App />);
-      await userEvent.type(screen.getByTestId("name-input"), "테스터");
-      allocateStats();
-      await userEvent.click(screen.getByTestId("next-button"));
-      await userEvent.click(screen.getByTestId("next-button"));
-      await userEvent.click(screen.getByTestId("difficulty-easy"));
-      await userEvent.click(screen.getByTestId("start-battle-button"));
-
-      for (let i = 0; i < 20; i++) {
-        const button = screen.queryByTestId("skill-button-0");
-        if (!button) break;
-        await userEvent.click(button);
-      }
-      expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
-
       await userEvent.click(screen.getByTestId("restart-button"));
       expect(screen.getByTestId("name-input")).toBeInTheDocument();
     });
