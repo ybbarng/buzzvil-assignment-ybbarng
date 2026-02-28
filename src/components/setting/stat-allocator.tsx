@@ -92,37 +92,41 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                 className="w-16 rounded border border-border bg-bg-tertiary px-2 py-1 text-center text-sm text-text-primary outline-none focus:border-accent-orange"
               />
             </div>
-            <div className="flex items-center gap-1">
-              <Slider
-                min={min}
-                max={max}
-                value={[stats[key]]}
-                onValueChange={([v]) => handleStatChange(key, v)}
-              />
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                type="button"
-                title={`${STAT_LABELS[key]} 랜덤 배분`}
-                disabled={remaining === 0 && stats[key] >= max}
-                onClick={() => onChange(distributeRandomToStat(stats, key))}
-              >
-                <Dices />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                type="button"
-                title={`${STAT_LABELS[key]} 초기화`}
-                disabled={stats[key] <= min}
-                onClick={() => onChange(clearStat(stats, key))}
-              >
-                <X />
-              </Button>
-            </div>
-            <div className="flex justify-between text-xs text-text-muted">
-              <span>{min}</span>
-              <span>{max}</span>
+            <div className="flex gap-1">
+              <div className="min-w-0 flex-1 space-y-1">
+                <Slider
+                  min={min}
+                  max={max}
+                  value={[stats[key]]}
+                  onValueChange={([v]) => handleStatChange(key, v)}
+                />
+                <div className="flex justify-between text-xs text-text-muted">
+                  <span>{min}</span>
+                  <span>{max}</span>
+                </div>
+              </div>
+              <div className="flex items-start gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  type="button"
+                  title={`${STAT_LABELS[key]} 랜덤 배분`}
+                  disabled={remaining === 0 && stats[key] >= max}
+                  onClick={() => onChange(distributeRandomToStat(stats, key))}
+                >
+                  <Dices />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  type="button"
+                  title={`${STAT_LABELS[key]} 초기화`}
+                  disabled={stats[key] <= min}
+                  onClick={() => onChange(clearStat(stats, key))}
+                >
+                  <X />
+                </Button>
+              </div>
             </div>
           </div>
         );
