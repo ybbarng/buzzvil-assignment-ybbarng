@@ -1,0 +1,89 @@
+import { Slider } from "@/components/ui/slider";
+import { STAT_LABELS, STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
+import { cn } from "@/lib/utils";
+import type { StatKey, Stats } from "@/types/character";
+
+const STAT_KEYS: StatKey[] = ["hp", "mp", "atk", "def", "spd"];
+
+interface StatAllocatorProps {
+  stats: Stats;
+  onChange: (stats: Stats) => void;
+}
+
+export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
+  const totalUsed = Object.values(stats).reduce((a, b) => a + b, 0);
+  const remaining = TOTAL_POINTS - totalUsed;
+
+  const handleStatChange = (key: StatKey, value: number) => {
+    const { min, max } = STAT_RANGES[key];
+    const clamped = Math.max(min, Math.min(max, value));
+
+    const otherTotal = totalUsed - stats[key];
+    const maxAllowed = Math.min(clamped, TOTAL_POINTS - otherTotal);
+    const finalValue = Math.max(min, maxAllowed);
+
+    onChange({ ...stats, [key]: finalValue });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-text-secondary">잔여 포인트</span>
+        <span
+          data-testid="remaining-points"
+          className={cn(
+            "text-lg font-bold",
+            remaining === 0
+              ? "text-hp"
+              : remaining > 0
+                ? "text-accent-orange"
+                : "text-damage",
+          )}
+        >
+          {remaining}
+        </span>
+      </div>
+
+      {STAT_KEYS.map((key) => {
+        const { min, max } = STAT_RANGES[key];
+        return (
+          <div key={key} className="space-y-1">
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor={`stat-${key}`}
+                className="text-sm font-medium text-text-primary"
+              >
+                {STAT_LABELS[key]}
+              </label>
+              <input
+                id={`stat-${key}`}
+                data-testid={`stat-${key}`}
+                type="number"
+                min={min}
+                max={max}
+                value={stats[key]}
+                onChange={(e) => {
+                  const v = Number.parseInt(e.target.value, 10);
+                  if (!Number.isNaN(v)) {
+                    handleStatChange(key, v);
+                  }
+                }}
+                className="w-16 rounded border border-border bg-bg-tertiary px-2 py-1 text-center text-sm text-text-primary outline-none focus:border-accent-orange"
+              />
+            </div>
+            <Slider
+              min={min}
+              max={max}
+              value={[stats[key]]}
+              onValueChange={([v]) => handleStatChange(key, v)}
+            />
+            <div className="flex justify-between text-xs text-text-muted">
+              <span>{min}</span>
+              <span>{max}</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
