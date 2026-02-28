@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { Difficulty } from "@/types/game";
 
 interface DifficultyFormProps {
@@ -53,11 +54,12 @@ export function DifficultyForm({
               key={opt.value}
               type="button"
               data-testid={opt.testId}
-              className={`w-full rounded-lg border px-4 py-3 text-left transition-colors ${
+              className={cn(
+                "w-full rounded-lg border px-4 py-3 text-left transition-colors",
                 difficulty === opt.value
                   ? "border-accent-orange bg-accent-orange/10 text-text-primary"
-                  : "border-border bg-bg-tertiary text-text-secondary hover:border-text-muted"
-              }`}
+                  : "border-border bg-bg-tertiary text-text-secondary hover:border-text-muted",
+              )}
               onClick={() => onSelect(opt.value)}
             >
               <div className="font-semibold">{opt.label}</div>

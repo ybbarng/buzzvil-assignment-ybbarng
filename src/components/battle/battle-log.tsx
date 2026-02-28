@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { josa } from "@/lib/utils";
+import { cn, josa } from "@/lib/utils";
 import type { BattleLogEntry } from "@/types/battle";
 
 function formatLogEntry(entry: BattleLogEntry): string {
@@ -56,7 +56,10 @@ export function BattleLog({ logs }: BattleLogProps) {
             <li
               // biome-ignore lint/suspicious/noArrayIndexKey: 로그는 추가만 되고 순서가 변하지 않음
               key={index}
-              className={`text-sm ${SKILL_TYPE_COLORS[entry.skillType] ?? "text-text-secondary"}`}
+              className={cn(
+                "text-sm",
+                SKILL_TYPE_COLORS[entry.skillType] ?? "text-text-secondary",
+              )}
             >
               <span className="mr-1 text-xs text-text-muted">
                 R{entry.round}

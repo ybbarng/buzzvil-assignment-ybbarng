@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 interface HpBarProps {
   current: number;
   max: number;
@@ -18,7 +20,10 @@ export function HpBar({ current, max, type }: HpBarProps) {
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-bg-tertiary">
         <div
-          className={`h-full rounded-full transition-all duration-300 ${colorClass}`}
+          className={cn(
+            "h-full rounded-full transition-all duration-300",
+            colorClass,
+          )}
           style={{ width: `${percentage}%` }}
         />
       </div>
