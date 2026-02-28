@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { DEFAULT_SKILLS } from "@/constants/skills";
 import { DEFAULT_STATS } from "@/constants/stats";
 import { useSettingStore } from "./setting-store";
 
@@ -12,6 +13,7 @@ describe("setting-store", () => {
     expect(state.step).toBe(1);
     expect(state.name).toBe("");
     expect(state.stats).toEqual(DEFAULT_STATS);
+    expect(state.skills).toEqual(DEFAULT_SKILLS);
   });
 
   it("이름을 설정할 수 있다", () => {
@@ -38,5 +40,6 @@ describe("setting-store", () => {
     expect(state.step).toBe(1);
     expect(state.name).toBe("");
     expect(state.stats).toEqual(DEFAULT_STATS);
+    expect(state.skills).toEqual(DEFAULT_SKILLS);
   });
 });
