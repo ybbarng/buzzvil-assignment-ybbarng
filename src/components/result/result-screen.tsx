@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { useBattleStore } from "@/stores/battle-store";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
+import type { BattleOutcome } from "@/types/game";
 
-const OUTCOME_LABELS: Record<string, string> = {
+const OUTCOME_LABELS: Record<BattleOutcome, string> = {
   win: "승리",
   lose: "패배",
   draw: "무승부",

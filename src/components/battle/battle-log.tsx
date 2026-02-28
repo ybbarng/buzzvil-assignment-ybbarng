@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { cn, josa } from "@/lib/utils";
 import type { BattleLogEntry } from "@/types/battle";
+import type { SkillType } from "@/types/skill";
 
 function formatLogEntry(entry: BattleLogEntry): string {
   const subj = josa(entry.actor, "이", "가");
@@ -18,7 +19,7 @@ function formatLogEntry(entry: BattleLogEntry): string {
   }
 }
 
-const SKILL_TYPE_COLORS: Record<string, string> = {
+const SKILL_TYPE_COLORS: Record<SkillType, string> = {
   attack: "text-damage",
   defend: "text-accent-blue",
   heal: "text-hp",
@@ -56,10 +57,7 @@ export function BattleLog({ logs }: BattleLogProps) {
             <li
               // biome-ignore lint/suspicious/noArrayIndexKey: 로그는 추가만 되고 순서가 변하지 않음
               key={index}
-              className={cn(
-                "text-sm",
-                SKILL_TYPE_COLORS[entry.skillType] ?? "text-text-secondary",
-              )}
+              className={cn("text-sm", SKILL_TYPE_COLORS[entry.skillType])}
             >
               <span className="mr-1 text-xs text-text-muted">
                 R{entry.round}
