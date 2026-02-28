@@ -12,6 +12,7 @@ function makeCharacter(
     currentMp: 50,
     skills: [],
     isDefending: false,
+    buffs: [],
     ...overrides,
   };
 }
@@ -36,6 +37,24 @@ describe("calculateDamage", () => {
     const defender = makeCharacter();
     // 20 * 1.5 - 10 * 0.5 = 25
     expect(calculateDamage(attacker, defender, 1.5)).toBe(25);
+  });
+
+  it("ATK 버프가 데미지에 반영된다", () => {
+    const attacker = makeCharacter({
+      buffs: [{ target: "atk", value: 10, remainingTurns: 2 }],
+    });
+    const defender = makeCharacter();
+    // (20+10) * 1.0 - 10 * 0.5 = 25
+    expect(calculateDamage(attacker, defender, 1.0)).toBe(25);
+  });
+
+  it("DEF 디버프가 데미지에 반영된다", () => {
+    const attacker = makeCharacter();
+    const defender = makeCharacter({
+      buffs: [{ target: "def", value: -5, remainingTurns: 2 }],
+    });
+    // 20 * 1.0 - (10-5) * 0.5 = 17
+    expect(calculateDamage(attacker, defender, 1.0)).toBe(17);
   });
 
   it("최소 데미지 1이 보장된다", () => {

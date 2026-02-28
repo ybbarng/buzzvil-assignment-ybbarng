@@ -35,6 +35,13 @@ export const ENEMIES: Record<Difficulty, EnemyConfig> = {
         isDefault: true,
       },
       { name: "방어", type: "defend", mpCost: 0, isDefault: true },
+      {
+        name: "강타",
+        type: "attack",
+        mpCost: 15,
+        multiplier: 1.5,
+        isDefault: false,
+      },
     ],
   },
   hard: {
@@ -49,6 +56,29 @@ export const ENEMIES: Record<Difficulty, EnemyConfig> = {
         isDefault: true,
       },
       { name: "방어", type: "defend", mpCost: 0, isDefault: true },
+      {
+        name: "강타",
+        type: "attack",
+        mpCost: 15,
+        multiplier: 1.5,
+        isDefault: false,
+      },
+      {
+        name: "회복",
+        type: "heal",
+        mpCost: 20,
+        healAmount: 30,
+        isDefault: false,
+      },
+      {
+        name: "약화",
+        type: "debuff",
+        mpCost: 15,
+        target: "def",
+        value: 5,
+        duration: 2,
+        isDefault: false,
+      },
     ],
   },
 };

@@ -1,5 +1,11 @@
 import type { Stats } from "@/types/character";
-import type { Skill } from "@/types/skill";
+import type { BuffTarget, Skill } from "@/types/skill";
+
+export interface ActiveBuff {
+  target: BuffTarget;
+  value: number;
+  remainingTurns: number;
+}
 
 export interface BattleCharacter {
   name: string;
@@ -8,4 +14,5 @@ export interface BattleCharacter {
   currentMp: number;
   skills: Skill[];
   isDefending: boolean;
+  buffs: ActiveBuff[];
 }

@@ -10,6 +10,7 @@ function makeCharacter(hp: number): BattleCharacter {
     currentMp: 50,
     skills: [],
     isDefending: false,
+    buffs: [],
   };
 }
 
