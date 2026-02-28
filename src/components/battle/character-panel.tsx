@@ -1,10 +1,28 @@
 import { HpBar } from "@/components/battle/hp-bar";
-import type { BattleCharacter } from "@/types/battle";
+import type { ActiveBuff, BattleCharacter } from "@/types/battle";
 
 interface CharacterPanelProps {
   character: BattleCharacter;
   testId: string;
   nameTestId: string;
+}
+
+function BuffIndicator({ buff }: { buff: ActiveBuff }) {
+  const isBuff = buff.value > 0;
+  const label = `${buff.target.toUpperCase()} ${isBuff ? "+" : ""}${buff.value}`;
+
+  return (
+    <span
+      className={`inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-xs font-medium ${
+        isBuff
+          ? "bg-accent-orange/20 text-accent-orange"
+          : "bg-damage/20 text-damage"
+      }`}
+    >
+      {label}
+      <span className="text-text-muted">({buff.remainingTurns}턴)</span>
+    </span>
+  );
 }
 
 export function CharacterPanel({
@@ -35,6 +53,14 @@ export function CharacterPanel({
           type="mp"
         />
       </div>
+      {character.buffs.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {character.buffs.map((buff, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: buffs are ordered and index is stable within render
+            <BuffIndicator key={index} buff={buff} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

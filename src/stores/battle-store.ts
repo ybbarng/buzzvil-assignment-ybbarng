@@ -14,6 +14,7 @@ import type { Skill } from "@/types/skill";
 interface BattleState {
   player: BattleCharacter | null;
   enemy: BattleCharacter | null;
+  difficulty: Difficulty;
   round: number;
   outcome: BattleOutcome | null;
   logs: BattleLogEntry[];
@@ -47,6 +48,7 @@ function createCharacter(
 export const useBattleStore = create<BattleState>((set, get) => ({
   player: null,
   enemy: null,
+  difficulty: "normal" as Difficulty,
   round: 1,
   outcome: null,
   logs: [],
@@ -60,6 +62,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         enemyConfig.stats,
         enemyConfig.skills,
       ),
+      difficulty,
       round: 1,
       outcome: null,
       logs: [],
@@ -77,7 +80,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     const round = state.round;
 
     // 적 AI로 스킬 결정
-    const enemySkillIndex = decideEnemyAction(state.enemy);
+    const enemySkillIndex = decideEnemyAction(state.enemy, state.difficulty);
     const enemySkill = state.enemy.skills[enemySkillIndex];
     if (!enemySkill) return;
 
@@ -168,6 +171,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     set({
       player: null,
       enemy: null,
+      difficulty: "normal" as Difficulty,
       round: 1,
       outcome: null,
       logs: [],
