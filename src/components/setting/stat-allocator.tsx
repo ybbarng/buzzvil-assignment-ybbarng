@@ -1,6 +1,8 @@
+import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { STAT_LABELS, STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
 import { cn } from "@/lib/utils";
+import { generateRandomStats } from "@/logic/random-stats";
 import type { StatKey, Stats } from "@/types/character";
 
 const STAT_KEYS: StatKey[] = ["hp", "mp", "atk", "def", "spd"];
@@ -29,19 +31,29 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <span className="text-sm text-text-secondary">잔여 포인트</span>
-        <span
-          data-testid="remaining-points"
-          className={cn(
-            "text-lg font-bold",
-            remaining === 0
-              ? "text-hp"
-              : remaining > 0
-                ? "text-accent-orange"
-                : "text-damage",
-          )}
-        >
-          {remaining}
-        </span>
+        <div className="flex items-center gap-2">
+          <span
+            data-testid="remaining-points"
+            className={cn(
+              "text-lg font-bold",
+              remaining === 0
+                ? "text-hp"
+                : remaining > 0
+                  ? "text-accent-orange"
+                  : "text-damage",
+            )}
+          >
+            {remaining}
+          </span>
+          <Button
+            variant="outline"
+            size="xs"
+            type="button"
+            onClick={() => onChange(generateRandomStats())}
+          >
+            랜덤
+          </Button>
+        </div>
       </div>
 
       {STAT_KEYS.map((key) => {
