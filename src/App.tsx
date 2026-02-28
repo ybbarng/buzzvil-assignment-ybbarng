@@ -1,23 +1,7 @@
+import { BattleScreen } from "@/components/battle/battle-screen";
 import { GameContainer } from "@/components/layout/game-container";
 import { SettingScreen } from "@/components/setting/setting-screen";
 import { useGameStore } from "@/stores/game-store";
-
-function BattlePlaceholder() {
-  const showResult = useGameStore((s) => s.showResult);
-  return (
-    <div className="text-center">
-      <h2 className="text-2xl font-bold text-accent-blue">전투</h2>
-      <p className="mt-2 text-text-secondary">전투가 진행 중입니다</p>
-      <button
-        type="button"
-        className="mt-4 rounded bg-accent-blue px-4 py-2 font-bold text-white hover:bg-accent-blue-hover"
-        onClick={() => showResult("win", 5)}
-      >
-        승리
-      </button>
-    </div>
-  );
-}
 
 function ResultPlaceholder() {
   const outcome = useGameStore((s) => s.outcome);
@@ -52,7 +36,7 @@ function App() {
   return (
     <GameContainer>
       {phase === "setting" && <SettingScreen />}
-      {phase === "battle" && <BattlePlaceholder />}
+      {phase === "battle" && <BattleScreen />}
       {phase === "result" && <ResultPlaceholder />}
     </GameContainer>
   );
