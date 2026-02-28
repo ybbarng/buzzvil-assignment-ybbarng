@@ -76,50 +76,50 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
               >
                 {STAT_LABELS[key]}
               </label>
-              <div className="flex items-center gap-1">
-                <input
-                  id={`stat-${key}`}
-                  data-testid={`stat-${key}`}
-                  type="number"
-                  min={min}
-                  max={max}
-                  value={stats[key]}
-                  onChange={(e) => {
-                    const v = Number.parseInt(e.target.value, 10);
-                    if (!Number.isNaN(v)) {
-                      handleStatChange(key, v);
-                    }
-                  }}
-                  className="w-16 rounded border border-border bg-bg-tertiary px-2 py-1 text-center text-sm text-text-primary outline-none focus:border-accent-orange"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  type="button"
-                  title={`${STAT_LABELS[key]} 랜덤 배분`}
-                  disabled={remaining === 0 && stats[key] >= max}
-                  onClick={() => onChange(distributeRandomToStat(stats, key))}
-                >
-                  <Dices />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  type="button"
-                  title={`${STAT_LABELS[key]} 초기화`}
-                  disabled={stats[key] <= min}
-                  onClick={() => onChange(clearStat(stats, key))}
-                >
-                  <X />
-                </Button>
-              </div>
+              <input
+                id={`stat-${key}`}
+                data-testid={`stat-${key}`}
+                type="number"
+                min={min}
+                max={max}
+                value={stats[key]}
+                onChange={(e) => {
+                  const v = Number.parseInt(e.target.value, 10);
+                  if (!Number.isNaN(v)) {
+                    handleStatChange(key, v);
+                  }
+                }}
+                className="w-16 rounded border border-border bg-bg-tertiary px-2 py-1 text-center text-sm text-text-primary outline-none focus:border-accent-orange"
+              />
             </div>
-            <Slider
-              min={min}
-              max={max}
-              value={[stats[key]]}
-              onValueChange={([v]) => handleStatChange(key, v)}
-            />
+            <div className="flex items-center gap-1">
+              <Slider
+                min={min}
+                max={max}
+                value={[stats[key]]}
+                onValueChange={([v]) => handleStatChange(key, v)}
+              />
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                type="button"
+                title={`${STAT_LABELS[key]} 랜덤 배분`}
+                disabled={remaining === 0 && stats[key] >= max}
+                onClick={() => onChange(distributeRandomToStat(stats, key))}
+              >
+                <Dices />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                type="button"
+                title={`${STAT_LABELS[key]} 초기화`}
+                disabled={stats[key] <= min}
+                onClick={() => onChange(clearStat(stats, key))}
+              >
+                <X />
+              </Button>
+            </div>
             <div className="flex justify-between text-xs text-text-muted">
               <span>{min}</span>
               <span>{max}</span>
