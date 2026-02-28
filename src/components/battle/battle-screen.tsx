@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
+import { Button } from "@/components/ui/button";
 import { useBattleStore } from "@/stores/battle-store";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -15,24 +16,24 @@ export function BattleScreen() {
   const initBattle = useBattleStore((s) => s.initBattle);
   const executePlayerAction = useBattleStore((s) => s.executePlayerAction);
 
-  const name = useSettingStore((s) => s.name);
-  const stats = useSettingStore((s) => s.stats);
-  const skills = useSettingStore((s) => s.skills);
-  const difficulty = useSettingStore((s) => s.difficulty);
-
   const showResult = useGameStore((s) => s.showResult);
 
-  useEffect(() => {
-    initBattle(name, stats, skills, difficulty);
-  }, [name, stats, skills, difficulty, initBattle]);
+  const initialized = useRef(false);
 
   useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    const { name, stats, skills, difficulty } = useSettingStore.getState();
+    initBattle(name, stats, skills, difficulty);
+  }, [initBattle]);
+
+  if (!player || !enemy) return null;
+
+  const handleShowResult = () => {
     if (outcome) {
       showResult(outcome, round - 1);
     }
-  }, [outcome, round, showResult]);
-
-  if (!player || !enemy) return null;
+  };
 
   return (
     <div className="space-y-4">
@@ -40,8 +41,27 @@ export function BattleScreen() {
         data-testid="round-display"
         className="text-center text-lg font-bold text-accent-orange"
       >
-        라운드 {round}
+        라운드 {outcome ? round - 1 : round}
       </div>
+
+      {outcome && (
+        <div className="text-center">
+          <p className="text-xl font-bold text-accent-orange">
+            {outcome === "win"
+              ? "승리!"
+              : outcome === "lose"
+                ? "패배..."
+                : "무승부"}
+          </p>
+          <Button
+            type="button"
+            className="mt-2 bg-accent-orange font-bold text-bg-primary hover:bg-accent-orange-hover"
+            onClick={handleShowResult}
+          >
+            결과 확인
+          </Button>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-4">
         <CharacterPanel
@@ -56,11 +76,13 @@ export function BattleScreen() {
         />
       </div>
 
-      <ActionPanel
-        player={player}
-        onAction={executePlayerAction}
-        disabled={outcome !== null}
-      />
+      {!outcome && (
+        <ActionPanel
+          player={player}
+          onAction={executePlayerAction}
+          disabled={outcome !== null}
+        />
+      )}
 
       <BattleLog logs={logs} />
     </div>
