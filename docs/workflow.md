@@ -56,7 +56,7 @@ PR 본문은 처음 보는 사람도 이해할 수 있도록 작성한다.
 - **squash merge**를 기본으로 사용한다.
 - PR 내 여러 커밋이 하나의 커밋으로 합쳐져 main 히스토리가 깔끔하게 유지된다.
 
-> PR 템플릿은 프로젝트 초기 설정 후 `.github/PULL_REQUEST_TEMPLATE.md`에 추가 예정
+PR 본문은 `.github/PULL_REQUEST_TEMPLATE.md` 템플릿을 따른다.
 
 ---
 
