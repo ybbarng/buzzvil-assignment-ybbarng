@@ -1,4 +1,5 @@
 import { NameStatForm } from "@/components/setting/name-stat-form";
+import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useSettingStore } from "@/stores/setting-store";
@@ -7,6 +8,7 @@ export function SettingScreen() {
   const step = useSettingStore((s) => s.step);
   const name = useSettingStore((s) => s.name);
   const stats = useSettingStore((s) => s.stats);
+  const skills = useSettingStore((s) => s.skills);
   const setStep = useSettingStore((s) => s.setStep);
   const setName = useSettingStore((s) => s.setName);
   const setStats = useSettingStore((s) => s.setStats);
@@ -33,9 +35,11 @@ export function SettingScreen() {
       )}
 
       {step === 2 && (
-        <div className="text-center text-text-secondary">
-          스킬 설정 (준비 중)
-        </div>
+        <SkillForm
+          skills={skills}
+          onPrev={() => setStep(1)}
+          onNext={() => setStep(3)}
+        />
       )}
 
       {step === 3 && (
