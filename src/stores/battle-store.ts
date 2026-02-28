@@ -155,25 +155,17 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     player = tickBuffs(player);
     enemy = tickBuffs(enemy);
 
-    const nextRound = round + 1;
-    const endCheck = checkBattleEnd(player, enemy, nextRound);
+    const endCheck = checkBattleEnd(player, enemy, round + 1);
 
     if (endCheck) {
-      set({
-        player,
-        enemy,
-        round: nextRound,
-        outcome: endCheck,
-        logs: [...state.logs, ...roundLogs],
-      });
-      useGameStore.getState().showResult(endCheck, round);
+      finishBattle(endCheck);
       return;
     }
 
     set({
       player,
       enemy,
-      round: nextRound,
+      round: round + 1,
       outcome: null,
       logs: [...state.logs, ...roundLogs],
     });
