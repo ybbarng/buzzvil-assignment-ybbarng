@@ -122,9 +122,9 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     };
 
     if (firstMover === "player") {
-      const p = applyAction(player, enemy, playerSkill);
-      player = p.user;
-      enemy = p.target;
+      const playerResult = applyAction(player, enemy, playerSkill);
+      player = playerResult.user;
+      enemy = playerResult.target;
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
@@ -132,13 +132,13 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         return;
       }
 
-      const e = applyAction(enemy, player, enemySkill);
-      enemy = e.user;
-      player = e.target;
+      const enemyResult = applyAction(enemy, player, enemySkill);
+      enemy = enemyResult.user;
+      player = enemyResult.target;
     } else {
-      const e = applyAction(enemy, player, enemySkill);
-      enemy = e.user;
-      player = e.target;
+      const enemyResult = applyAction(enemy, player, enemySkill);
+      enemy = enemyResult.user;
+      player = enemyResult.target;
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
@@ -146,9 +146,9 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         return;
       }
 
-      const p = applyAction(player, enemy, playerSkill);
-      player = p.user;
-      enemy = p.target;
+      const playerResult = applyAction(player, enemy, playerSkill);
+      player = playerResult.user;
+      enemy = playerResult.target;
     }
 
     // 라운드 종료 시 버프 틱
