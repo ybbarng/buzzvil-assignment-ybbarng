@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import App from "./App";
 import { useBattleStore } from "./stores/battle-store";
@@ -31,5 +32,15 @@ describe("App", () => {
     render(<App />);
     expect(screen.getByTestId("result-title")).toHaveTextContent("승리");
     expect(screen.getByTestId("result-turns")).toHaveTextContent("5턴");
+  });
+
+  it("다시 시작 버튼을 누르면 세팅 화면으로 돌아간다", async () => {
+    useGameStore.setState({ phase: "result", outcome: "win", totalTurns: 5 });
+    render(<App />);
+
+    await userEvent.click(screen.getByTestId("restart-button"));
+
+    expect(useGameStore.getState().phase).toBe("setting");
+    expect(screen.getByText("캐릭터 세팅")).toBeInTheDocument();
   });
 });
