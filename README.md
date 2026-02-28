@@ -2,6 +2,8 @@
 
 프론트엔드 과제: 캐릭터를 세팅하고 적과 1:1 턴제 전투를 벌이는 웹 게임입니다.
 
+**데모**: https://gh.byb.kr/buzzvil-assignment-ybbarng/
+
 ## 실행 방법
 
 ```bash
