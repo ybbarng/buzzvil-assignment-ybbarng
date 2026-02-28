@@ -66,6 +66,9 @@ describe("battle-store", () => {
   });
 
   it("방어 후 받는 데미지가 감소한다", () => {
+    // 적 AI가 항상 기본 공격(index 0)을 선택하도록 고정
+    vi.spyOn(Math, "random").mockReturnValue(0.9);
+
     // SPD를 낮게 해서 적이 선공하도록
     const stats = { hp: 100, mp: 50, atk: 20, def: 10, spd: 1 };
     const skills = [
