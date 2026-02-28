@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { useBattleStore } from "@/stores/battle-store";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
+import type { BattleOutcome } from "@/types/game";
 
-const outcomeLabels: Record<string, string> = {
+const OUTCOME_LABELS: Record<BattleOutcome, string> = {
   win: "승리",
   lose: "패배",
   draw: "무승부",
@@ -26,7 +27,7 @@ export function ResultScreen() {
         data-testid="result-title"
         className="text-4xl font-bold text-accent-orange"
       >
-        {outcome ? outcomeLabels[outcome] : ""}
+        {outcome ? OUTCOME_LABELS[outcome] : ""}
       </h2>
 
       <p data-testid="result-turns" className="text-lg text-text-secondary">

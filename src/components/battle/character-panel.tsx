@@ -1,4 +1,5 @@
 import { HpBar } from "@/components/battle/hp-bar";
+import { cn } from "@/lib/utils";
 import type { ActiveBuff, BattleCharacter } from "@/types/battle";
 
 interface CharacterPanelProps {
@@ -13,11 +14,12 @@ function BuffIndicator({ buff }: { buff: ActiveBuff }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-xs font-medium ${
+      className={cn(
+        "inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-xs font-medium",
         isBuff
           ? "bg-accent-orange/20 text-accent-orange"
-          : "bg-damage/20 text-damage"
-      }`}
+          : "bg-damage/20 text-damage",
+      )}
     >
       {label}
       <span className="text-text-muted">({buff.remainingTurns}턴)</span>

@@ -19,8 +19,6 @@ export function createLogEntry(
       value = actorAfter.currentHp - actor.currentHp;
       break;
     case "buff":
-      value = skill.value;
-      break;
     case "debuff":
       value = skill.value;
       break;

@@ -46,12 +46,21 @@ pnpm build      # 프로덕션 빌드
 
 ```
 src/
-├── components/     # UI 컴포넌트
-│   └── ui/         # shadcn-ui 컴포넌트
-├── lib/            # 유틸리티 (cn 등)
-├── test/           # 테스트 설정
-├── App.tsx         # 앱 루트
-└── main.tsx        # 엔트리포인트
+├── types/              # 도메인 타입 (Stats, Skill, BattleCharacter 등)
+├── constants/          # 게임 상수 (스탯 범위, 기본 스킬, 난이도별 적 정의)
+├── logic/              # 순수 함수 (데미지 계산, 버프, 적 AI, 턴 진행 등)
+├── schemas/            # zod 폼 검증 스키마
+├── stores/             # zustand 스토어 (game, setting, battle)
+├── components/
+│   ├── ui/             # shadcn-ui 기본 컴포넌트
+│   ├── layout/         # 게임 컨테이너
+│   ├── setting/        # 세팅 화면 (이름/스탯, 스킬, 난이도)
+│   ├── battle/         # 전투 화면 (캐릭터 패널, 액션, 로그)
+│   └── result/         # 결과 화면
+├── lib/                # 유틸리티 (cn, josa)
+├── test/               # 테스트 환경 설정
+├── App.tsx             # 앱 루트 (phase 기반 화면 전환)
+└── main.tsx            # 엔트리포인트
 ```
 
 ## 워크플로우

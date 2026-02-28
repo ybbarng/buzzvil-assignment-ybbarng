@@ -21,7 +21,7 @@ interface SettingState {
   reset: () => void;
 }
 
-const initialState = {
+const INITIAL_STATE = {
   step: 1 as SettingStep,
   name: "",
   stats: { ...DEFAULT_STATS },
@@ -30,7 +30,7 @@ const initialState = {
 };
 
 export const useSettingStore = create<SettingState>((set) => ({
-  ...initialState,
+  ...INITIAL_STATE,
 
   setStep: (step) => set({ step }),
   setName: (name) => set({ name }),
@@ -43,7 +43,7 @@ export const useSettingStore = create<SettingState>((set) => ({
   setDifficulty: (difficulty) => set({ difficulty }),
   reset: () =>
     set({
-      ...initialState,
+      ...INITIAL_STATE,
       stats: { ...DEFAULT_STATS },
       skills: [...DEFAULT_SKILLS],
     }),

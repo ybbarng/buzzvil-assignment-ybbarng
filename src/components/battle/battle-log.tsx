@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
-import { josa } from "@/lib/utils";
+import { cn, josa } from "@/lib/utils";
 import type { BattleLogEntry } from "@/types/battle";
+import type { SkillType } from "@/types/skill";
 
 function formatLogEntry(entry: BattleLogEntry): string {
-  const subj = josa(entry.actor, "이", "가");
   switch (entry.skillType) {
     case "attack":
       return `${entry.actor}의 ${entry.skillName}! ${entry.value} 데미지`;
     case "defend":
-      return `${entry.actor}${subj} 방어 태세`;
+      return `${entry.actor}${josa(entry.actor, "이", "가")} 방어 태세`;
     case "heal":
       return `${entry.actor}의 ${entry.skillName}! HP ${entry.value} 회복`;
     case "buff":
@@ -18,7 +18,7 @@ function formatLogEntry(entry: BattleLogEntry): string {
   }
 }
 
-const skillTypeColors: Record<string, string> = {
+const SKILL_TYPE_COLORS: Record<SkillType, string> = {
   attack: "text-damage",
   defend: "text-accent-blue",
   heal: "text-hp",
@@ -56,7 +56,7 @@ export function BattleLog({ logs }: BattleLogProps) {
             <li
               // biome-ignore lint/suspicious/noArrayIndexKey: 로그는 추가만 되고 순서가 변하지 않음
               key={index}
-              className={`text-sm ${skillTypeColors[entry.skillType] ?? "text-text-secondary"}`}
+              className={cn("text-sm", SKILL_TYPE_COLORS[entry.skillType])}
             >
               <span className="mr-1 text-xs text-text-muted">
                 R{entry.round}

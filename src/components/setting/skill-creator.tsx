@@ -83,6 +83,7 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
   });
 
   const skillType = useWatch({ control, name: "type" });
+  // "target"은 buff/debuff 변형에만 존재하는 필드라 discriminated union 추론이 안 됨
   const targetValue = useWatch({ control, name: "target" as "target" });
 
   const handleTypeChange = (value: string) => {
@@ -93,7 +94,7 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
   };
 
   const onSubmit = (data: CustomSkillFormData) => {
-    const skill: Skill = { ...data, isDefault: false } as Skill;
+    const skill = { ...data, isDefault: false } as Skill;
     onAdd(skill);
   };
 
