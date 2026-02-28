@@ -14,6 +14,7 @@ describe("setting-store", () => {
     expect(state.name).toBe("");
     expect(state.stats).toEqual(DEFAULT_STATS);
     expect(state.skills).toEqual(DEFAULT_SKILLS);
+    expect(state.difficulty).toBe("normal");
   });
 
   it("이름을 설정할 수 있다", () => {
@@ -59,9 +60,15 @@ describe("setting-store", () => {
     expect(useSettingStore.getState().skills).toEqual(DEFAULT_SKILLS);
   });
 
+  it("난이도를 설정할 수 있다", () => {
+    useSettingStore.getState().setDifficulty("hard");
+    expect(useSettingStore.getState().difficulty).toBe("hard");
+  });
+
   it("reset으로 초기 상태로 돌아간다", () => {
     useSettingStore.getState().setName("테스터");
     useSettingStore.getState().setStep(3);
+    useSettingStore.getState().setDifficulty("hard");
     useSettingStore.getState().addSkill({
       name: "화염구",
       type: "attack",
@@ -75,5 +82,6 @@ describe("setting-store", () => {
     expect(state.name).toBe("");
     expect(state.stats).toEqual(DEFAULT_STATS);
     expect(state.skills).toEqual(DEFAULT_SKILLS);
+    expect(state.difficulty).toBe("normal");
   });
 });
