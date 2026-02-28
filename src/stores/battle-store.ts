@@ -121,34 +121,35 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       useGameStore.getState().showResult(outcome, round);
     };
 
-    if (firstMover === "player") {
-      const playerResult = applyAction(player, enemy, playerSkill);
-      player = playerResult.user;
-      enemy = playerResult.target;
+    const turnOrder =
+      firstMover === "player"
+        ? [
+            { role: "player" as const, skill: playerSkill },
+            { role: "enemy" as const, skill: enemySkill },
+          ]
+        : [
+            { role: "enemy" as const, skill: enemySkill },
+            { role: "player" as const, skill: playerSkill },
+          ];
 
-      const midCheck = checkBattleEnd(player, enemy, round);
-      if (midCheck) {
-        finishBattle(midCheck);
-        return;
+    for (const [i, turn] of turnOrder.entries()) {
+      const isPlayerTurn = turn.role === "player";
+      const result = applyAction(
+        isPlayerTurn ? player : enemy,
+        isPlayerTurn ? enemy : player,
+        turn.skill,
+      );
+      player = isPlayerTurn ? result.user : result.target;
+      enemy = isPlayerTurn ? result.target : result.user;
+
+      // 선공 행동 후 전투 종료 판정
+      if (i === 0) {
+        const midCheck = checkBattleEnd(player, enemy, round);
+        if (midCheck) {
+          finishBattle(midCheck);
+          return;
+        }
       }
-
-      const enemyResult = applyAction(enemy, player, enemySkill);
-      enemy = enemyResult.user;
-      player = enemyResult.target;
-    } else {
-      const enemyResult = applyAction(enemy, player, enemySkill);
-      enemy = enemyResult.user;
-      player = enemyResult.target;
-
-      const midCheck = checkBattleEnd(player, enemy, round);
-      if (midCheck) {
-        finishBattle(midCheck);
-        return;
-      }
-
-      const playerResult = applyAction(player, enemy, playerSkill);
-      player = playerResult.user;
-      enemy = playerResult.target;
     }
 
     // 라운드 종료 시 버프 틱
