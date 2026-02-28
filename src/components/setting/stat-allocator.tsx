@@ -1,3 +1,4 @@
+import { Dices } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { STAT_LABELS, STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
@@ -47,11 +48,12 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
           </span>
           <Button
             variant="outline"
-            size="xs"
+            size="icon-xs"
             type="button"
             onClick={() => onChange(generateRandomStats())}
+            aria-label="랜덤 스탯 배분"
           >
-            랜덤
+            <Dices />
           </Button>
         </div>
       </div>
