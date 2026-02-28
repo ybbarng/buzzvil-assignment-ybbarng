@@ -176,12 +176,14 @@ describe("자동 채점 시나리오", () => {
     });
 
     it("공격을 반복하면 전투가 종료되고 결과 화면이 나타난다", async () => {
-      // 공격을 반복하여 전투 종료
       for (let i = 0; i < 20; i++) {
         const button = screen.queryByTestId("skill-button-0");
         if (!button) break;
         await userEvent.click(button);
       }
+
+      // 전투가 실제로 종료되었는지 확인
+      expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
 
       // 결과 화면의 요소가 나타나야 함
       expect(screen.getByTestId("result-title")).toBeInTheDocument();
@@ -207,6 +209,7 @@ describe("자동 채점 시나리오", () => {
         if (!button) break;
         await userEvent.click(button);
       }
+      expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
 
       expect(screen.getByTestId("result-title")).toHaveTextContent("승리");
     });
@@ -227,6 +230,7 @@ describe("자동 채점 시나리오", () => {
         if (!button) break;
         await userEvent.click(button);
       }
+      expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
 
       await userEvent.click(screen.getByTestId("restart-button"));
       expect(screen.getByTestId("name-input")).toBeInTheDocument();
