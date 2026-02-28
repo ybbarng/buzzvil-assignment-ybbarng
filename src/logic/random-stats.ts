@@ -1,5 +1,5 @@
 import { STAT_KEYS, STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
-import type { Stats } from "@/types/character";
+import type { StatKey, Stats } from "@/types/character";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -38,4 +38,24 @@ export function distributeRemainingStats(currentStats: Stats): Stats {
   }
 
   return stats;
+}
+
+export function distributeRandomToStat(
+  currentStats: Stats,
+  key: StatKey,
+): Stats {
+  const stats = { ...currentStats };
+  const used = STAT_KEYS.reduce((s, k) => s + stats[k], 0);
+  const remaining = TOTAL_POINTS - used;
+  const room = STAT_RANGES[key].max - stats[key];
+  const upper = Math.min(room, remaining);
+
+  if (upper <= 0) return stats;
+
+  stats[key] += Math.floor(Math.random() * (upper + 1));
+  return stats;
+}
+
+export function clearStat(currentStats: Stats, key: StatKey): Stats {
+  return { ...currentStats, [key]: STAT_RANGES[key].min };
 }

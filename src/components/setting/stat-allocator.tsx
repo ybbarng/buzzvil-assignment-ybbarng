@@ -1,4 +1,4 @@
-import { Dices } from "lucide-react";
+import { Dices, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -8,7 +8,11 @@ import {
   TOTAL_POINTS,
 } from "@/constants/stats";
 import { cn } from "@/lib/utils";
-import { distributeRemainingStats } from "@/logic/random-stats";
+import {
+  clearStat,
+  distributeRandomToStat,
+  distributeRemainingStats,
+} from "@/logic/random-stats";
 import type { StatKey, Stats } from "@/types/character";
 
 interface StatAllocatorProps {
@@ -66,12 +70,34 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
         return (
           <div key={key} className="space-y-1">
             <div className="flex items-center justify-between">
-              <label
-                htmlFor={`stat-${key}`}
-                className="text-sm font-medium text-text-primary"
-              >
-                {STAT_LABELS[key]}
-              </label>
+              <div className="flex items-center gap-1">
+                <label
+                  htmlFor={`stat-${key}`}
+                  className="text-sm font-medium text-text-primary"
+                >
+                  {STAT_LABELS[key]}
+                </label>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  type="button"
+                  title={`${STAT_LABELS[key]} 랜덤 배분`}
+                  disabled={remaining === 0 && stats[key] >= max}
+                  onClick={() => onChange(distributeRandomToStat(stats, key))}
+                >
+                  <Dices />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  type="button"
+                  title={`${STAT_LABELS[key]} 초기화`}
+                  disabled={stats[key] <= min}
+                  onClick={() => onChange(clearStat(stats, key))}
+                >
+                  <X />
+                </Button>
+              </div>
               <input
                 id={`stat-${key}`}
                 data-testid={`stat-${key}`}
