@@ -158,8 +158,10 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 className="border-border bg-bg-tertiary text-text-primary"
                 {...register("multiplier", { valueAsNumber: true })}
               />
-              {errors.root && (
-                <p className="text-xs text-damage">{errors.root.message}</p>
+              {"multiplier" in errors && errors.multiplier && (
+                <p className="text-xs text-damage">
+                  {errors.multiplier.message}
+                </p>
               )}
             </div>
           )}
@@ -172,8 +174,10 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 className="border-border bg-bg-tertiary text-text-primary"
                 {...register("healAmount", { valueAsNumber: true })}
               />
-              {errors.root && (
-                <p className="text-xs text-damage">{errors.root.message}</p>
+              {"healAmount" in errors && errors.healAmount && (
+                <p className="text-xs text-damage">
+                  {errors.healAmount.message}
+                </p>
               )}
             </div>
           )}
@@ -204,6 +208,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                   className="border-border bg-bg-tertiary text-text-primary"
                   {...register("value", { valueAsNumber: true })}
                 />
+                {"value" in errors && errors.value && (
+                  <p className="text-xs text-damage">{errors.value.message}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label className="text-text-secondary">지속 턴 (1 ~ 5)</Label>
@@ -212,6 +219,11 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                   className="border-border bg-bg-tertiary text-text-primary"
                   {...register("duration", { valueAsNumber: true })}
                 />
+                {"duration" in errors && errors.duration && (
+                  <p className="text-xs text-damage">
+                    {errors.duration.message}
+                  </p>
+                )}
               </div>
             </>
           )}
