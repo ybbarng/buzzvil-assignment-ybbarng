@@ -1,22 +1,6 @@
 import { GameContainer } from "@/components/layout/game-container";
+import { SettingScreen } from "@/components/setting/setting-screen";
 import { useGameStore } from "@/stores/game-store";
-
-function SettingPlaceholder() {
-  const startBattle = useGameStore((s) => s.startBattle);
-  return (
-    <div className="text-center">
-      <h2 className="text-2xl font-bold text-accent-orange">세팅</h2>
-      <p className="mt-2 text-text-secondary">캐릭터를 설정하세요</p>
-      <button
-        type="button"
-        className="mt-4 rounded bg-accent-orange px-4 py-2 font-bold text-bg-primary hover:bg-accent-orange-hover"
-        onClick={startBattle}
-      >
-        전투 시작
-      </button>
-    </div>
-  );
-}
 
 function BattlePlaceholder() {
   const showResult = useGameStore((s) => s.showResult);
@@ -67,7 +51,7 @@ function App() {
 
   return (
     <GameContainer>
-      {phase === "setting" && <SettingPlaceholder />}
+      {phase === "setting" && <SettingScreen />}
       {phase === "battle" && <BattlePlaceholder />}
       {phase === "result" && <ResultPlaceholder />}
     </GameContainer>
