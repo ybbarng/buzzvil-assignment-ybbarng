@@ -1,10 +1,18 @@
 import type { Stats } from "@/types/character";
-import type { BuffTarget, Skill } from "@/types/skill";
+import type { BuffTarget, Skill, SkillType } from "@/types/skill";
 
 export interface ActiveBuff {
   target: BuffTarget;
   value: number;
   remainingTurns: number;
+}
+
+export interface BattleLogEntry {
+  round: number;
+  actor: string;
+  skillName: string;
+  skillType: SkillType;
+  value: number;
 }
 
 export interface BattleCharacter {

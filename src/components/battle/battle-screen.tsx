@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { ActionPanel } from "@/components/battle/action-panel";
+import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
 import { Button } from "@/components/ui/button";
 import { useBattleStore } from "@/stores/battle-store";
@@ -12,6 +13,7 @@ export function BattleScreen() {
   const round = useBattleStore((s) => s.round);
   const outcome = useBattleStore((s) => s.outcome);
   const initBattle = useBattleStore((s) => s.initBattle);
+  const logs = useBattleStore((s) => s.logs);
   const executePlayerAction = useBattleStore((s) => s.executePlayerAction);
 
   const showResult = useGameStore((s) => s.showResult);
@@ -77,6 +79,8 @@ export function BattleScreen() {
       {!outcome && (
         <ActionPanel player={player} onAction={executePlayerAction} />
       )}
+
+      <BattleLog logs={logs} />
     </div>
   );
 }
