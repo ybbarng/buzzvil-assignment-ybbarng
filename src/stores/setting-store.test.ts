@@ -32,9 +32,43 @@ describe("setting-store", () => {
     expect(useSettingStore.getState().step).toBe(2);
   });
 
+  it("스킬을 추가할 수 있다", () => {
+    const newSkill = {
+      name: "화염구",
+      type: "attack" as const,
+      mpCost: 10,
+      multiplier: 2.0,
+      isDefault: false,
+    };
+    useSettingStore.getState().addSkill(newSkill);
+    const skills = useSettingStore.getState().skills;
+    expect(skills).toHaveLength(DEFAULT_SKILLS.length + 1);
+    expect(skills[skills.length - 1]).toEqual(newSkill);
+  });
+
+  it("스킬을 삭제할 수 있다", () => {
+    const newSkill = {
+      name: "화염구",
+      type: "attack" as const,
+      mpCost: 10,
+      multiplier: 2.0,
+      isDefault: false,
+    };
+    useSettingStore.getState().addSkill(newSkill);
+    useSettingStore.getState().removeSkill(DEFAULT_SKILLS.length);
+    expect(useSettingStore.getState().skills).toEqual(DEFAULT_SKILLS);
+  });
+
   it("reset으로 초기 상태로 돌아간다", () => {
     useSettingStore.getState().setName("테스터");
     useSettingStore.getState().setStep(3);
+    useSettingStore.getState().addSkill({
+      name: "화염구",
+      type: "attack",
+      mpCost: 10,
+      multiplier: 2.0,
+      isDefault: false,
+    });
     useSettingStore.getState().reset();
     const state = useSettingStore.getState();
     expect(state.step).toBe(1);

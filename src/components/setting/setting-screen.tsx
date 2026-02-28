@@ -12,6 +12,8 @@ export function SettingScreen() {
   const setStep = useSettingStore((s) => s.setStep);
   const setName = useSettingStore((s) => s.setName);
   const setStats = useSettingStore((s) => s.setStats);
+  const addSkill = useSettingStore((s) => s.addSkill);
+  const removeSkill = useSettingStore((s) => s.removeSkill);
 
   const handleStep1Submit = (data: NameStatFormData) => {
     setName(data.name);
@@ -37,6 +39,8 @@ export function SettingScreen() {
       {step === 2 && (
         <SkillForm
           skills={skills}
+          onAddSkill={addSkill}
+          onRemoveSkill={removeSkill}
           onPrev={() => setStep(1)}
           onNext={() => setStep(3)}
         />

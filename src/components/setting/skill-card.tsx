@@ -1,8 +1,11 @@
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { SKILL_TYPE_LABELS } from "@/constants/skills";
 import type { Skill } from "@/types/skill";
 
 interface SkillCardProps {
   skill: Skill;
+  onRemove?: () => void;
 }
 
 function getSkillDescription(skill: Skill): string {
@@ -20,7 +23,7 @@ function getSkillDescription(skill: Skill): string {
   }
 }
 
-export function SkillCard({ skill }: SkillCardProps) {
+export function SkillCard({ skill, onRemove }: SkillCardProps) {
   return (
     <div className="flex items-center justify-between rounded-lg border border-border bg-bg-tertiary px-4 py-3">
       <div className="space-y-0.5">
@@ -37,6 +40,18 @@ export function SkillCard({ skill }: SkillCardProps) {
           {getSkillDescription(skill)}
         </p>
       </div>
+      {onRemove && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          data-testid="remove-skill-button"
+          className="size-8 text-text-muted hover:text-damage"
+          onClick={onRemove}
+        >
+          <X className="size-4" />
+        </Button>
+      )}
     </div>
   );
 }
