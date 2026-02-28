@@ -93,7 +93,7 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
   };
 
   const onSubmit = (data: CustomSkillFormData) => {
-    const skill: Skill = { ...data, isDefault: false } as Skill;
+    const skill = { ...data, isDefault: false } as Skill;
     onAdd(skill);
   };
 
