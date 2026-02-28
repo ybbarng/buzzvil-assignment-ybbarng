@@ -3,7 +3,6 @@ import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
 import { useBattleStore } from "@/stores/battle-store";
-import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
 
 export function BattleScreen() {
@@ -15,8 +14,6 @@ export function BattleScreen() {
   const logs = useBattleStore((s) => s.logs);
   const executePlayerAction = useBattleStore((s) => s.executePlayerAction);
 
-  const showResult = useGameStore((s) => s.showResult);
-
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -25,12 +22,6 @@ export function BattleScreen() {
     const { name, stats, skills, difficulty } = useSettingStore.getState();
     initBattle(name, stats, skills, difficulty);
   }, [initBattle]);
-
-  useEffect(() => {
-    if (outcome) {
-      showResult(outcome, round - 1);
-    }
-  }, [outcome, round, showResult]);
 
   if (!player || !enemy) return null;
 
