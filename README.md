@@ -61,6 +61,14 @@ src/
 - CI(lint, test, build) 통과 필수
 - 상세 내용: [docs/workflow.md](docs/workflow.md)
 
+## 타임라인
+
+| 시각 (KST) | 내용 |
+|---|---|
+| 2026-02-28 15:10 | 첫 커밋 생성 |
+| 2026-02-28 19:28 | 1차 구현 완료 (모든 명시된 과제 스펙 구현 완료) |
+| 2026-02-28 19:34 | 1차 채점 |
+
 ## AI 활용
 
 이 프로젝트는 Claude Code를 활용하여 개발했습니다. 주요 의사결정 과정은 [docs/prompt-log.md](docs/prompt-log.md)에 기록되어 있습니다.
