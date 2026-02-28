@@ -113,4 +113,27 @@ describe("battle-store", () => {
 
     expect(useBattleStore.getState().round).toBe(2);
   });
+
+  it("액션 실행 시 전투 로그가 생성된다", () => {
+    const stats = { hp: 100, mp: 50, atk: 20, def: 10, spd: 99 };
+    const skills = [
+      {
+        name: "공격",
+        type: "attack" as const,
+        mpCost: 0,
+        multiplier: 1.0,
+        isDefault: true,
+      },
+      { name: "방어", type: "defend" as const, mpCost: 0, isDefault: true },
+    ];
+
+    useBattleStore.getState().initBattle("테스터", stats, skills, "easy");
+    useBattleStore.getState().executePlayerAction(0);
+
+    const logs = useBattleStore.getState().logs;
+    expect(logs.length).toBe(2); // 플레이어 + 적
+    expect(logs[0].actor).toBe("테스터");
+    expect(logs[0].skillType).toBe("attack");
+    expect(logs[1].actor).toBe("훈련 로봇");
+  });
 });

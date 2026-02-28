@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import { ENEMIES } from "@/constants/enemies";
+import { createLogEntry } from "@/logic/battle-log";
 import { checkBattleEnd } from "@/logic/battle-result";
 import { tickBuffs } from "@/logic/buff";
 import { decideEnemyAction } from "@/logic/enemy-ai";
 import { resolveSkillEffect } from "@/logic/skill-effect";
 import { determineFirstMover } from "@/logic/turn";
-import type { BattleCharacter } from "@/types/battle";
+import type { BattleCharacter, BattleLogEntry } from "@/types/battle";
 import type { Stats } from "@/types/character";
 import type { BattleOutcome, Difficulty } from "@/types/game";
 import type { Skill } from "@/types/skill";
@@ -15,6 +16,7 @@ interface BattleState {
   enemy: BattleCharacter | null;
   round: number;
   outcome: BattleOutcome | null;
+  logs: BattleLogEntry[];
 
   initBattle: (
     name: string,
@@ -47,6 +49,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   enemy: null,
   round: 1,
   outcome: null,
+  logs: [],
 
   initBattle: (name, stats, skills, difficulty) => {
     const enemyConfig = ENEMIES[difficulty];
@@ -59,6 +62,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       ),
       round: 1,
       outcome: null,
+      logs: [],
     });
   },
 
@@ -88,33 +92,58 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     };
 
     const firstMover = determineFirstMover(player, enemy);
+    const roundLogs: BattleLogEntry[] = [];
+
+    function applyAction(
+      actor: BattleCharacter,
+      target: BattleCharacter,
+      skill: Skill,
+    ) {
+      const result = resolveSkillEffect(actor, target, skill);
+      roundLogs.push(
+        createLogEntry(round, actor, target, skill, result.user, result.target),
+      );
+      return result;
+    }
 
     if (firstMover === "player") {
-      const p = resolveSkillEffect(player, enemy, playerSkill);
+      const p = applyAction(player, enemy, playerSkill);
       player = p.user;
       enemy = p.target;
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
-        set({ player, enemy, round: round + 1, outcome: midCheck });
+        set({
+          player,
+          enemy,
+          round: round + 1,
+          outcome: midCheck,
+          logs: [...state.logs, ...roundLogs],
+        });
         return;
       }
 
-      const e = resolveSkillEffect(enemy, player, enemySkill);
+      const e = applyAction(enemy, player, enemySkill);
       enemy = e.user;
       player = e.target;
     } else {
-      const e = resolveSkillEffect(enemy, player, enemySkill);
+      const e = applyAction(enemy, player, enemySkill);
       enemy = e.user;
       player = e.target;
 
       const midCheck = checkBattleEnd(player, enemy, round);
       if (midCheck) {
-        set({ player, enemy, round: round + 1, outcome: midCheck });
+        set({
+          player,
+          enemy,
+          round: round + 1,
+          outcome: midCheck,
+          logs: [...state.logs, ...roundLogs],
+        });
         return;
       }
 
-      const p = resolveSkillEffect(player, enemy, playerSkill);
+      const p = applyAction(player, enemy, playerSkill);
       player = p.user;
       enemy = p.target;
     }
@@ -131,6 +160,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       enemy,
       round: nextRound,
       outcome: endCheck,
+      logs: [...state.logs, ...roundLogs],
     });
   },
 
@@ -140,5 +170,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       enemy: null,
       round: 1,
       outcome: null,
+      logs: [],
     }),
 }));
