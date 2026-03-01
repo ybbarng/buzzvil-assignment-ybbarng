@@ -3,7 +3,7 @@
 @font-face {
   font-family: "Koverwatch";
   src: url("@/assets/fonts/koverwatch.woff2") format("woff2");
-  font-display: swap;
+  font-display: block;
 }
 
 @theme {
