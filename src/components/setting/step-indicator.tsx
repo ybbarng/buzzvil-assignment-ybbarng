@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -32,7 +33,6 @@ export function StepIndicator({
 
         const button = (
           <button
-            key={step}
             type="button"
             disabled={isCurrent || isFuture}
             onClick={() => isCompleted && onStepClick?.(step)}
@@ -70,7 +70,7 @@ export function StepIndicator({
           );
         }
 
-        return button;
+        return <Fragment key={step}>{button}</Fragment>;
       })}
     </div>
   );
