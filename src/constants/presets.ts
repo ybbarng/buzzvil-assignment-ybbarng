@@ -1,9 +1,9 @@
 import type { HeroPreset, HeroRole } from "@/types/preset";
 
 export const ROLE_LABELS: Record<HeroRole, string> = {
-  tank: "탱커",
-  damage: "딜러",
-  support: "서포터",
+  tank: "돌격",
+  damage: "공격",
+  support: "지원",
 };
 
 export const ROLE_COLORS: Record<HeroRole, string> = {
@@ -13,27 +13,27 @@ export const ROLE_COLORS: Record<HeroRole, string> = {
 };
 
 export const HERO_PRESETS: HeroPreset[] = [
-  // ── 탱커 (14명) ──────────────────────────────
+  // ── 돌격 (14명) ──────────────────────────────
   // HP 80-100, DEF 20-30 특화, MP 20-45
   {
     id: "dva",
     name: "D.Va",
     role: "tank",
-    description: "메카 탑승 돌격형 탱커",
+    description: "메카 탑승 돌격형 영웅",
     stats: { hp: 90, mp: 30, atk: 20, def: 30, spd: 30 },
   },
   {
     id: "doomfist",
     name: "둠피스트",
     role: "tank",
-    description: "근접 격투형 탱커",
+    description: "근접 격투형 영웅",
     stats: { hp: 80, mp: 40, atk: 25, def: 25, spd: 30 },
   },
   {
     id: "hazard",
     name: "해저드",
     role: "tank",
-    description: "방어력 기반 전선 유지 탱커",
+    description: "방어력 기반 전선 유지형",
     stats: { hp: 95, mp: 35, atk: 15, def: 30, spd: 25 },
   },
   {
@@ -47,7 +47,7 @@ export const HERO_PRESETS: HeroPreset[] = [
     id: "mauga",
     name: "마우가",
     role: "tank",
-    description: "쌍총 난사형 탱커",
+    description: "쌍총 난사형 영웅",
     stats: { hp: 95, mp: 25, atk: 25, def: 25, spd: 30 },
   },
   {
@@ -61,60 +61,60 @@ export const HERO_PRESETS: HeroPreset[] = [
     id: "ramattra",
     name: "라마트라",
     role: "tank",
-    description: "옴닉/네메시스 형태 전환 탱커",
+    description: "옴닉/네메시스 형태 전환형",
     stats: { hp: 80, mp: 40, atk: 20, def: 30, spd: 30 },
   },
   {
     id: "reinhardt",
     name: "라인하르트",
     role: "tank",
-    description: "대형 방벽과 해머의 전통 탱커",
+    description: "대형 방벽과 해머의 정통파",
     stats: { hp: 100, mp: 20, atk: 20, def: 30, spd: 30 },
   },
   {
     id: "roadhog",
     name: "로드호그",
     role: "tank",
-    description: "갈고리로 적을 당기는 고체력 탱커",
+    description: "갈고리로 적을 당기는 고체력형",
     stats: { hp: 100, mp: 25, atk: 25, def: 25, spd: 25 },
   },
   {
     id: "sigma",
     name: "시그마",
     role: "tank",
-    description: "중력 조작과 유연한 방벽의 탱커",
+    description: "중력 조작과 유연한 방벽 운용",
     stats: { hp: 85, mp: 40, atk: 15, def: 30, spd: 30 },
   },
   {
     id: "winston",
     name: "윈스턴",
     role: "tank",
-    description: "점프팩 기동의 과학자 탱커",
+    description: "점프팩 기동의 과학자 영웅",
     stats: { hp: 85, mp: 45, atk: 15, def: 25, spd: 30 },
   },
   {
     id: "wrecking-ball",
     name: "레킹볼",
     role: "tank",
-    description: "초고기동 구르기 탱커",
+    description: "초고기동 구르기 영웅",
     stats: { hp: 95, mp: 30, atk: 15, def: 30, spd: 30 },
   },
   {
     id: "zarya",
     name: "자리야",
     role: "tank",
-    description: "보호막으로 에너지를 충전하는 탱커",
+    description: "보호막으로 에너지를 충전하는 영웅",
     stats: { hp: 80, mp: 35, atk: 25, def: 30, spd: 30 },
   },
   {
     id: "domina",
     name: "도미나",
     role: "tank",
-    description: "하드라이트 실드 기반 탱커",
+    description: "하드라이트 실드 기반 영웅",
     stats: { hp: 85, mp: 45, atk: 10, def: 30, spd: 30 },
   },
 
-  // ── 딜러 (22명) ──────────────────────────────
+  // ── 공격 (22명) ──────────────────────────────
   // ATK 20-30, SPD 25-30 특화, HP 35-55, DEF 5-20
   {
     id: "ashe",
@@ -169,14 +169,14 @@ export const HERO_PRESETS: HeroPreset[] = [
     id: "mei",
     name: "메이",
     role: "damage",
-    description: "빙결과 얼음 벽의 제어형 딜러",
+    description: "빙결과 얼음 벽의 제어형 영웅",
     stats: { hp: 55, mp: 75, atk: 20, def: 20, spd: 30 },
   },
   {
     id: "pharah",
     name: "파라",
     role: "damage",
-    description: "제트팩 공중 로켓 딜러",
+    description: "제트팩 공중 로켓 영웅",
     stats: { hp: 50, mp: 80, atk: 28, def: 12, spd: 30 },
   },
   {
@@ -267,11 +267,11 @@ export const HERO_PRESETS: HeroPreset[] = [
     id: "vendetta",
     name: "벤데타",
     role: "damage",
-    description: "하드라이트 대검의 근접 딜러",
+    description: "하드라이트 대검의 근접 전투형",
     stats: { hp: 55, mp: 75, atk: 28, def: 17, spd: 25 },
   },
 
-  // ── 서포터 (14명) ──────────────────────────────
+  // ── 지원 (14명) ──────────────────────────────
   // MP 85-100 특화, ATK 5-20, HP 45-65
   {
     id: "ana",
