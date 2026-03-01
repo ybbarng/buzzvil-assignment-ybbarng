@@ -1,0 +1,217 @@
+import { useState } from "react";
+import roleDamageIcon from "@/assets/role-damage.svg";
+import roleSupportIcon from "@/assets/role-support.svg";
+import roleTankIcon from "@/assets/role-tank.svg";
+import { PresetHeroDetail } from "@/components/setting/preset-hero-card";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  getPresetsBySubRole,
+  ROLE_LABELS,
+  ROLE_SUB_ROLES,
+  SUB_ROLE_LABELS,
+} from "@/constants/presets";
+import { cn } from "@/lib/utils";
+import type { HeroPreset, HeroRole, HeroSubRole } from "@/types/preset";
+
+interface PresetDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSelect: (hero: HeroPreset) => void;
+}
+
+const ROLES: HeroRole[] = ["tank", "damage", "support"];
+
+const ROLE_ICON_URLS: Record<HeroRole, string> = {
+  tank: roleTankIcon,
+  damage: roleDamageIcon,
+  support: roleSupportIcon,
+};
+
+function RoleBadge({ role }: { role: HeroRole }) {
+  return (
+    <>
+      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/40">
+        <img
+          src={ROLE_ICON_URLS[role]}
+          alt={ROLE_LABELS[role]}
+          className="h-3 w-3"
+        />
+      </div>
+      <span className="text-sm font-black uppercase tracking-widest text-white">
+        {ROLE_LABELS[role]}
+      </span>
+    </>
+  );
+}
+
+function SubRoleGroup({
+  subRole,
+  selected,
+  onSelect,
+}: {
+  subRole: HeroSubRole;
+  selected: HeroPreset | null;
+  onSelect: (hero: HeroPreset) => void;
+}) {
+  const heroes = getPresetsBySubRole(subRole);
+
+  return (
+    <div className="flex items-start gap-2">
+      <span className="shrink-0 py-1.5 text-xs tracking-wide text-white">
+        {SUB_ROLE_LABELS[subRole]}
+      </span>
+      <div className="flex flex-wrap gap-1">
+        {heroes.map((hero) => (
+          <button
+            key={hero.id}
+            type="button"
+            onClick={() => onSelect(hero)}
+            className={cn(
+              "cursor-pointer whitespace-nowrap rounded-sm px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all",
+              "border-2",
+              selected?.id === hero.id
+                ? "relative z-10 origin-bottom animate-pulse-glow border-accent-orange bg-accent-orange/20 [transform:scale(1.33)]"
+                : "border-transparent bg-bg-tertiary hover:bg-bg-tertiary/80",
+            )}
+          >
+            {hero.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RoleSection({
+  role,
+  selected,
+  onSelect,
+  className,
+}: {
+  role: HeroRole;
+  selected: HeroPreset | null;
+  onSelect: (hero: HeroPreset) => void;
+  className?: string;
+}) {
+  const subRoles = ROLE_SUB_ROLES[role];
+
+  return (
+    <div className={cn("flex flex-col gap-1.5", className)}>
+      <div className="flex items-center gap-1.5">
+        <RoleBadge role={role} />
+      </div>
+      <div className="flex flex-col gap-1">
+        {subRoles.map((subRole) => (
+          <SubRoleGroup
+            key={subRole}
+            subRole={subRole}
+            selected={selected}
+            onSelect={onSelect}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function PresetDialog({
+  open,
+  onOpenChange,
+  onSelect,
+}: PresetDialogProps) {
+  const [selected, setSelected] = useState<HeroPreset | null>(null);
+
+  const handleSelect = () => {
+    if (selected) {
+      onSelect(selected);
+      setSelected(null);
+    }
+  };
+
+  const handleOpenChange = (value: boolean) => {
+    if (!value) setSelected(null);
+    onOpenChange(value);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent
+        showCloseButton
+        className="flex h-[90vh] w-[95vw] max-w-[95vw] flex-col border-border bg-bg-primary p-0 sm:max-w-[95vw]"
+      >
+        <DialogTitle className="sr-only">오버워치 영웅 프리셋</DialogTitle>
+
+        {/* 메인 영역: 영웅 정보 */}
+        <div className="relative flex flex-1 items-end justify-end overflow-hidden px-8 pb-4">
+          {/* 배경 그라데이션 */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/80 to-bg-tertiary/30" />
+
+          {selected ? (
+            <div className="relative z-10 flex w-full items-end justify-between gap-8">
+              {/* 왼쪽: 영웅 이름 + 설명 */}
+              <div
+                key={selected.id}
+                className="flex animate-fade-in flex-col gap-2"
+              >
+                <h2 className="text-5xl font-black tracking-tight text-text-primary uppercase">
+                  {selected.name}
+                </h2>
+                <p className="max-w-md text-sm text-text-secondary">
+                  {selected.description}
+                </p>
+              </div>
+
+              {/* 오른쪽: 역할군 + 스탯 */}
+              <div className="flex w-64 shrink-0 flex-col gap-3">
+                <div
+                  key={selected.id}
+                  className="flex animate-fade-in items-center gap-2"
+                >
+                  <RoleBadge role={selected.role} />
+                  <span className="text-xs tracking-wide text-white">
+                    · {SUB_ROLE_LABELS[selected.subRole]}
+                  </span>
+                </div>
+                <PresetHeroDetail hero={selected} />
+              </div>
+            </div>
+          ) : (
+            <div className="relative z-10 flex w-full items-center justify-center py-16">
+              <p className="text-lg text-text-muted">영웅을 선택하세요</p>
+            </div>
+          )}
+        </div>
+
+        {/* 하단: 영웅 그리드 + 선택 버튼 */}
+        <div className="border-t border-border bg-bg-secondary/80 px-8 py-4">
+          <div className="flex w-full items-start gap-8">
+            {ROLES.map((role) => (
+              <RoleSection
+                key={role}
+                role={role}
+                selected={selected}
+                onSelect={setSelected}
+                className={role === "damage" ? "flex-[1.5]" : "flex-1"}
+              />
+            ))}
+          </div>
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              disabled={!selected}
+              onClick={handleSelect}
+              className={cn(
+                "min-w-48 cursor-pointer px-8 py-2.5 text-sm font-bold text-white uppercase tracking-wider transition-all disabled:cursor-not-allowed disabled:opacity-40",
+                selected
+                  ? "animate-button-ready bg-accent-orange hover:bg-accent-orange-hover"
+                  : "bg-accent-orange",
+              )}
+            >
+              선택
+            </button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

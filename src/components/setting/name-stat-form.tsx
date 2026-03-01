@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { PresetDialog } from "@/components/setting/preset-dialog";
 import { StatAllocator } from "@/components/setting/stat-allocator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +12,7 @@ import {
   nameStatSchema,
 } from "@/schemas/name-stat.schema";
 import type { Stats } from "@/types/character";
+import type { HeroPreset } from "@/types/preset";
 
 interface NameStatFormProps {
   defaultName: string;
@@ -36,12 +39,20 @@ export function NameStatForm({
     },
   });
 
+  const [presetOpen, setPresetOpen] = useState(false);
+
   const stats = watch("stats");
   const totalUsed = Object.values(stats).reduce((a, b) => a + b, 0);
   const isComplete = totalUsed === TOTAL_POINTS;
 
   const handleStatsChange = (newStats: Stats) => {
     setValue("stats", newStats, { shouldValidate: true });
+  };
+
+  const handlePresetSelect = (hero: HeroPreset) => {
+    setValue("name", hero.name, { shouldValidate: true });
+    setValue("stats", hero.stats, { shouldValidate: true });
+    setPresetOpen(false);
   };
 
   return (
@@ -63,6 +74,20 @@ export function NameStatForm({
           )}
         </CardContent>
       </Card>
+
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => setPresetOpen(true)}
+        className="w-full border-accent-blue text-accent-blue hover:bg-accent-blue/10"
+      >
+        프리셋 불러오기
+      </Button>
+      <PresetDialog
+        open={presetOpen}
+        onOpenChange={setPresetOpen}
+        onSelect={handlePresetSelect}
+      />
 
       <Card className="border-border bg-bg-secondary">
         <CardHeader>
