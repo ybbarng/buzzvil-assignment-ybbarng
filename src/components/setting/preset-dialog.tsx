@@ -76,15 +76,17 @@ function RoleSection({
   role,
   selected,
   onSelect,
+  className,
 }: {
   role: HeroRole;
   selected: HeroPreset | null;
   onSelect: (hero: HeroPreset) => void;
+  className?: string;
 }) {
   const subRoles = ROLE_SUB_ROLES[role];
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className={cn("flex flex-col gap-1.5", className)}>
       <div className="flex items-center gap-1.5">
         <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/40">
           <img
@@ -181,14 +183,15 @@ export function PresetDialog({
         </div>
 
         {/* 하단: 영웅 그리드 + 선택 버튼 */}
-        <div className="border-t border-border bg-bg-secondary/80 px-6 py-4">
-          <div className="flex items-start justify-center gap-8">
+        <div className="border-t border-border bg-bg-secondary/80 px-2 py-4">
+          <div className="flex items-start gap-8">
             {ROLES.map((role) => (
               <RoleSection
                 key={role}
                 role={role}
                 selected={selected}
                 onSelect={setSelected}
+                className={role === "damage" ? "flex-[1.5]" : "flex-1"}
               />
             ))}
           </div>
