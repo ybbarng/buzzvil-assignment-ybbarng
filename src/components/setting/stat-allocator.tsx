@@ -76,21 +76,23 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                   {STAT_LABELS[key].en}
                 </span>
               </label>
-              <input
-                id={`stat-${key}`}
-                data-testid={`stat-${key}`}
-                type="number"
-                min={min}
-                max={max}
-                value={stats[key]}
-                onChange={(e) => {
-                  const v = Number.parseInt(e.target.value, 10);
-                  if (!Number.isNaN(v)) {
-                    handleStatChange(key, v);
-                  }
-                }}
-                className="w-16 rounded border border-border bg-bg-tertiary px-2 py-1 text-center text-sm text-text-primary outline-none focus:border-accent-orange"
-              />
+              <div className="-skew-x-12 bg-bg-tertiary px-3 py-1">
+                <input
+                  id={`stat-${key}`}
+                  data-testid={`stat-${key}`}
+                  type="number"
+                  min={min}
+                  max={max}
+                  value={stats[key]}
+                  onChange={(e) => {
+                    const v = Number.parseInt(e.target.value, 10);
+                    if (!Number.isNaN(v)) {
+                      handleStatChange(key, v);
+                    }
+                  }}
+                  className="w-12 border-none bg-transparent text-center text-sm text-text-primary outline-none"
+                />
+              </div>
             </div>
             <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-1 gap-y-1">
               <Slider

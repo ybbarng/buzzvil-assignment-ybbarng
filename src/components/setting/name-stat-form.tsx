@@ -61,13 +61,15 @@ export function NameStatForm({
           캐릭터 이름
         </h2>
         <div className="flex gap-2">
-          <Input
-            data-testid="name-input"
-            placeholder="이름을 입력하세요 (1~10자)"
-            maxLength={10}
-            className="flex-1 border-border bg-bg-tertiary text-text-primary placeholder:text-text-muted"
-            {...register("name")}
-          />
+          <div className="flex-1 -skew-x-12 bg-bg-tertiary px-4 py-2">
+            <Input
+              data-testid="name-input"
+              placeholder="이름을 입력하세요 (1~10자)"
+              maxLength={10}
+              className="border-none bg-transparent text-text-primary shadow-none placeholder:text-text-muted"
+              {...register("name")}
+            />
+          </div>
           <button
             type="button"
             onClick={() => setPresetOpen(true)}
