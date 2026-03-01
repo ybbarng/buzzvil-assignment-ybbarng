@@ -4,16 +4,29 @@ import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
 import { slideInClass, staggerDelay } from "@/constants/theme";
+import { josa } from "@/lib/utils";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
 import type { Direction, SettingStep } from "@/types/game";
 
-const STEP_GUIDES: Record<SettingStep, string> = {
-  1: "영웅 등록을 시작합니다. 이름과 능력치를 설정하세요.",
-  2: "전투에 사용할 스킬을 장착하세요. 최대 4개까지 선택할 수 있습니다.",
-  3: "전투 난이도를 선택하세요. 난이도에 따라 적의 강도가 달라집니다.",
-};
+function getStepGuide(step: SettingStep, name: string): React.ReactNode {
+  if (step === 2 && name) {
+    return (
+      <>
+        <span className="font-bold text-white">{name}</span>
+        {josa(name, "이", "가")} 전투에 사용할 스킬을 장착하세요. 공격, 방어와
+        함께 추가 스킬 2개를 보유할 수 있습니다.
+      </>
+    );
+  }
+  const guides: Record<SettingStep, string> = {
+    1: "영웅 등록을 시작합니다. 이름과 능력치를 설정하세요.",
+    2: "전투에 사용할 스킬을 장착하세요. 공격, 방어와 함께 추가 스킬 2개를 보유할 수 있습니다.",
+    3: "전투 난이도를 선택하세요. 난이도에 따라 적의 강도가 달라집니다.",
+  };
+  return guides[step];
+}
 
 /**
  * Web Animations API로 [data-animate] 요소들을 순차 퇴장시킨 뒤 callback을 호출한다.
@@ -134,7 +147,7 @@ export function SettingScreen() {
       <div key={step} ref={contentRef}>
         <div className={slideIn} data-animate style={staggerDelay(1)}>
           <p className="mb-6 text-sm tracking-wide text-text-secondary">
-            {STEP_GUIDES[step]}
+            {getStepGuide(step, name)}
           </p>
         </div>
 
