@@ -155,7 +155,7 @@ export function PresetDialog({
               type="button"
               disabled={!selected}
               onClick={handleSelect}
-              className="min-w-48 cursor-pointer rounded bg-accent-orange px-8 py-2.5 text-sm font-bold text-bg-primary uppercase tracking-wider transition-all hover:bg-accent-orange-hover disabled:cursor-not-allowed disabled:opacity-40"
+              className="min-w-48 cursor-pointer bg-accent-orange px-8 py-2.5 text-sm font-bold text-white uppercase tracking-wider transition-all hover:bg-accent-orange-hover disabled:cursor-not-allowed disabled:opacity-40"
             >
               선택
             </button>
