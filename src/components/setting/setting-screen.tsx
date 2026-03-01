@@ -3,7 +3,7 @@ import { DifficultyForm } from "@/components/setting/difficulty-form";
 import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
-import { STAGGER_MS, staggerDelay } from "@/constants/theme";
+import { staggerDelay } from "@/constants/theme";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -32,14 +32,14 @@ function animateExitThenDo(
     return;
   }
 
-  container!.style.pointerEvents = "none";
+  container?.style.setProperty("pointer-events", "none");
 
   const EXIT_STAGGER_MS = 80;
   const animations = items.map((item, i) =>
     item.animate(
       [
         { transform: "translateX(0)", opacity: "1" },
-        { transform: "translateX(-80px)", opacity: "0" },
+        { transform: "translateX(-100vw)", opacity: "0" },
       ],
       {
         duration: 150,
@@ -70,9 +70,15 @@ export function SettingScreen() {
   const startBattle = useGameStore((s) => s.startBattle);
 
   const contentRef = useRef<HTMLDivElement>(null);
+  const isExiting = useRef(false);
 
   const withExit = (callback: () => void) => {
-    animateExitThenDo(contentRef.current, callback);
+    if (isExiting.current) return;
+    isExiting.current = true;
+    animateExitThenDo(contentRef.current, () => {
+      isExiting.current = false;
+      callback();
+    });
   };
 
   const handleStep1Submit = (data: NameStatFormData) => {
