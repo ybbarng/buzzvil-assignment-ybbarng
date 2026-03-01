@@ -72,7 +72,7 @@ function SubRoleGroup({
               `${SKEW} cursor-pointer whitespace-nowrap px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all`,
               "border-2",
               selected?.id === hero.id
-                ? "relative z-10 origin-bottom animate-pulse-glow border-accent-orange bg-accent-orange/20 [transform:scale(1.33)]"
+                ? "relative z-10 origin-bottom animate-pulse-glow border-accent-orange bg-accent-orange/20 scale-[1.33]"
                 : "border-transparent bg-bg-tertiary hover:bg-bg-tertiary/80",
             )}
           >
