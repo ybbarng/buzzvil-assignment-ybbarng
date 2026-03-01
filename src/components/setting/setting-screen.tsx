@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { DifficultyForm } from "@/components/setting/difficulty-form";
 import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
@@ -15,12 +15,16 @@ const STEP_GUIDES: Record<SettingStep, string> = {
   3: "전투 난이도를 선택하세요. 난이도에 따라 적의 강도가 달라집니다.",
 };
 
+type Direction = "forward" | "backward";
+
 /**
- * Web Animations API로 [data-animate] 요소들을 왼쪽으로 순차 퇴장시킨 뒤 callback을 호출한다.
+ * Web Animations API로 [data-animate] 요소들을 순차 퇴장시킨 뒤 callback을 호출한다.
+ * forward: 왼쪽으로 퇴장, backward: 오른쪽으로 퇴장.
  * jsdom(테스트 환경)에서는 el.animate가 없으므로 즉시 callback을 호출한다.
  */
 function animateExitThenDo(
   container: HTMLElement | null,
+  direction: Direction,
   callback: () => void,
 ) {
   const items = container
@@ -34,12 +38,13 @@ function animateExitThenDo(
 
   container?.style.setProperty("pointer-events", "none");
 
+  const exitX = direction === "forward" ? "-100vw" : "100vw";
   const EXIT_STAGGER_MS = 80;
   const animations = items.map((item, i) =>
     item.animate(
       [
         { transform: "translateX(0)", opacity: "1" },
-        { transform: "translateX(-100vw)", opacity: "0" },
+        { transform: `translateX(${exitX})`, opacity: "0" },
       ],
       {
         duration: 150,
@@ -71,11 +76,13 @@ export function SettingScreen() {
 
   const contentRef = useRef<HTMLDivElement>(null);
   const isExiting = useRef(false);
+  const [enterDirection, setEnterDirection] = useState<Direction>("forward");
 
-  const withExit = (callback: () => void) => {
+  const withExit = (direction: Direction, callback: () => void) => {
     if (isExiting.current) return;
     isExiting.current = true;
-    animateExitThenDo(contentRef.current, () => {
+    setEnterDirection(direction);
+    animateExitThenDo(contentRef.current, direction, () => {
       isExiting.current = false;
       callback();
     });
@@ -84,8 +91,13 @@ export function SettingScreen() {
   const handleStep1Submit = (data: NameStatFormData) => {
     setName(data.name);
     setStats(data.stats);
-    withExit(() => setStep(2));
+    withExit("forward", () => setStep(2));
   };
+
+  const slideIn =
+    enterDirection === "forward"
+      ? "animate-slide-in-right"
+      : "animate-slide-in-left";
 
   return (
     <div>
@@ -99,13 +111,15 @@ export function SettingScreen() {
       </div>
 
       <div key={step} ref={contentRef}>
-        <div className="animate-slide-in" data-animate style={staggerDelay(0)}>
+        <div className={slideIn} data-animate style={staggerDelay(0)}>
           <StepIndicator
             currentStep={step}
-            onStepClick={(s) => withExit(() => setStep(s))}
+            onStepClick={(s) =>
+              withExit(s < step ? "backward" : "forward", () => setStep(s))
+            }
           />
         </div>
-        <div className="animate-slide-in" data-animate style={staggerDelay(1)}>
+        <div className={slideIn} data-animate style={staggerDelay(1)}>
           <p className="mb-6 text-sm tracking-wide text-text-secondary">
             {STEP_GUIDES[step]}
           </p>
@@ -116,36 +130,29 @@ export function SettingScreen() {
             defaultName={name}
             defaultStats={stats}
             onSubmit={handleStep1Submit}
+            enterDirection={enterDirection}
           />
         )}
 
         {step === 2 && (
-          <div
-            className="animate-slide-in"
-            data-animate
-            style={staggerDelay(2)}
-          >
+          <div className={slideIn} data-animate style={staggerDelay(2)}>
             <SkillForm
               skills={skills}
               onAddSkill={addSkill}
               onRemoveSkill={removeSkill}
-              onPrev={() => withExit(() => setStep(1))}
-              onNext={() => withExit(() => setStep(3))}
+              onPrev={() => withExit("backward", () => setStep(1))}
+              onNext={() => withExit("forward", () => setStep(3))}
             />
           </div>
         )}
 
         {step === 3 && (
-          <div
-            className="animate-slide-in"
-            data-animate
-            style={staggerDelay(2)}
-          >
+          <div className={slideIn} data-animate style={staggerDelay(2)}>
             <DifficultyForm
               difficulty={difficulty}
               onSelect={setDifficulty}
-              onPrev={() => withExit(() => setStep(2))}
-              onStartBattle={() => withExit(startBattle)}
+              onPrev={() => withExit("backward", () => setStep(2))}
+              onStartBattle={() => withExit("forward", startBattle)}
             />
           </div>
         )}

@@ -18,12 +18,14 @@ interface NameStatFormProps {
   defaultName: string;
   defaultStats: Stats;
   onSubmit: (data: NameStatFormData) => void;
+  enterDirection?: "forward" | "backward";
 }
 
 export function NameStatForm({
   defaultName,
   defaultStats,
   onSubmit,
+  enterDirection = "forward",
 }: NameStatFormProps) {
   const {
     register,
@@ -55,11 +57,16 @@ export function NameStatForm({
     setPresetOpen(false);
   };
 
+  const slideIn =
+    enterDirection === "forward"
+      ? "animate-slide-in-right"
+      : "animate-slide-in-left";
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* 캐릭터 이름 */}
       <section
-        className="animate-slide-in border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4"
+        className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
         data-animate
         style={staggerDelay(2)}
       >
@@ -97,7 +104,7 @@ export function NameStatForm({
 
       {/* 스탯 배분 */}
       <section
-        className="animate-slide-in border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4"
+        className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
         data-animate
         style={staggerDelay(3)}
       >
@@ -118,7 +125,7 @@ export function NameStatForm({
         data-animate
         disabled={!isComplete}
         active={isComplete}
-        className="animate-slide-in w-full"
+        className={`${slideIn} w-full`}
         style={staggerDelay(4)}
       >
         다음
