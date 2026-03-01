@@ -147,12 +147,12 @@ export function PresetDialog({
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/80 to-bg-tertiary/30" />
 
           {selected ? (
-            <div
-              key={selected.id}
-              className="relative z-10 flex w-full animate-fade-in items-end justify-between gap-8"
-            >
+            <div className="relative z-10 flex w-full items-end justify-between gap-8">
               {/* 왼쪽: 영웅 이름 + 설명 */}
-              <div className="flex flex-col gap-2">
+              <div
+                key={selected.id}
+                className="flex animate-fade-in flex-col gap-2"
+              >
                 <h2 className="text-5xl font-black tracking-tight text-text-primary uppercase">
                   {selected.name}
                 </h2>
