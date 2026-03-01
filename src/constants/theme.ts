@@ -1,3 +1,5 @@
+import type { Direction } from "@/types/game";
+
 /**
  * 게임 UI 기울임(skew) 스타일 상수.
  *
@@ -27,7 +29,7 @@ export function staggerDelay(index: number): { animationDelay: string } {
 }
 
 /** 방향에 따른 슬라이드 입장 애니메이션 클래스 */
-export function slideInClass(direction: "forward" | "backward"): string {
+export function slideInClass(direction: Direction): string {
   return direction === "forward"
     ? "animate-slide-in-right"
     : "animate-slide-in-left";

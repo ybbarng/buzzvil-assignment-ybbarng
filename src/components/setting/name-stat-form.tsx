@@ -12,13 +12,14 @@ import {
   nameStatSchema,
 } from "@/schemas/name-stat.schema";
 import type { Stats } from "@/types/character";
+import type { Direction } from "@/types/game";
 import type { HeroPreset } from "@/types/preset";
 
 interface NameStatFormProps {
   defaultName: string;
   defaultStats: Stats;
   onSubmit: (data: NameStatFormData) => void;
-  enterDirection?: "forward" | "backward";
+  enterDirection?: Direction;
 }
 
 export function NameStatForm({
