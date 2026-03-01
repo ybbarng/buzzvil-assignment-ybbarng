@@ -102,7 +102,7 @@ export function SettingScreen() {
   return (
     <div>
       <div className="mb-8 text-center">
-        <h1 className="text-6xl font-bold tracking-wide text-accent-orange uppercase">
+        <h1 className="animate-title-blaze text-6xl font-bold tracking-wide text-accent-orange uppercase">
           BUZZ ARENA
         </h1>
         <p className="mt-2 text-base tracking-wide text-text-secondary">

@@ -107,6 +107,26 @@ textarea {
   animation: button-ready 0.4s ease-out;
 }
 
+/* 제목 이글거리는 글로우 애니메이션 */
+@keyframes title-blaze {
+  0%,
+  100% {
+    text-shadow:
+      0 0 4px var(--color-accent-orange),
+      0 0 8px color-mix(in srgb, var(--color-accent-orange) 60%, transparent);
+  }
+  50% {
+    text-shadow:
+      0 0 12px var(--color-accent-orange),
+      0 0 24px color-mix(in srgb, var(--color-accent-orange) 50%, transparent),
+      0 0 48px color-mix(in srgb, var(--color-damage) 30%, transparent);
+  }
+}
+
+@utility animate-title-blaze {
+  animation: title-blaze 3s ease-in-out infinite;
+}
+
 /* 스텝 전환 입장 애니메이션 */
 @keyframes slide-in-right {
   0% {
