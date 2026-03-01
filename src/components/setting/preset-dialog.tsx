@@ -1,4 +1,7 @@
 import { useState } from "react";
+import roleDamageIcon from "@/assets/role-damage.svg";
+import roleSupportIcon from "@/assets/role-support.svg";
+import roleTankIcon from "@/assets/role-tank.svg";
 import { PresetHeroDetail } from "@/components/setting/preset-hero-card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -26,9 +29,9 @@ const ROLE_ICON_COLORS: Record<HeroRole, string> = {
 };
 
 const ROLE_ICON_URLS: Record<HeroRole, string> = {
-  tank: "/icons/role-tank.svg",
-  damage: "/icons/role-damage.svg",
-  support: "/icons/role-support.svg",
+  tank: roleTankIcon,
+  damage: roleDamageIcon,
+  support: roleSupportIcon,
 };
 
 function SubRoleGroup({
