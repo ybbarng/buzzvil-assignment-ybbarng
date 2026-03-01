@@ -36,7 +36,7 @@ export function SettingScreen() {
           자신만의 강력한 영웅을 구성하고 치열한 전투에 참가해보세요!
         </p>
       </div>
-      <StepIndicator currentStep={step} />
+      <StepIndicator currentStep={step} onStepClick={setStep} />
 
       {step === 1 && (
         <NameStatForm

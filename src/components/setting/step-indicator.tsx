@@ -2,47 +2,56 @@ import { cn } from "@/lib/utils";
 import type { SettingStep } from "@/types/game";
 
 const STEPS: { step: SettingStep; label: string }[] = [
-  { step: 1, label: "이름 · 스탯" },
-  { step: 2, label: "스킬" },
-  { step: 3, label: "난이도" },
+  { step: 1, label: "영웅 생성" },
+  { step: 2, label: "스킬 장착" },
+  { step: 3, label: "난이도 선택" },
 ];
 
 interface StepIndicatorProps {
   currentStep: SettingStep;
+  onStepClick?: (step: SettingStep) => void;
 }
 
-export function StepIndicator({ currentStep }: StepIndicatorProps) {
+export function StepIndicator({
+  currentStep,
+  onStepClick,
+}: StepIndicatorProps) {
   return (
-    <div className="mb-6 flex items-center justify-center gap-2">
-      {STEPS.map(({ step, label }, index) => (
-        <div key={step} className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5">
-            <div
-              className={cn(
-                "flex size-7 items-center justify-center rounded-full text-xs font-bold",
-                step === currentStep
-                  ? "bg-accent-orange text-bg-primary"
-                  : step < currentStep
-                    ? "bg-accent-blue text-white"
-                    : "bg-bg-tertiary text-text-muted",
-              )}
-            >
-              {step}
-            </div>
+    <div className="mb-6 flex items-center justify-center gap-1">
+      {STEPS.map(({ step, label }) => {
+        const isCurrent = step === currentStep;
+        const isCompleted = step < currentStep;
+        const isFuture = step > currentStep;
+
+        return (
+          <button
+            key={step}
+            type="button"
+            disabled={isCurrent || isFuture}
+            onClick={() => isCompleted && onStepClick?.(step)}
+            className={cn(
+              "-skew-x-12 px-6 py-2 transition-all duration-300",
+              isCurrent &&
+                "animate-pulse-glow bg-accent-orange hover:scale-105",
+              isCompleted &&
+                "cursor-pointer bg-accent-blue hover:scale-105 hover:brightness-125",
+              isFuture &&
+                "bg-bg-tertiary hover:brightness-110 disabled:cursor-not-allowed",
+            )}
+          >
             <span
               className={cn(
-                "text-sm",
-                step === currentStep
-                  ? "font-semibold text-accent-orange"
-                  : "text-text-muted",
+                "skew-x-12 block text-xs font-bold tracking-wider uppercase",
+                isCurrent && "text-bg-primary",
+                isCompleted && "text-white",
+                isFuture && "text-text-muted",
               )}
             >
               {label}
             </span>
-          </div>
-          {index < STEPS.length - 1 && <div className="h-px w-8 bg-border" />}
-        </div>
-      ))}
+          </button>
+        );
+      })}
     </div>
   );
 }
