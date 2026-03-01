@@ -110,16 +110,17 @@ export function SettingScreen() {
         </p>
       </div>
 
+      <div className="animate-slide-in-right">
+        <StepIndicator
+          currentStep={step}
+          onStepClick={(s) =>
+            withExit(s < step ? "backward" : "forward", () => setStep(s))
+          }
+        />
+      </div>
+
       <div key={step} ref={contentRef}>
         <div className={slideIn} data-animate style={staggerDelay(0)}>
-          <StepIndicator
-            currentStep={step}
-            onStepClick={(s) =>
-              withExit(s < step ? "backward" : "forward", () => setStep(s))
-            }
-          />
-        </div>
-        <div className={slideIn} data-animate style={staggerDelay(1)}>
           <p className="mb-6 text-sm tracking-wide text-text-secondary">
             {STEP_GUIDES[step]}
           </p>
@@ -135,7 +136,7 @@ export function SettingScreen() {
         )}
 
         {step === 2 && (
-          <div className={slideIn} data-animate style={staggerDelay(2)}>
+          <div className={slideIn} data-animate style={staggerDelay(1)}>
             <SkillForm
               skills={skills}
               onAddSkill={addSkill}
@@ -147,7 +148,7 @@ export function SettingScreen() {
         )}
 
         {step === 3 && (
-          <div className={slideIn} data-animate style={staggerDelay(2)}>
+          <div className={slideIn} data-animate style={staggerDelay(1)}>
             <DifficultyForm
               difficulty={difficulty}
               onSelect={setDifficulty}

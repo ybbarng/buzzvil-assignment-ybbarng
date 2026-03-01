@@ -68,7 +68,7 @@ export function NameStatForm({
       <section
         className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
         data-animate
-        style={staggerDelay(2)}
+        style={staggerDelay(1)}
       >
         <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
           캐릭터 이름
@@ -106,7 +106,7 @@ export function NameStatForm({
       <section
         className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
         data-animate
-        style={staggerDelay(3)}
+        style={staggerDelay(2)}
       >
         <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
           스탯 배분
@@ -126,7 +126,7 @@ export function NameStatForm({
         disabled={!isComplete}
         active={isComplete}
         className={`${slideIn} w-full`}
-        style={staggerDelay(4)}
+        style={staggerDelay(3)}
       >
         다음
       </GameButton>
