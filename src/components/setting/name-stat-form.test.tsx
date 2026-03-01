@@ -1,6 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { HERO_PRESETS } from "@/constants/presets";
 import { DEFAULT_STATS } from "@/constants/stats";
 import { NameStatForm } from "./name-stat-form";
 
@@ -86,5 +87,36 @@ describe("NameStatForm", () => {
       { name: "테스터", stats: completeStats },
       expect.anything(),
     );
+  });
+
+  it("프리셋 불러오기 버튼이 렌더링된다", () => {
+    render(<NameStatForm {...defaultProps} />);
+    expect(
+      screen.getByRole("button", { name: "프리셋 불러오기" }),
+    ).toBeInTheDocument();
+  });
+
+  it("프리셋 불러오기 버튼을 클릭하면 다이얼로그가 열린다", async () => {
+    const user = userEvent.setup();
+    render(<NameStatForm {...defaultProps} />);
+
+    await user.click(screen.getByRole("button", { name: "프리셋 불러오기" }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("프리셋에서 영웅을 선택하면 이름과 스탯이 적용된다", async () => {
+    const user = userEvent.setup();
+    const hero = HERO_PRESETS[0]; // D.Va
+
+    render(<NameStatForm {...defaultProps} />);
+
+    await user.click(screen.getByRole("button", { name: "프리셋 불러오기" }));
+
+    const dialog = screen.getByRole("dialog");
+    await user.click(within(dialog).getByText(hero.name));
+    await user.click(within(dialog).getByRole("button", { name: "선택" }));
+
+    expect(screen.getByTestId("name-input")).toHaveValue(hero.name);
+    expect(screen.getByTestId("remaining-points")).toHaveTextContent("0");
   });
 });
