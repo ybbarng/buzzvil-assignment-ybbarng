@@ -81,6 +81,7 @@ export function NameStatForm({
             />
           </div>
           <GameButton
+            type="button"
             variant="blue"
             size="sm"
             skew
