@@ -58,7 +58,11 @@ export function NameStatForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* 캐릭터 이름 */}
-      <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+      <section
+        className="animate-slide-in border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4"
+        data-animate
+        style={{ animationDelay: "800ms" }}
+      >
         <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
           캐릭터 이름
         </h2>
@@ -91,7 +95,11 @@ export function NameStatForm({
       />
 
       {/* 스탯 배분 */}
-      <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+      <section
+        className="animate-slide-in border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4"
+        data-animate
+        style={{ animationDelay: "1200ms" }}
+      >
         <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
           스탯 배분
         </h2>
@@ -106,9 +114,11 @@ export function NameStatForm({
       <GameButton
         type="submit"
         data-testid="next-button"
+        data-animate
         disabled={!isComplete}
         active={isComplete}
-        className="w-full"
+        className="animate-slide-in w-full"
+        style={{ animationDelay: "1600ms" }}
       >
         다음
       </GameButton>

@@ -1,3 +1,4 @@
+import { type CSSProperties, useRef } from "react";
 import { DifficultyForm } from "@/components/setting/difficulty-form";
 import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
@@ -13,6 +14,51 @@ const STEP_GUIDES: Record<SettingStep, string> = {
   3: "전투 난이도를 선택하세요. 난이도에 따라 적의 강도가 달라집니다.",
 };
 
+const STAGGER_MS = 400;
+
+function staggerDelay(index: number): CSSProperties {
+  return { animationDelay: `${index * STAGGER_MS}ms` };
+}
+
+/**
+ * Web Animations API로 [data-animate] 요소들을 왼쪽으로 순차 퇴장시킨 뒤 callback을 호출한다.
+ * jsdom(테스트 환경)에서는 el.animate가 없으므로 즉시 callback을 호출한다.
+ */
+function animateExitThenDo(
+  container: HTMLElement | null,
+  callback: () => void,
+) {
+  const items = container
+    ? Array.from(container.querySelectorAll<HTMLElement>("[data-animate]"))
+    : [];
+
+  if (items.length === 0 || !items[0].animate) {
+    callback();
+    return;
+  }
+
+  container!.style.pointerEvents = "none";
+
+  const animations = items.map((item, i) =>
+    item.animate(
+      [
+        { transform: "translateX(0)", opacity: "1" },
+        { transform: "translateX(-80px)", opacity: "0" },
+      ],
+      {
+        duration: 200,
+        delay: i * STAGGER_MS,
+        fill: "forwards",
+        easing: "ease-in",
+      },
+    ),
+  );
+
+  Promise.all(animations.map((a) => a.finished))
+    .then(callback)
+    .catch(callback);
+}
+
 export function SettingScreen() {
   const step = useSettingStore((s) => s.step);
   const name = useSettingStore((s) => s.name);
@@ -27,10 +73,16 @@ export function SettingScreen() {
   const setDifficulty = useSettingStore((s) => s.setDifficulty);
   const startBattle = useGameStore((s) => s.startBattle);
 
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const withExit = (callback: () => void) => {
+    animateExitThenDo(contentRef.current, callback);
+  };
+
   const handleStep1Submit = (data: NameStatFormData) => {
     setName(data.name);
     setStats(data.stats);
-    setStep(2);
+    withExit(() => setStep(2));
   };
 
   return (
@@ -43,37 +95,59 @@ export function SettingScreen() {
           자신만의 강력한 영웅을 구성하고 치열한 전투에 참가해보세요!
         </p>
       </div>
-      <StepIndicator currentStep={step} onStepClick={setStep} />
-      <p className="mb-6 text-sm tracking-wide text-text-secondary">
-        {STEP_GUIDES[step]}
-      </p>
 
-      {step === 1 && (
-        <NameStatForm
-          defaultName={name}
-          defaultStats={stats}
-          onSubmit={handleStep1Submit}
-        />
-      )}
+      <div key={step} ref={contentRef}>
+        <div className="animate-slide-in" data-animate style={staggerDelay(0)}>
+          <StepIndicator
+            currentStep={step}
+            onStepClick={(s) => withExit(() => setStep(s))}
+          />
+        </div>
+        <div className="animate-slide-in" data-animate style={staggerDelay(1)}>
+          <p className="mb-6 text-sm tracking-wide text-text-secondary">
+            {STEP_GUIDES[step]}
+          </p>
+        </div>
 
-      {step === 2 && (
-        <SkillForm
-          skills={skills}
-          onAddSkill={addSkill}
-          onRemoveSkill={removeSkill}
-          onPrev={() => setStep(1)}
-          onNext={() => setStep(3)}
-        />
-      )}
+        {step === 1 && (
+          <NameStatForm
+            defaultName={name}
+            defaultStats={stats}
+            onSubmit={handleStep1Submit}
+          />
+        )}
 
-      {step === 3 && (
-        <DifficultyForm
-          difficulty={difficulty}
-          onSelect={setDifficulty}
-          onPrev={() => setStep(2)}
-          onStartBattle={startBattle}
-        />
-      )}
+        {step === 2 && (
+          <div
+            className="animate-slide-in"
+            data-animate
+            style={staggerDelay(2)}
+          >
+            <SkillForm
+              skills={skills}
+              onAddSkill={addSkill}
+              onRemoveSkill={removeSkill}
+              onPrev={() => withExit(() => setStep(1))}
+              onNext={() => withExit(() => setStep(3))}
+            />
+          </div>
+        )}
+
+        {step === 3 && (
+          <div
+            className="animate-slide-in"
+            data-animate
+            style={staggerDelay(2)}
+          >
+            <DifficultyForm
+              difficulty={difficulty}
+              onSelect={setDifficulty}
+              onPrev={() => withExit(() => setStep(2))}
+              onStartBattle={() => withExit(startBattle)}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
