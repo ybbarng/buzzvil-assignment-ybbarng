@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { STAT_LABELS, STAT_RANGES } from "@/constants/stats";
 import type { StatKey } from "@/types/character";
 import type { HeroPreset } from "@/types/preset";
@@ -11,6 +12,13 @@ const STAT_BAR_COLORS: Record<StatKey, string> = {
 };
 
 export function PresetHeroDetail({ hero }: { hero: HeroPreset }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   return (
     <div className="flex flex-col gap-1.5">
       {(Object.keys(hero.stats) as StatKey[]).map((key) => {
@@ -24,8 +32,8 @@ export function PresetHeroDetail({ hero }: { hero: HeroPreset }) {
             </span>
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-bg-primary">
               <div
-                className={`h-full rounded-full transition-all ${STAT_BAR_COLORS[key]}`}
-                style={{ width: `${percent}%` }}
+                className={`h-full rounded-full transition-all duration-500 ease-out ${STAT_BAR_COLORS[key]}`}
+                style={{ width: mounted ? `${percent}%` : "0%" }}
               />
             </div>
             <span className="w-6 text-right text-[11px] tabular-nums text-text-muted">

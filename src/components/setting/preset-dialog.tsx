@@ -70,7 +70,7 @@ function SubRoleGroup({
               "cursor-pointer whitespace-nowrap rounded-sm px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all",
               "border-2",
               selected?.id === hero.id
-                ? "relative z-10 origin-bottom border-accent-orange bg-accent-orange/20 [transform:scale(1.33)]"
+                ? "relative z-10 origin-bottom animate-pulse-glow border-accent-orange bg-accent-orange/20 [transform:scale(1.33)]"
                 : "border-transparent bg-bg-tertiary hover:bg-bg-tertiary/80",
             )}
           >
@@ -147,7 +147,10 @@ export function PresetDialog({
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/80 to-bg-tertiary/30" />
 
           {selected ? (
-            <div className="relative z-10 flex w-full items-end justify-between gap-8">
+            <div
+              key={selected.id}
+              className="relative z-10 flex w-full animate-fade-in items-end justify-between gap-8"
+            >
               {/* 왼쪽: 영웅 이름 + 설명 */}
               <div className="flex flex-col gap-2">
                 <h2 className="text-5xl font-black tracking-tight text-text-primary uppercase">
@@ -194,7 +197,12 @@ export function PresetDialog({
               type="button"
               disabled={!selected}
               onClick={handleSelect}
-              className="min-w-48 cursor-pointer bg-accent-orange px-8 py-2.5 text-sm font-bold text-white uppercase tracking-wider transition-all hover:bg-accent-orange-hover disabled:cursor-not-allowed disabled:opacity-40"
+              className={cn(
+                "min-w-48 cursor-pointer px-8 py-2.5 text-sm font-bold text-white uppercase tracking-wider transition-all disabled:cursor-not-allowed disabled:opacity-40",
+                selected
+                  ? "animate-button-ready bg-accent-orange hover:bg-accent-orange-hover"
+                  : "bg-accent-orange",
+              )}
             >
               선택
             </button>
