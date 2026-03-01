@@ -2,11 +2,13 @@ import { Dices, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
+  STAT_COLORS,
   STAT_KEYS,
   STAT_LABELS,
   STAT_RANGES,
   TOTAL_POINTS,
 } from "@/constants/stats";
+import { SKEW } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 import {
   clearStat,
@@ -37,33 +39,31 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-text-secondary">잔여 포인트</span>
-        <div className="flex items-center gap-2">
-          <span
-            data-testid="remaining-points"
-            className={cn(
-              "text-lg font-bold",
-              remaining === 0
-                ? "text-hp"
-                : remaining > 0
-                  ? "text-accent-orange"
-                  : "text-damage",
-            )}
-          >
-            {remaining}
-          </span>
-          <Button
-            variant="outline"
-            size="xs"
-            type="button"
-            disabled={remaining === 0}
-            onClick={() => onChange(distributeRemainingStats(stats))}
-          >
-            <Dices />
-            랜덤 배분하기
-          </Button>
-        </div>
+      <div className="flex items-center justify-end gap-3">
+        <span
+          data-testid="remaining-points"
+          className={cn(
+            "text-lg font-bold tabular-nums",
+            remaining === 0
+              ? "text-hp"
+              : remaining > 0
+                ? "text-accent-orange"
+                : "text-damage",
+          )}
+        >
+          {totalUsed} / {TOTAL_POINTS}
+        </span>
+        <span className="text-sm text-text-muted">사용</span>
+        <Button
+          variant="outline"
+          size="xs"
+          type="button"
+          disabled={remaining === 0}
+          onClick={() => onChange(distributeRemainingStats(stats))}
+        >
+          <Dices />
+          랜덤 배분하기
+        </Button>
       </div>
 
       {STAT_KEYS.map((key) => {
@@ -71,27 +71,29 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
         return (
           <div key={key} className="space-y-1">
             <div className="flex items-center justify-between">
-              <label
-                htmlFor={`stat-${key}`}
-                className="text-sm font-medium text-text-primary"
-              >
-                {STAT_LABELS[key]}
+              <label htmlFor={`stat-${key}`} className="text-sm font-medium">
+                <span className="text-text-primary">{STAT_LABELS[key].ko}</span>
+                <span className="ml-1.5 text-text-muted">
+                  {STAT_LABELS[key].en}
+                </span>
               </label>
-              <input
-                id={`stat-${key}`}
-                data-testid={`stat-${key}`}
-                type="number"
-                min={min}
-                max={max}
-                value={stats[key]}
-                onChange={(e) => {
-                  const v = Number.parseInt(e.target.value, 10);
-                  if (!Number.isNaN(v)) {
-                    handleStatChange(key, v);
-                  }
-                }}
-                className="w-16 rounded border border-border bg-bg-tertiary px-2 py-1 text-center text-sm text-text-primary outline-none focus:border-accent-orange"
-              />
+              <div className={`${SKEW} bg-bg-tertiary px-3 py-1`}>
+                <input
+                  id={`stat-${key}`}
+                  data-testid={`stat-${key}`}
+                  type="number"
+                  min={min}
+                  max={max}
+                  value={stats[key]}
+                  onChange={(e) => {
+                    const v = Number.parseInt(e.target.value, 10);
+                    if (!Number.isNaN(v)) {
+                      handleStatChange(key, v);
+                    }
+                  }}
+                  className="w-12 border-none bg-transparent text-center text-sm text-text-primary outline-none"
+                />
+              </div>
             </div>
             <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-1 gap-y-1">
               <Slider
@@ -99,13 +101,14 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                 max={max}
                 value={[stats[key]]}
                 onValueChange={([v]) => handleStatChange(key, v)}
+                className={STAT_COLORS[key].slider}
               />
               <Button
                 variant="ghost"
                 size="icon-xs"
                 type="button"
-                aria-label={`${STAT_LABELS[key]} 랜덤 배분`}
-                title={`${STAT_LABELS[key]} 랜덤 배분`}
+                aria-label={`${STAT_LABELS[key].ko} 랜덤 배분`}
+                title={`${STAT_LABELS[key].ko} 랜덤 배분`}
                 disabled={remaining === 0 || stats[key] >= max}
                 onClick={() => onChange(distributeRandomToStat(stats, key))}
               >
@@ -115,8 +118,8 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                 variant="ghost"
                 size="icon-xs"
                 type="button"
-                aria-label={`${STAT_LABELS[key]} 초기화`}
-                title={`${STAT_LABELS[key]} 초기화`}
+                aria-label={`${STAT_LABELS[key].ko} 초기화`}
+                title={`${STAT_LABELS[key].ko} 초기화`}
                 disabled={stats[key] <= min}
                 onClick={() => onChange(clearStat(stats, key))}
               >

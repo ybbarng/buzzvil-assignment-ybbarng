@@ -15,7 +15,7 @@ describe("App", () => {
 
   it("초기 상태에서 세팅 화면을 렌더링한다", () => {
     render(<App />);
-    expect(screen.getByText("캐릭터 세팅")).toBeInTheDocument();
+    expect(screen.getByText("BUZZ ARENA")).toBeInTheDocument();
   });
 
   it("battle phase에서 전투 화면을 렌더링한다", () => {
@@ -41,6 +41,6 @@ describe("App", () => {
     await userEvent.click(screen.getByTestId("restart-button"));
 
     expect(useGameStore.getState().phase).toBe("setting");
-    expect(screen.getByText("캐릭터 세팅")).toBeInTheDocument();
+    expect(screen.getByText("BUZZ ARENA")).toBeInTheDocument();
   });
 });

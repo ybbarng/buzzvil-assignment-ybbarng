@@ -4,12 +4,14 @@ import roleSupportIcon from "@/assets/role-support.svg";
 import roleTankIcon from "@/assets/role-tank.svg";
 import { PresetHeroDetail } from "@/components/setting/preset-hero-card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { GameButton } from "@/components/ui/game-button";
 import {
   getPresetsBySubRole,
   ROLE_LABELS,
   ROLE_SUB_ROLES,
   SUB_ROLE_LABELS,
 } from "@/constants/presets";
+import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 import type { HeroPreset, HeroRole, HeroSubRole } from "@/types/preset";
 
@@ -67,14 +69,14 @@ function SubRoleGroup({
             type="button"
             onClick={() => onSelect(hero)}
             className={cn(
-              "cursor-pointer whitespace-nowrap rounded-sm px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all",
+              `${SKEW} cursor-pointer whitespace-nowrap px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all`,
               "border-2",
               selected?.id === hero.id
                 ? "relative z-10 origin-bottom animate-pulse-glow border-accent-orange bg-accent-orange/20 [transform:scale(1.33)]"
                 : "border-transparent bg-bg-tertiary hover:bg-bg-tertiary/80",
             )}
           >
-            {hero.name}
+            <span className={`${SKEW_TEXT} block`}>{hero.name}</span>
           </button>
         ))}
       </div>
@@ -196,19 +198,15 @@ export function PresetDialog({
             ))}
           </div>
           <div className="mt-4 flex justify-center">
-            <button
+            <GameButton
               type="button"
               disabled={!selected}
+              active={!!selected}
               onClick={handleSelect}
-              className={cn(
-                "min-w-48 cursor-pointer px-8 py-2.5 text-sm font-bold text-white uppercase tracking-wider transition-all disabled:cursor-not-allowed disabled:opacity-40",
-                selected
-                  ? "animate-button-ready bg-accent-orange hover:bg-accent-orange-hover"
-                  : "bg-accent-orange",
-              )}
+              className="min-w-48"
             >
               선택
-            </button>
+            </GameButton>
           </div>
         </div>
       </DialogContent>

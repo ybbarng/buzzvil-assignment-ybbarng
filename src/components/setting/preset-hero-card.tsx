@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
-import { STAT_LABELS, STAT_RANGES } from "@/constants/stats";
+import { STAT_COLORS, STAT_LABELS, STAT_RANGES } from "@/constants/stats";
 import type { StatKey } from "@/types/character";
 import type { HeroPreset } from "@/types/preset";
-
-const STAT_BAR_COLORS: Record<StatKey, string> = {
-  hp: "bg-hp",
-  mp: "bg-mp",
-  atk: "bg-damage",
-  def: "bg-accent-blue",
-  spd: "bg-buff",
-};
 
 export function PresetHeroDetail({ hero }: { hero: HeroPreset }) {
   // 최초 마운트 시 스탯 바를 0%→실제값으로 애니메이션하기 위해
@@ -31,11 +23,11 @@ export function PresetHeroDetail({ hero }: { hero: HeroPreset }) {
         return (
           <div key={key} className="flex items-center gap-2">
             <span className="w-7 text-right text-[11px] font-medium text-text-secondary">
-              {STAT_LABELS[key]}
+              {STAT_LABELS[key].en}
             </span>
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-bg-primary">
               <div
-                className={`h-full rounded-full transition-all duration-500 ease-out ${STAT_BAR_COLORS[key]}`}
+                className={`h-full rounded-full transition-all duration-500 ease-out ${STAT_COLORS[key].bg}`}
                 style={{ width: mounted ? `${percent}%` : "0%" }}
               />
             </div>

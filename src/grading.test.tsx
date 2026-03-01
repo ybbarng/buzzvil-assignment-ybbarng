@@ -1,41 +1,13 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
-import { useBattleStore } from "./stores/battle-store";
-import { useGameStore } from "./stores/game-store";
-import { useSettingStore } from "./stores/setting-store";
+import { allocateStats, resetStores, setStatValue } from "./test/helpers";
 
 /**
  * 자동 채점 시나리오 시뮬레이션
  * data-testid만 사용하여 채점 스크립트의 동작을 재현합니다.
  */
-
-function resetStores() {
-  useGameStore.getState().restart();
-  useSettingStore.getState().reset();
-  useBattleStore.getState().reset();
-}
-
-/**
- * 스탯 인풋의 값을 변경한다.
- * react-hook-form의 controlled input은 userEvent.type으로 값을 지정하기
- * 어려우므로, fireEvent.change로 값을 직접 설정한다.
- */
-function setStatValue(testId: string, value: number) {
-  fireEvent.change(screen.getByTestId(testId), {
-    target: { value: String(value) },
-  });
-}
-
-/** 스탯을 총 200으로 배분한다 (HP 60, MP 50, ATK 30, DEF 30, SPD 30) */
-function allocateStats() {
-  setStatValue("stat-hp", 60);
-  setStatValue("stat-mp", 50);
-  setStatValue("stat-atk", 30);
-  setStatValue("stat-def", 30);
-  setStatValue("stat-spd", 30);
-}
 
 describe("자동 채점 시나리오", () => {
   afterEach(() => {
@@ -53,12 +25,16 @@ describe("자동 채점 시나리오", () => {
 
     it("스탯 인풋으로 값을 변경하면 remaining-points가 갱신된다", () => {
       render(<App />);
-      // 기본값 합계 55, 잔여 145
-      expect(screen.getByTestId("remaining-points")).toHaveTextContent("145");
+      // 기본값 합계 55
+      expect(screen.getByTestId("remaining-points")).toHaveTextContent(
+        "55 / 200",
+      );
 
       setStatValue("stat-hp", 60);
-      // 60+20+5+5+5 = 95, 잔여 105
-      expect(screen.getByTestId("remaining-points")).toHaveTextContent("105");
+      // 60+20+5+5+5 = 95
+      expect(screen.getByTestId("remaining-points")).toHaveTextContent(
+        "95 / 200",
+      );
     });
 
     it("잔여 포인트가 0이 아니면 next-button이 비활성화된다", () => {
@@ -71,7 +47,9 @@ describe("자동 채점 시나리오", () => {
       await userEvent.type(screen.getByTestId("name-input"), "테스터");
       allocateStats();
 
-      expect(screen.getByTestId("remaining-points")).toHaveTextContent("0");
+      expect(screen.getByTestId("remaining-points")).toHaveTextContent(
+        "200 / 200",
+      );
       expect(screen.getByTestId("next-button")).toBeEnabled();
 
       await userEvent.click(screen.getByTestId("next-button"));

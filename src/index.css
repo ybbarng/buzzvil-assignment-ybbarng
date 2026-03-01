@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Koverwatch";
+  src: url("@/assets/fonts/koverwatch.woff2") format("woff2");
+  /* 폰트 로드 전 대체 폰트가 잠깐 보이는 FOUT 방지를 위해 block 사용.
+     게임 UI 특성상 Koverwatch 폰트 없이 렌더링되면 레이아웃이 깨지므로
+     폰트 로드 완료까지 텍스트를 숨기는 것이 더 나은 UX. */
+  font-display: block;
+}
+
 @theme {
   /* 게임 테마 색상 */
   --color-bg-primary: #0f0f23;
@@ -39,8 +48,16 @@
 }
 
 body {
+  font-family: "Koverwatch", sans-serif;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  overflow-x: hidden;
+}
+
+/* 입력 필드는 텍스트 선택 허용 */
+input,
+textarea {
+  user-select: text;
 }
 
 /* 프리셋 다이얼로그 애니메이션 */
@@ -90,4 +107,82 @@ body {
 
 @utility animate-button-ready {
   animation: button-ready 0.4s ease-out;
+}
+
+/* 제목 이글거리는 글로우 애니메이션 */
+@keyframes title-blaze {
+  0%,
+  100% {
+    text-shadow:
+      0 0 4px var(--color-accent-orange),
+      0 0 8px rgba(249, 158, 26, 0.6);
+  }
+  50% {
+    text-shadow:
+      0 0 12px var(--color-accent-orange),
+      0 0 24px rgba(249, 158, 26, 0.5),
+      0 0 48px rgba(239, 68, 68, 0.3);
+  }
+}
+
+@utility animate-title-blaze {
+  animation: title-blaze 3s ease-in-out infinite;
+}
+
+/* 스텝 전환 입장 애니메이션 */
+@keyframes slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(-12px);
+  }
+  80% {
+    transform: translateX(6px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-100vw);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(12px);
+  }
+  80% {
+    transform: translateX(-6px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@utility animate-slide-in-right {
+  animation: slide-in-right 0.6s ease-in-out both;
+}
+
+@utility animate-slide-in-left {
+  animation: slide-in-left 0.6s ease-in-out both;
+}
+
+/* 모션 감소 선호 시 애니메이션 비활성화.
+   모든 선언을 강제로 덮어써야 하므로 !important 필수. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
+    animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
+    transition-duration: 0.01ms !important;
+  }
 }

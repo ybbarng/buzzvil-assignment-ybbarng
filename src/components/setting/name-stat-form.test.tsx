@@ -29,10 +29,12 @@ describe("NameStatForm", () => {
     expect(screen.getByTestId("remaining-points")).toBeInTheDocument();
   });
 
-  it("초기 상태에서 잔여 포인트는 145이다", () => {
+  it("초기 상태에서 사용 포인트는 55/200이다", () => {
     render(<NameStatForm {...defaultProps} />);
-    // 기본 스탯 합: 20+20+5+5+5 = 55, 잔여: 200-55 = 145
-    expect(screen.getByTestId("remaining-points")).toHaveTextContent("145");
+    // 기본 스탯 합: 20+20+5+5+5 = 55
+    expect(screen.getByTestId("remaining-points")).toHaveTextContent(
+      "55 / 200",
+    );
   });
 
   it("다음 버튼이 렌더링된다", () => {
@@ -51,8 +53,10 @@ describe("NameStatForm", () => {
     const hpInput = screen.getByTestId("stat-hp");
     fireEvent.change(hpInput, { target: { value: "50" } });
 
-    // 50+20+5+5+5 = 85, 잔여: 200-85 = 115
-    expect(screen.getByTestId("remaining-points")).toHaveTextContent("115");
+    // 50+20+5+5+5 = 85
+    expect(screen.getByTestId("remaining-points")).toHaveTextContent(
+      "85 / 200",
+    );
   });
 
   it("모든 포인트를 배분하면 다음 버튼이 활성화된다", async () => {
@@ -65,7 +69,9 @@ describe("NameStatForm", () => {
       />,
     );
 
-    expect(screen.getByTestId("remaining-points")).toHaveTextContent("0");
+    expect(screen.getByTestId("remaining-points")).toHaveTextContent(
+      "200 / 200",
+    );
     expect(screen.getByTestId("next-button")).toBeEnabled();
   });
 
@@ -89,18 +95,16 @@ describe("NameStatForm", () => {
     );
   });
 
-  it("프리셋 불러오기 버튼이 렌더링된다", () => {
+  it("프리셋 버튼이 렌더링된다", () => {
     render(<NameStatForm {...defaultProps} />);
-    expect(
-      screen.getByRole("button", { name: "프리셋 불러오기" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "프리셋" })).toBeInTheDocument();
   });
 
-  it("프리셋 불러오기 버튼을 클릭하면 다이얼로그가 열린다", async () => {
+  it("프리셋 버튼을 클릭하면 다이얼로그가 열린다", async () => {
     const user = userEvent.setup();
     render(<NameStatForm {...defaultProps} />);
 
-    await user.click(screen.getByRole("button", { name: "프리셋 불러오기" }));
+    await user.click(screen.getByRole("button", { name: "프리셋" }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
@@ -110,13 +114,15 @@ describe("NameStatForm", () => {
 
     render(<NameStatForm {...defaultProps} />);
 
-    await user.click(screen.getByRole("button", { name: "프리셋 불러오기" }));
+    await user.click(screen.getByRole("button", { name: "프리셋" }));
 
     const dialog = screen.getByRole("dialog");
     await user.click(within(dialog).getByText(hero.name));
     await user.click(within(dialog).getByRole("button", { name: "선택" }));
 
     expect(screen.getByTestId("name-input")).toHaveValue(hero.name);
-    expect(screen.getByTestId("remaining-points")).toHaveTextContent("0");
+    expect(screen.getByTestId("remaining-points")).toHaveTextContent(
+      "200 / 200",
+    );
   });
 });

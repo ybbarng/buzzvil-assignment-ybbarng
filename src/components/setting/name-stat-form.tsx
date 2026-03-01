@@ -3,27 +3,30 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { PresetDialog } from "@/components/setting/preset-dialog";
 import { StatAllocator } from "@/components/setting/stat-allocator";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GameButton } from "@/components/ui/game-button";
 import { Input } from "@/components/ui/input";
 import { TOTAL_POINTS } from "@/constants/stats";
+import { SKEW, slideInClass, staggerDelay } from "@/constants/theme";
 import {
   type NameStatFormData,
   nameStatSchema,
 } from "@/schemas/name-stat.schema";
 import type { Stats } from "@/types/character";
+import type { Direction } from "@/types/game";
 import type { HeroPreset } from "@/types/preset";
 
 interface NameStatFormProps {
   defaultName: string;
   defaultStats: Stats;
   onSubmit: (data: NameStatFormData) => void;
+  enterDirection?: Direction;
 }
 
 export function NameStatForm({
   defaultName,
   defaultStats,
   onSubmit,
+  enterDirection = "forward",
 }: NameStatFormProps) {
   const {
     register,
@@ -55,62 +58,77 @@ export function NameStatForm({
     setPresetOpen(false);
   };
 
+  const slideIn = slideInClass(enterDirection);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <Card className="border-border bg-bg-secondary">
-        <CardHeader>
-          <CardTitle className="text-accent-orange">캐릭터 이름</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Input
-            data-testid="name-input"
-            placeholder="이름을 입력하세요 (1~10자)"
-            maxLength={10}
-            className="border-border bg-bg-tertiary text-text-primary placeholder:text-text-muted"
-            {...register("name")}
-          />
-          {errors.name && (
-            <p className="mt-1 text-sm text-damage">{errors.name.message}</p>
-          )}
-        </CardContent>
-      </Card>
-
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => setPresetOpen(true)}
-        className="w-full border-accent-blue text-accent-blue hover:bg-accent-blue/10"
+      {/* 캐릭터 이름 */}
+      <section
+        className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
+        data-animate
+        style={staggerDelay(2)}
       >
-        프리셋 불러오기
-      </Button>
+        <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
+          캐릭터 이름
+        </h2>
+        <div className="flex gap-2">
+          <div className={`flex-1 ${SKEW} bg-bg-tertiary px-4 py-2`}>
+            <Input
+              data-testid="name-input"
+              placeholder="이름을 입력하세요 (1~10자)"
+              maxLength={10}
+              className="border-none bg-transparent text-text-primary shadow-none placeholder:text-text-muted"
+              {...register("name")}
+            />
+          </div>
+          <GameButton
+            type="button"
+            variant="blue"
+            size="sm"
+            skew
+            onClick={() => setPresetOpen(true)}
+          >
+            프리셋
+          </GameButton>
+        </div>
+        {errors.name && (
+          <p className="mt-1 text-sm text-damage">{errors.name.message}</p>
+        )}
+      </section>
       <PresetDialog
         open={presetOpen}
         onOpenChange={setPresetOpen}
         onSelect={handlePresetSelect}
       />
 
-      <Card className="border-border bg-bg-secondary">
-        <CardHeader>
-          <CardTitle className="text-accent-orange">스탯 배분</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <StatAllocator stats={stats} onChange={handleStatsChange} />
-          {errors.stats?.root && (
-            <p className="mt-2 text-sm text-damage">
-              {errors.stats.root.message}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      {/* 스탯 배분 */}
+      <section
+        className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
+        data-animate
+        style={staggerDelay(3)}
+      >
+        <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
+          스탯 배분
+        </h2>
+        <StatAllocator stats={stats} onChange={handleStatsChange} />
+        {errors.stats?.root && (
+          <p className="mt-2 text-sm text-damage">
+            {errors.stats.root.message}
+          </p>
+        )}
+      </section>
 
-      <Button
+      <GameButton
         type="submit"
         data-testid="next-button"
+        data-animate
         disabled={!isComplete}
-        className="w-full bg-accent-orange font-bold text-bg-primary hover:bg-accent-orange-hover disabled:opacity-50"
+        active={isComplete}
+        className={`${slideIn} w-full`}
+        style={staggerDelay(4)}
       >
         다음
-      </Button>
+      </GameButton>
     </form>
   );
 }
