@@ -113,13 +113,13 @@ textarea {
   100% {
     text-shadow:
       0 0 4px var(--color-accent-orange),
-      0 0 8px color-mix(in srgb, var(--color-accent-orange) 60%, transparent);
+      0 0 8px rgba(249, 158, 26, 0.6);
   }
   50% {
     text-shadow:
       0 0 12px var(--color-accent-orange),
-      0 0 24px color-mix(in srgb, var(--color-accent-orange) 50%, transparent),
-      0 0 48px color-mix(in srgb, var(--color-damage) 30%, transparent);
+      0 0 24px rgba(249, 158, 26, 0.5),
+      0 0 48px rgba(239, 68, 68, 0.3);
   }
 }
 
