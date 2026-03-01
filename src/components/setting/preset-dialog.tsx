@@ -184,7 +184,7 @@ export function PresetDialog({
 
         {/* 하단: 영웅 그리드 + 선택 버튼 */}
         <div className="border-t border-border bg-bg-secondary/80 px-8 py-4">
-          <div className="mx-auto flex items-start gap-8">
+          <div className="flex w-full items-start gap-8">
             {ROLES.map((role) => (
               <RoleSection
                 key={role}
