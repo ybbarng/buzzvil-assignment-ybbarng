@@ -134,7 +134,7 @@ export function SettingScreen() {
       </div>
 
       <div key={step} ref={contentRef}>
-        <div className={slideIn} data-animate style={staggerDelay(0)}>
+        <div className={slideIn} data-animate style={staggerDelay(1)}>
           <p className="mb-6 text-sm tracking-wide text-text-secondary">
             {STEP_GUIDES[step]}
           </p>
@@ -150,7 +150,7 @@ export function SettingScreen() {
         )}
 
         {step === 2 && (
-          <div className={slideIn} data-animate style={staggerDelay(1)}>
+          <div className={slideIn} data-animate style={staggerDelay(2)}>
             <SkillForm
               skills={skills}
               onAddSkill={addSkill}
@@ -162,7 +162,7 @@ export function SettingScreen() {
         )}
 
         {step === 3 && (
-          <div className={slideIn} data-animate style={staggerDelay(1)}>
+          <div className={slideIn} data-animate style={staggerDelay(2)}>
             <DifficultyForm
               difficulty={difficulty}
               onSelect={setDifficulty}
