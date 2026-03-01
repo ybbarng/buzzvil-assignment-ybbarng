@@ -56,10 +56,10 @@ function HeroGrid({
                 type="button"
                 onClick={() => onHover(hero)}
                 className={cn(
-                  "cursor-pointer rounded px-2 py-1 text-[11px] font-medium transition-all",
+                  "cursor-pointer px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all",
                   selected?.id === hero.id
-                    ? "border border-accent-orange bg-accent-orange/20 text-accent-orange"
-                    : "border border-border bg-bg-tertiary text-text-secondary hover:border-text-muted hover:text-text-primary",
+                    ? "border-2 border-accent-orange bg-accent-orange/20"
+                    : "border border-transparent bg-bg-tertiary hover:bg-bg-tertiary/80",
                 )}
               >
                 {hero.name}
