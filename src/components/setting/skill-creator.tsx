@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GameButton } from "@/components/ui/game-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SKEW } from "@/constants/theme";
 import {
   type CustomSkillFormData,
   customSkillSchema,
@@ -99,155 +99,157 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
   };
 
   return (
-    <Card className="border-accent-orange/30 bg-bg-secondary">
-      <CardHeader>
-        <CardTitle className="text-accent-orange text-base">
-          커스텀 스킬 생성
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label className="text-text-secondary">스킬 이름</Label>
+    <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+      <h2 className="mb-4 text-sm font-bold tracking-wider text-accent-orange uppercase">
+        커스텀 스킬 생성
+      </h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="space-y-2">
+          <Label className="text-text-secondary">스킬 이름</Label>
+          <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
             <Input
               data-testid="skill-name-input"
               placeholder="스킬 이름 (최대 8자)"
-              className="border-border bg-bg-tertiary text-text-primary"
+              className="border-none bg-transparent text-text-primary shadow-none placeholder:text-text-muted"
               {...register("name")}
             />
-            {errors.name && (
-              <p className="text-xs text-damage">{errors.name.message}</p>
-            )}
           </div>
+          {errors.name && (
+            <p className="text-xs text-damage">{errors.name.message}</p>
+          )}
+        </div>
 
-          <div className="space-y-2">
-            <Label className="text-text-secondary">스킬 타입</Label>
-            <Select value={skillType} onValueChange={handleTypeChange}>
-              <SelectTrigger className="border-border bg-bg-tertiary text-text-primary">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {SKILL_TYPE_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="space-y-2">
+          <Label className="text-text-secondary">스킬 타입</Label>
+          <Select value={skillType} onValueChange={handleTypeChange}>
+            <SelectTrigger className="border-border bg-bg-tertiary text-text-primary">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SKILL_TYPE_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-          <div className="space-y-2">
-            <Label className="text-text-secondary">MP 소모량</Label>
+        <div className="space-y-2">
+          <Label className="text-text-secondary">MP 소모량</Label>
+          <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
             <Input
               type="number"
-              className="border-border bg-bg-tertiary text-text-primary"
+              className="border-none bg-transparent text-text-primary shadow-none"
               {...register("mpCost", { valueAsNumber: true })}
             />
-            {errors.mpCost && (
-              <p className="text-xs text-damage">{errors.mpCost.message}</p>
-            )}
           </div>
+          {errors.mpCost && (
+            <p className="text-xs text-damage">{errors.mpCost.message}</p>
+          )}
+        </div>
 
-          {skillType === "attack" && (
-            <div className="space-y-2">
-              <Label className="text-text-secondary">
-                공격 배율 (1.0 ~ 3.0)
-              </Label>
+        {skillType === "attack" && (
+          <div className="space-y-2">
+            <Label className="text-text-secondary">공격 배율 (1.0 ~ 3.0)</Label>
+            <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
               <Input
                 type="number"
                 step="0.1"
-                className="border-border bg-bg-tertiary text-text-primary"
+                className="border-none bg-transparent text-text-primary shadow-none"
                 {...register("multiplier", { valueAsNumber: true })}
               />
-              {"multiplier" in errors && errors.multiplier && (
-                <p className="text-xs text-damage">
-                  {errors.multiplier.message}
-                </p>
-              )}
             </div>
-          )}
+            {"multiplier" in errors && errors.multiplier && (
+              <p className="text-xs text-damage">{errors.multiplier.message}</p>
+            )}
+          </div>
+        )}
 
-          {skillType === "heal" && (
-            <div className="space-y-2">
-              <Label className="text-text-secondary">회복량 (10 ~ 50)</Label>
+        {skillType === "heal" && (
+          <div className="space-y-2">
+            <Label className="text-text-secondary">회복량 (10 ~ 50)</Label>
+            <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
               <Input
                 type="number"
-                className="border-border bg-bg-tertiary text-text-primary"
+                className="border-none bg-transparent text-text-primary shadow-none"
                 {...register("healAmount", { valueAsNumber: true })}
               />
-              {"healAmount" in errors && errors.healAmount && (
-                <p className="text-xs text-damage">
-                  {errors.healAmount.message}
-                </p>
-              )}
             </div>
-          )}
+            {"healAmount" in errors && errors.healAmount && (
+              <p className="text-xs text-damage">{errors.healAmount.message}</p>
+            )}
+          </div>
+        )}
 
-          {(skillType === "buff" || skillType === "debuff") && (
-            <>
-              <div className="space-y-2">
-                <Label className="text-text-secondary">대상 스탯</Label>
-                <Select
-                  value={targetValue ?? "atk"}
-                  onValueChange={(v) =>
-                    setValue("target" as "target", v as "atk" | "def")
-                  }
-                >
-                  <SelectTrigger className="border-border bg-bg-tertiary text-text-primary">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="atk">ATK</SelectItem>
-                    <SelectItem value="def">DEF</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-text-secondary">수치 (1 ~ 10)</Label>
+        {(skillType === "buff" || skillType === "debuff") && (
+          <>
+            <div className="space-y-2">
+              <Label className="text-text-secondary">대상 스탯</Label>
+              <Select
+                value={targetValue ?? "atk"}
+                onValueChange={(v) =>
+                  setValue("target" as "target", v as "atk" | "def")
+                }
+              >
+                <SelectTrigger className="border-border bg-bg-tertiary text-text-primary">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="atk">ATK</SelectItem>
+                  <SelectItem value="def">DEF</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-text-secondary">수치 (1 ~ 10)</Label>
+              <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
                 <Input
                   type="number"
-                  className="border-border bg-bg-tertiary text-text-primary"
+                  className="border-none bg-transparent text-text-primary shadow-none"
                   {...register("value", { valueAsNumber: true })}
                 />
-                {"value" in errors && errors.value && (
-                  <p className="text-xs text-damage">{errors.value.message}</p>
-                )}
               </div>
-              <div className="space-y-2">
-                <Label className="text-text-secondary">지속 턴 (1 ~ 5)</Label>
+              {"value" in errors && errors.value && (
+                <p className="text-xs text-damage">{errors.value.message}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label className="text-text-secondary">지속 턴 (1 ~ 5)</Label>
+              <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
                 <Input
                   type="number"
-                  className="border-border bg-bg-tertiary text-text-primary"
+                  className="border-none bg-transparent text-text-primary shadow-none"
                   {...register("duration", { valueAsNumber: true })}
                 />
-                {"duration" in errors && errors.duration && (
-                  <p className="text-xs text-damage">
-                    {errors.duration.message}
-                  </p>
-                )}
               </div>
-            </>
-          )}
+              {"duration" in errors && errors.duration && (
+                <p className="text-xs text-damage">{errors.duration.message}</p>
+              )}
+            </div>
+          </>
+        )}
 
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={onCancel}
-            >
-              취소
-            </Button>
-            <Button
-              type="submit"
-              data-testid="submit-skill-button"
-              className="flex-1 bg-accent-orange font-bold text-bg-primary hover:bg-accent-orange-hover"
-            >
-              스킬 추가
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+        <div className="flex gap-2">
+          <GameButton
+            type="button"
+            variant="blue"
+            skew
+            className="flex-1"
+            onClick={onCancel}
+          >
+            취소
+          </GameButton>
+          <GameButton
+            type="submit"
+            skew
+            data-testid="submit-skill-button"
+            className="flex-1"
+          >
+            스킬 추가
+          </GameButton>
+        </div>
+      </form>
+    </section>
   );
 }
