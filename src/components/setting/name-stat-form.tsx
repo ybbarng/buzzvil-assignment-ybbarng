@@ -6,7 +6,7 @@ import { StatAllocator } from "@/components/setting/stat-allocator";
 import { GameButton } from "@/components/ui/game-button";
 import { Input } from "@/components/ui/input";
 import { TOTAL_POINTS } from "@/constants/stats";
-import { SKEW, SKEW_TEXT, staggerDelay } from "@/constants/theme";
+import { SKEW, staggerDelay } from "@/constants/theme";
 import {
   type NameStatFormData,
   nameStatSchema,
@@ -76,13 +76,14 @@ export function NameStatForm({
               {...register("name")}
             />
           </div>
-          <button
-            type="button"
+          <GameButton
+            variant="blue"
+            size="sm"
+            skew
             onClick={() => setPresetOpen(true)}
-            className={`${SKEW} cursor-pointer bg-accent-blue px-4 py-2 text-xs font-bold tracking-wider text-white uppercase transition-all hover:scale-105 hover:brightness-125`}
           >
-            <span className={`${SKEW_TEXT} block`}>프리셋</span>
-          </button>
+            프리셋
+          </GameButton>
         </div>
         {errors.name && (
           <p className="mt-1 text-sm text-damage">{errors.name.message}</p>

@@ -1,4 +1,5 @@
 import { type ButtonHTMLAttributes, forwardRef } from "react";
+import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 
 type GameButtonVariant = "orange" | "blue";
@@ -9,6 +10,8 @@ interface GameButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: GameButtonSize;
   /** 활성(준비 완료) 상태에서 글로우 애니메이션 적용 */
   active?: boolean;
+  /** 평행사변형 기울임 적용 */
+  skew?: boolean;
 }
 
 export const GameButton = forwardRef<HTMLButtonElement, GameButtonProps>(
@@ -17,6 +20,7 @@ export const GameButton = forwardRef<HTMLButtonElement, GameButtonProps>(
       variant = "orange",
       size = "default",
       active,
+      skew,
       className,
       children,
       ...props
@@ -37,11 +41,16 @@ export const GameButton = forwardRef<HTMLButtonElement, GameButtonProps>(
               : "bg-accent-orange hover:scale-105 hover:brightness-125"),
           variant === "blue" &&
             "bg-accent-blue hover:scale-105 hover:brightness-125",
+          skew && SKEW,
           className,
         )}
         {...props}
       >
-        {children}
+        {skew ? (
+          <span className={`${SKEW_TEXT} block`}>{children}</span>
+        ) : (
+          children
+        )}
       </button>
     );
   },
