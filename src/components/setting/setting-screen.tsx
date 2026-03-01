@@ -1,3 +1,4 @@
+import type React from "react";
 import { useRef, useState } from "react";
 import { DifficultyForm } from "@/components/setting/difficulty-form";
 import { NameStatForm } from "@/components/setting/name-stat-form";
