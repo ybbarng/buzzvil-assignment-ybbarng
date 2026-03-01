@@ -5,7 +5,10 @@ import App from "@/App";
 import { allocateStats, resetStores } from "@/test/helpers";
 
 describe("SettingScreen", () => {
+  const originalMatchMedia = window.matchMedia;
+
   afterEach(() => {
+    window.matchMedia = originalMatchMedia;
     resetStores();
     vi.restoreAllMocks();
   });
