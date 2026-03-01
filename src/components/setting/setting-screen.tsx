@@ -34,6 +34,7 @@ function animateExitThenDo(
 
   container!.style.pointerEvents = "none";
 
+  const EXIT_STAGGER_MS = 80;
   const animations = items.map((item, i) =>
     item.animate(
       [
@@ -41,8 +42,8 @@ function animateExitThenDo(
         { transform: "translateX(-80px)", opacity: "0" },
       ],
       {
-        duration: 200,
-        delay: i * STAGGER_MS,
+        duration: 150,
+        delay: i * EXIT_STAGGER_MS,
         fill: "forwards",
         easing: "ease-in",
       },
