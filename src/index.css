@@ -172,3 +172,18 @@ textarea {
 @utility animate-slide-in-left {
   animation: slide-in-left 0.6s ease-in-out both;
 }
+
+/* 모션 감소 선호 시 애니메이션 비활성화.
+   모든 선언을 강제로 덮어써야 하므로 !important 필수. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
+    animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
+    transition-duration: 0.01ms !important;
+  }
+}

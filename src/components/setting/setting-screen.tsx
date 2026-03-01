@@ -33,7 +33,11 @@ function animateExitThenDo(
     : [];
   const items = [...extraElements, ...containerItems];
 
-  if (items.length === 0 || !items[0].animate) {
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (items.length === 0 || !items[0].animate || prefersReduced) {
     callback();
     return;
   }
