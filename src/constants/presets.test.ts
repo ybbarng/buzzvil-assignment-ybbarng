@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { getPresetsByRole, HERO_PRESETS } from "@/constants/presets";
+import {
+  getPresetsByRole,
+  getPresetsBySubRole,
+  HERO_PRESETS,
+  ROLE_SUB_ROLES,
+} from "@/constants/presets";
 import { STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
 import type { StatKey } from "@/types/character";
 
@@ -56,5 +61,21 @@ describe("HERO_PRESETS", () => {
 
     const support = getPresetsByRole("support");
     expect(support.every((h) => h.role === "support")).toBe(true);
+  });
+
+  it("모든 영웅이 올바른 서브역할군을 가져야 한다", () => {
+    for (const hero of HERO_PRESETS) {
+      const validSubRoles = ROLE_SUB_ROLES[hero.role];
+      expect(
+        validSubRoles,
+        `${hero.name}의 subRole '${hero.subRole}'이 역할군 '${hero.role}'에 유효하지 않음`,
+      ).toContain(hero.subRole);
+    }
+  });
+
+  it("getPresetsBySubRole이 해당 서브역할만 반환한다", () => {
+    const initiators = getPresetsBySubRole("initiator");
+    expect(initiators.every((h) => h.subRole === "initiator")).toBe(true);
+    expect(initiators.length).toBeGreaterThan(0);
   });
 });

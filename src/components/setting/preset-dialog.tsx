@@ -2,12 +2,14 @@ import { useState } from "react";
 import { PresetHeroDetail } from "@/components/setting/preset-hero-card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
-  getPresetsByRole,
+  getPresetsBySubRole,
   ROLE_COLORS,
   ROLE_LABELS,
+  ROLE_SUB_ROLES,
+  SUB_ROLE_LABELS,
 } from "@/constants/presets";
 import { cn } from "@/lib/utils";
-import type { HeroPreset, HeroRole } from "@/types/preset";
+import type { HeroPreset, HeroRole, HeroSubRole } from "@/types/preset";
 
 interface PresetDialogProps {
   open: boolean;
@@ -23,30 +25,32 @@ const ROLE_ICON_COLORS: Record<HeroRole, string> = {
   support: "text-heal",
 };
 
-function HeroGrid({
-  role,
+function SubRoleGroup({
+  subRole,
+  roleColor,
   selected,
-  onHover,
+  onSelect,
 }: {
-  role: HeroRole;
+  subRole: HeroSubRole;
+  roleColor: string;
   selected: HeroPreset | null;
-  onHover: (hero: HeroPreset) => void;
+  onSelect: (hero: HeroPreset) => void;
 }) {
-  const heroes = getPresetsByRole(role);
+  const heroes = getPresetsBySubRole(subRole);
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex items-start gap-2">
       <span
-        className={`text-[10px] font-bold uppercase tracking-widest ${ROLE_ICON_COLORS[role]}`}
+        className={`w-20 shrink-0 pt-1.5 text-right text-[10px] font-medium tracking-wide ${roleColor}`}
       >
-        {ROLE_LABELS[role]}
+        {SUB_ROLE_LABELS[subRole]}
       </span>
       <div className="flex flex-wrap gap-1">
         {heroes.map((hero) => (
           <button
             key={hero.id}
             type="button"
-            onClick={() => onHover(hero)}
+            onClick={() => onSelect(hero)}
             className={cn(
               "cursor-pointer whitespace-nowrap rounded-sm px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all",
               "border-2",
@@ -57,6 +61,39 @@ function HeroGrid({
           >
             {hero.name}
           </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RoleSection({
+  role,
+  selected,
+  onSelect,
+}: {
+  role: HeroRole;
+  selected: HeroPreset | null;
+  onSelect: (hero: HeroPreset) => void;
+}) {
+  const subRoles = ROLE_SUB_ROLES[role];
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span
+        className={`text-[10px] font-bold uppercase tracking-widest ${ROLE_ICON_COLORS[role]}`}
+      >
+        {ROLE_LABELS[role]}
+      </span>
+      <div className="flex flex-col gap-1">
+        {subRoles.map((subRole) => (
+          <SubRoleGroup
+            key={subRole}
+            subRole={subRole}
+            roleColor={ROLE_ICON_COLORS[role]}
+            selected={selected}
+            onSelect={onSelect}
+          />
         ))}
       </div>
     </div>
@@ -118,6 +155,9 @@ export function PresetDialog({
                   >
                     {ROLE_LABELS[selected.role]}
                   </span>
+                  <span className="text-xs text-text-muted">
+                    · {SUB_ROLE_LABELS[selected.subRole]}
+                  </span>
                 </div>
                 <PresetHeroDetail hero={selected} />
               </div>
@@ -131,13 +171,13 @@ export function PresetDialog({
 
         {/* 하단: 영웅 그리드 + 선택 버튼 */}
         <div className="border-t border-border bg-bg-secondary/80 px-6 py-4">
-          <div className="flex items-start justify-center gap-6">
+          <div className="flex items-start justify-center gap-8">
             {ROLES.map((role) => (
-              <HeroGrid
+              <RoleSection
                 key={role}
                 role={role}
                 selected={selected}
-                onHover={setSelected}
+                onSelect={setSelected}
               />
             ))}
           </div>
