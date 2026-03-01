@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { SkillCard } from "@/components/setting/skill-card";
 import { SkillCreator } from "@/components/setting/skill-creator";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GameButton } from "@/components/ui/game-button";
 import { MAX_CUSTOM_SKILLS } from "@/constants/skills";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
@@ -33,16 +32,18 @@ export function SkillForm({
 
   return (
     <div className="space-y-6">
-      <Card className="border-border bg-bg-secondary">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-accent-orange">보유 스킬</CardTitle>
-            <span className="text-sm text-text-muted">
+      <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-bold tracking-wider text-accent-orange uppercase">
+            보유 스킬
+          </h2>
+          <span className={`${SKEW} text-sm text-text-muted`}>
+            <span className={`${SKEW_TEXT} block`}>
               커스텀 {customSkillCount}/{MAX_CUSTOM_SKILLS}
             </span>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-2">
+          </span>
+        </div>
+        <div className="space-y-2">
           {skills.map((skill, index) => (
             <SkillCard
               // biome-ignore lint/suspicious/noArrayIndexKey: skills are ordered and index is stable within render
@@ -64,8 +65,8 @@ export function SkillForm({
               <span className={`${SKEW_TEXT} block`}>+ 스킬 추가</span>
             </button>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
       {isCreating && (
         <SkillCreator onAdd={handleAdd} onCancel={() => setIsCreating(false)} />
