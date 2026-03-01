@@ -3,10 +3,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { PresetDialog } from "@/components/setting/preset-dialog";
 import { StatAllocator } from "@/components/setting/stat-allocator";
+import { GameButton } from "@/components/ui/game-button";
 import { Input } from "@/components/ui/input";
 import { TOTAL_POINTS } from "@/constants/stats";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
-import { cn } from "@/lib/utils";
 import {
   type NameStatFormData,
   nameStatSchema,
@@ -103,19 +103,15 @@ export function NameStatForm({
         )}
       </section>
 
-      <button
+      <GameButton
         type="submit"
         data-testid="next-button"
         disabled={!isComplete}
-        className={cn(
-          `${SKEW} w-full cursor-pointer px-8 py-2.5 text-sm font-bold text-white uppercase tracking-wider transition-all disabled:cursor-not-allowed disabled:opacity-40`,
-          isComplete
-            ? "animate-button-ready bg-accent-orange hover:bg-accent-orange-hover"
-            : "bg-accent-orange",
-        )}
+        active={isComplete}
+        className="w-full"
       >
-        <span className={`${SKEW_TEXT} block`}>다음</span>
-      </button>
+        다음
+      </GameButton>
     </form>
   );
 }

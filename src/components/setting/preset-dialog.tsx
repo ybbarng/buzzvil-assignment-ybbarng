@@ -4,6 +4,7 @@ import roleSupportIcon from "@/assets/role-support.svg";
 import roleTankIcon from "@/assets/role-tank.svg";
 import { PresetHeroDetail } from "@/components/setting/preset-hero-card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { GameButton } from "@/components/ui/game-button";
 import {
   getPresetsBySubRole,
   ROLE_LABELS,
@@ -197,19 +198,14 @@ export function PresetDialog({
             ))}
           </div>
           <div className="mt-4 flex justify-center">
-            <button
-              type="button"
+            <GameButton
               disabled={!selected}
+              active={!!selected}
               onClick={handleSelect}
-              className={cn(
-                `${SKEW} min-w-48 cursor-pointer px-8 py-2.5 text-sm font-bold text-white uppercase tracking-wider transition-all disabled:cursor-not-allowed disabled:opacity-40`,
-                selected
-                  ? "animate-button-ready bg-accent-orange hover:bg-accent-orange-hover"
-                  : "bg-accent-orange",
-              )}
+              className="min-w-48"
             >
-              <span className={`${SKEW_TEXT} block`}>선택</span>
-            </button>
+              선택
+            </GameButton>
           </div>
         </div>
       </DialogContent>
