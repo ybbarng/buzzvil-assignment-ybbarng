@@ -199,6 +199,7 @@ export function PresetDialog({
           </div>
           <div className="mt-4 flex justify-center">
             <GameButton
+              type="button"
               disabled={!selected}
               active={!!selected}
               onClick={handleSelect}
