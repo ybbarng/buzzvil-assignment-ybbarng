@@ -38,11 +38,6 @@ function animateExitThenDo(
     return;
   }
 
-  container?.style.setProperty("pointer-events", "none");
-  for (const el of extraElements) {
-    el.style.setProperty("pointer-events", "none");
-  }
-
   const exitX = direction === "forward" ? "-100vw" : "100vw";
   const EXIT_STAGGER_MS = 80;
   const animations = items.map((item, i) =>
@@ -60,22 +55,9 @@ function animateExitThenDo(
     ),
   );
 
-  const cleanup = () => {
-    container?.style.removeProperty("pointer-events");
-    for (const el of extraElements) {
-      el.style.removeProperty("pointer-events");
-    }
-  };
-
   Promise.all(animations.map((a) => a.finished))
-    .then(() => {
-      cleanup();
-      callback();
-    })
-    .catch(() => {
-      cleanup();
-      callback();
-    });
+    .then(callback)
+    .catch(callback);
 }
 
 export function SettingScreen() {
