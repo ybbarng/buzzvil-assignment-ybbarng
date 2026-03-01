@@ -3,6 +3,9 @@
 @font-face {
   font-family: "Koverwatch";
   src: url("@/assets/fonts/koverwatch.woff2") format("woff2");
+  /* 폰트 로드 전 대체 폰트가 잠깐 보이는 FOUT 방지를 위해 block 사용.
+     게임 UI 특성상 Koverwatch 폰트 없이 렌더링되면 레이아웃이 깨지므로
+     폰트 로드 완료까지 텍스트를 숨기는 것이 더 나은 UX. */
   font-display: block;
 }
 
