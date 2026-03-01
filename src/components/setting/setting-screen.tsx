@@ -39,6 +39,9 @@ function animateExitThenDo(
   }
 
   container?.style.setProperty("pointer-events", "none");
+  for (const el of extraElements) {
+    el.style.setProperty("pointer-events", "none");
+  }
 
   const exitX = direction === "forward" ? "-100vw" : "100vw";
   const EXIT_STAGGER_MS = 80;
@@ -59,6 +62,9 @@ function animateExitThenDo(
 
   const cleanup = () => {
     container?.style.removeProperty("pointer-events");
+    for (const el of extraElements) {
+      el.style.removeProperty("pointer-events");
+    }
   };
 
   Promise.all(animations.map((a) => a.finished))
