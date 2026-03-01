@@ -28,9 +28,14 @@ export function SettingScreen() {
 
   return (
     <div>
-      <h1 className="mb-2 text-center text-3xl font-bold text-accent-orange">
-        캐릭터 세팅
-      </h1>
+      <div className="mb-8 text-center">
+        <h1 className="text-5xl font-black tracking-widest text-accent-orange uppercase">
+          BUZZ ARENA
+        </h1>
+        <p className="mt-2 text-sm text-text-secondary">
+          자신만의 강력한 영웅을 구성하고 치열한 전투에 참가해보세요!
+        </p>
+      </div>
       <StepIndicator currentStep={step} />
 
       {step === 1 && (
