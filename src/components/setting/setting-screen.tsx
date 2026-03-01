@@ -26,10 +26,12 @@ function animateExitThenDo(
   container: HTMLElement | null,
   direction: Direction,
   callback: () => void,
+  extraElements: HTMLElement[] = [],
 ) {
-  const items = container
+  const containerItems = container
     ? Array.from(container.querySelectorAll<HTMLElement>("[data-animate]"))
     : [];
+  const items = [...extraElements, ...containerItems];
 
   if (items.length === 0 || !items[0].animate) {
     callback();
@@ -74,18 +76,30 @@ export function SettingScreen() {
   const setDifficulty = useSettingStore((s) => s.setDifficulty);
   const startBattle = useGameStore((s) => s.startBattle);
 
+  const indicatorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isExiting = useRef(false);
   const [enterDirection, setEnterDirection] = useState<Direction>("forward");
 
-  const withExit = (direction: Direction, callback: () => void) => {
+  const withExit = (
+    direction: Direction,
+    callback: () => void,
+    includeIndicator = false,
+  ) => {
     if (isExiting.current) return;
     isExiting.current = true;
     setEnterDirection(direction);
-    animateExitThenDo(contentRef.current, direction, () => {
-      isExiting.current = false;
-      callback();
-    });
+    const extra =
+      includeIndicator && indicatorRef.current ? [indicatorRef.current] : [];
+    animateExitThenDo(
+      contentRef.current,
+      direction,
+      () => {
+        isExiting.current = false;
+        callback();
+      },
+      extra,
+    );
   };
 
   const handleStep1Submit = (data: NameStatFormData) => {
@@ -110,7 +124,7 @@ export function SettingScreen() {
         </p>
       </div>
 
-      <div className="animate-slide-in-right">
+      <div ref={indicatorRef} className="animate-slide-in-right">
         <StepIndicator
           currentStep={step}
           onStepClick={(s) =>
@@ -153,7 +167,7 @@ export function SettingScreen() {
               difficulty={difficulty}
               onSelect={setDifficulty}
               onPrev={() => withExit("backward", () => setStep(2))}
-              onStartBattle={() => withExit("forward", startBattle)}
+              onStartBattle={() => withExit("forward", startBattle, true)}
             />
           </div>
         )}
