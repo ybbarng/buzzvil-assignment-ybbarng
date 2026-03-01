@@ -33,9 +33,6 @@ function HeroGrid({
   onHover: (hero: HeroPreset) => void;
 }) {
   const heroes = getPresetsByRole(role);
-  const half = Math.ceil(heroes.length / 2);
-  const row1 = heroes.slice(0, half);
-  const row2 = heroes.slice(half);
 
   return (
     <div className="flex flex-col gap-1">
@@ -44,29 +41,22 @@ function HeroGrid({
       >
         {ROLE_LABELS[role]}
       </span>
-      <div className="flex flex-col gap-1">
-        {[
-          { key: "top", heroes: row1 },
-          { key: "bottom", heroes: row2 },
-        ].map(({ key, heroes: row }) => (
-          <div key={key} className="flex gap-1">
-            {row.map((hero) => (
-              <button
-                key={hero.id}
-                type="button"
-                onClick={() => onHover(hero)}
-                className={cn(
-                  "cursor-pointer whitespace-nowrap rounded-sm px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all",
-                  "border-2",
-                  selected?.id === hero.id
-                    ? "relative z-10 origin-bottom border-accent-orange bg-accent-orange/20 [transform:scale(1.33)]"
-                    : "border-transparent bg-bg-tertiary hover:bg-bg-tertiary/80",
-                )}
-              >
-                {hero.name}
-              </button>
-            ))}
-          </div>
+      <div className="flex flex-wrap gap-1">
+        {heroes.map((hero) => (
+          <button
+            key={hero.id}
+            type="button"
+            onClick={() => onHover(hero)}
+            className={cn(
+              "cursor-pointer whitespace-nowrap rounded-sm px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all",
+              "border-2",
+              selected?.id === hero.id
+                ? "relative z-10 origin-bottom border-accent-orange bg-accent-orange/20 [transform:scale(1.33)]"
+                : "border-transparent bg-bg-tertiary hover:bg-bg-tertiary/80",
+            )}
+          >
+            {hero.name}
+          </button>
         ))}
       </div>
     </div>
