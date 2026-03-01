@@ -89,18 +89,16 @@ describe("NameStatForm", () => {
     );
   });
 
-  it("프리셋 불러오기 버튼이 렌더링된다", () => {
+  it("프리셋 버튼이 렌더링된다", () => {
     render(<NameStatForm {...defaultProps} />);
-    expect(
-      screen.getByRole("button", { name: "프리셋 불러오기" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "프리셋" })).toBeInTheDocument();
   });
 
-  it("프리셋 불러오기 버튼을 클릭하면 다이얼로그가 열린다", async () => {
+  it("프리셋 버튼을 클릭하면 다이얼로그가 열린다", async () => {
     const user = userEvent.setup();
     render(<NameStatForm {...defaultProps} />);
 
-    await user.click(screen.getByRole("button", { name: "프리셋 불러오기" }));
+    await user.click(screen.getByRole("button", { name: "프리셋" }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
@@ -110,7 +108,7 @@ describe("NameStatForm", () => {
 
     render(<NameStatForm {...defaultProps} />);
 
-    await user.click(screen.getByRole("button", { name: "프리셋 불러오기" }));
+    await user.click(screen.getByRole("button", { name: "프리셋" }));
 
     const dialog = screen.getByRole("dialog");
     await user.click(within(dialog).getByText(hero.name));

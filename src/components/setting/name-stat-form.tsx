@@ -3,8 +3,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { PresetDialog } from "@/components/setting/preset-dialog";
 import { StatAllocator } from "@/components/setting/stat-allocator";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { TOTAL_POINTS } from "@/constants/stats";
 import {
@@ -57,60 +55,58 @@ export function NameStatForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <Card className="border-border bg-bg-secondary">
-        <CardHeader>
-          <CardTitle className="text-accent-orange">캐릭터 이름</CardTitle>
-        </CardHeader>
-        <CardContent>
+      {/* 캐릭터 이름 */}
+      <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+        <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
+          캐릭터 이름
+        </h2>
+        <div className="flex gap-2">
           <Input
             data-testid="name-input"
             placeholder="이름을 입력하세요 (1~10자)"
             maxLength={10}
-            className="border-border bg-bg-tertiary text-text-primary placeholder:text-text-muted"
+            className="flex-1 border-border bg-bg-tertiary text-text-primary placeholder:text-text-muted"
             {...register("name")}
           />
-          {errors.name && (
-            <p className="mt-1 text-sm text-damage">{errors.name.message}</p>
-          )}
-        </CardContent>
-      </Card>
-
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => setPresetOpen(true)}
-        className="w-full border-accent-blue text-accent-blue hover:bg-accent-blue/10"
-      >
-        프리셋 불러오기
-      </Button>
+          <button
+            type="button"
+            onClick={() => setPresetOpen(true)}
+            className="-skew-x-12 cursor-pointer bg-accent-blue px-4 py-2 text-xs font-bold tracking-wider text-white uppercase transition-all hover:scale-105 hover:brightness-125"
+          >
+            <span className="skew-x-12 block">프리셋</span>
+          </button>
+        </div>
+        {errors.name && (
+          <p className="mt-1 text-sm text-damage">{errors.name.message}</p>
+        )}
+      </section>
       <PresetDialog
         open={presetOpen}
         onOpenChange={setPresetOpen}
         onSelect={handlePresetSelect}
       />
 
-      <Card className="border-border bg-bg-secondary">
-        <CardHeader>
-          <CardTitle className="text-accent-orange">스탯 배분</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <StatAllocator stats={stats} onChange={handleStatsChange} />
-          {errors.stats?.root && (
-            <p className="mt-2 text-sm text-damage">
-              {errors.stats.root.message}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      {/* 스탯 배분 */}
+      <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+        <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
+          스탯 배분
+        </h2>
+        <StatAllocator stats={stats} onChange={handleStatsChange} />
+        {errors.stats?.root && (
+          <p className="mt-2 text-sm text-damage">
+            {errors.stats.root.message}
+          </p>
+        )}
+      </section>
 
-      <Button
+      <button
         type="submit"
         data-testid="next-button"
         disabled={!isComplete}
-        className="w-full bg-accent-orange font-bold text-bg-primary hover:bg-accent-orange-hover disabled:opacity-50"
+        className="-skew-x-12 w-full cursor-pointer bg-accent-orange py-3 text-sm font-bold tracking-wider text-bg-primary uppercase transition-all hover:bg-accent-orange-hover disabled:cursor-not-allowed disabled:opacity-50"
       >
-        다음
-      </Button>
+        <span className="skew-x-12 block">다음</span>
+      </button>
     </form>
   );
 }
