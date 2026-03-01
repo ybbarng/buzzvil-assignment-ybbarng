@@ -38,9 +38,9 @@ export const GameButton = forwardRef<HTMLButtonElement, GameButtonProps>(
           variant === "orange" &&
             (active
               ? "animate-button-ready bg-accent-orange hover:bg-accent-orange-hover"
-              : "bg-accent-orange hover:scale-105 hover:brightness-125"),
+              : "bg-accent-orange enabled:hover:scale-105 enabled:hover:brightness-125"),
           variant === "blue" &&
-            "bg-accent-blue hover:scale-105 hover:brightness-125",
+            "bg-accent-blue enabled:hover:scale-105 enabled:hover:brightness-125",
           skew && SKEW,
           className,
         )}
