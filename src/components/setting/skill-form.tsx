@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { SkillCard } from "@/components/setting/skill-card";
 import { SkillCreator } from "@/components/setting/skill-creator";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GameButton } from "@/components/ui/game-button";
 import { MAX_CUSTOM_SKILLS } from "@/constants/skills";
+import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import type { Skill } from "@/types/skill";
 
 interface SkillFormProps {
@@ -55,15 +55,14 @@ export function SkillForm({
           ))}
 
           {!isCreating && canAddMore && (
-            <Button
+            <button
               type="button"
-              variant="outline"
               data-testid="add-skill-button"
-              className="w-full border-dashed border-accent-orange/50 text-accent-orange hover:bg-accent-orange/10"
+              className={`${SKEW} w-full cursor-pointer border-2 border-dashed border-accent-orange/50 px-4 py-2.5 text-sm font-bold tracking-wider text-accent-orange uppercase transition-all hover:border-accent-orange hover:bg-accent-orange/10`}
               onClick={() => setIsCreating(true)}
             >
-              + 스킬 추가
-            </Button>
+              <span className={`${SKEW_TEXT} block`}>+ 스킬 추가</span>
+            </button>
           )}
         </CardContent>
       </Card>
