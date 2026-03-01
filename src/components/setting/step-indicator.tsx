@@ -23,13 +23,14 @@ export function StepIndicator({
   currentStep,
   onStepClick,
 }: StepIndicatorProps) {
+  const currentLabel = STEPS[currentStep - 1].label;
+
   return (
     <div className="mb-6 flex items-center justify-center gap-1">
       {STEPS.map(({ step, label }) => {
         const isCurrent = step === currentStep;
         const isCompleted = step < currentStep;
         const isFuture = step > currentStep;
-        const currentLabel = STEPS[currentStep - 1].label;
 
         const button = (
           <button
@@ -42,8 +43,7 @@ export function StepIndicator({
                 "animate-pulse-glow bg-accent-orange hover:scale-105",
               isCompleted &&
                 "cursor-pointer bg-accent-blue hover:scale-105 hover:brightness-125",
-              isFuture &&
-                "bg-bg-tertiary hover:brightness-110 disabled:cursor-not-allowed",
+              isFuture && "bg-bg-tertiary disabled:cursor-not-allowed",
             )}
           >
             <span
