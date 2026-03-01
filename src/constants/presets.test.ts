@@ -6,6 +6,7 @@ import {
   ROLE_SUB_ROLES,
 } from "@/constants/presets";
 import { STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
+import { nameStatSchema } from "@/schemas/name-stat.schema";
 import type { StatKey } from "@/types/character";
 
 describe("HERO_PRESETS", () => {
@@ -77,5 +78,18 @@ describe("HERO_PRESETS", () => {
     const initiators = getPresetsBySubRole("initiator");
     expect(initiators.every((h) => h.subRole === "initiator")).toBe(true);
     expect(initiators.length).toBeGreaterThan(0);
+  });
+
+  it("모든 프리셋이 폼 유효성 검증을 통과해야 한다", () => {
+    for (const hero of HERO_PRESETS) {
+      const result = nameStatSchema.safeParse({
+        name: hero.name,
+        stats: hero.stats,
+      });
+      expect(
+        result.success,
+        `${hero.name}이 폼 검증 실패: ${!result.success ? JSON.stringify(result.error.issues) : ""}`,
+      ).toBe(true);
+    }
   });
 });
