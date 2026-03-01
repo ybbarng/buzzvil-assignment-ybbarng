@@ -131,8 +131,18 @@ export function PresetDialog({
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/80 to-bg-tertiary/30" />
 
           {selected ? (
-            <div className="relative z-10 flex w-full items-center justify-between gap-8">
-              {/* 왼쪽: 역할군 + 스탯 */}
+            <div className="relative z-10 flex w-full items-end justify-between gap-8">
+              {/* 왼쪽: 영웅 이름 + 설명 */}
+              <div className="flex flex-col gap-2">
+                <h2 className="text-5xl font-black tracking-tight text-text-primary uppercase">
+                  {selected.name}
+                </h2>
+                <p className="max-w-md text-sm text-text-secondary">
+                  {selected.description}
+                </p>
+              </div>
+
+              {/* 오른쪽: 역할군 + 스탯 */}
               <div className="flex w-64 shrink-0 flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <div
@@ -148,16 +158,6 @@ export function PresetDialog({
                   </span>
                 </div>
                 <PresetHeroDetail hero={selected} />
-              </div>
-
-              {/* 오른쪽: 영웅 이름 + 설명 */}
-              <div className="flex flex-col items-center gap-2">
-                <h2 className="text-5xl font-black tracking-tight text-text-primary uppercase">
-                  {selected.name}
-                </h2>
-                <p className="max-w-md text-center text-sm text-text-secondary">
-                  {selected.description}
-                </p>
               </div>
             </div>
           ) : (
