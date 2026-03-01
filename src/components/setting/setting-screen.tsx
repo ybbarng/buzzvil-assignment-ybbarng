@@ -5,6 +5,13 @@ import { StepIndicator } from "@/components/setting/step-indicator";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
+import type { SettingStep } from "@/types/game";
+
+const STEP_GUIDES: Record<SettingStep, string> = {
+  1: "영웅 등록을 시작합니다. 이름과 능력치를 설정하세요.",
+  2: "전투에 사용할 스킬을 장착하세요. 최대 4개까지 선택할 수 있습니다.",
+  3: "전투 난이도를 선택하세요. 난이도에 따라 적의 강도가 달라집니다.",
+};
 
 export function SettingScreen() {
   const step = useSettingStore((s) => s.step);
@@ -37,6 +44,9 @@ export function SettingScreen() {
         </p>
       </div>
       <StepIndicator currentStep={step} onStepClick={setStep} />
+      <p className="mb-6 text-sm tracking-wide text-text-secondary">
+        {STEP_GUIDES[step]}
+      </p>
 
       {step === 1 && (
         <NameStatForm
