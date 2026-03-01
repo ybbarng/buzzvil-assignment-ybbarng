@@ -27,6 +27,23 @@ const ROLE_ICON_URLS: Record<HeroRole, string> = {
   support: roleSupportIcon,
 };
 
+function RoleBadge({ role }: { role: HeroRole }) {
+  return (
+    <>
+      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/40">
+        <img
+          src={ROLE_ICON_URLS[role]}
+          alt={ROLE_LABELS[role]}
+          className="h-3 w-3"
+        />
+      </div>
+      <span className="text-sm font-black uppercase tracking-widest text-white">
+        {ROLE_LABELS[role]}
+      </span>
+    </>
+  );
+}
+
 function SubRoleGroup({
   subRole,
   selected,
@@ -81,16 +98,7 @@ function RoleSection({
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       <div className="flex items-center gap-1.5">
-        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/40">
-          <img
-            src={ROLE_ICON_URLS[role]}
-            alt={ROLE_LABELS[role]}
-            className="h-3 w-3"
-          />
-        </div>
-        <span className="text-sm font-black uppercase tracking-widest text-white">
-          {ROLE_LABELS[role]}
-        </span>
+        <RoleBadge role={role} />
       </div>
       <div className="flex flex-col gap-1">
         {subRoles.map((subRole) => (
@@ -153,16 +161,7 @@ export function PresetDialog({
               {/* 오른쪽: 역할군 + 스탯 */}
               <div className="flex w-64 shrink-0 flex-col gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/40">
-                    <img
-                      src={ROLE_ICON_URLS[selected.role]}
-                      alt={ROLE_LABELS[selected.role]}
-                      className="h-3 w-3"
-                    />
-                  </div>
-                  <span className="text-sm font-black uppercase tracking-widest text-white">
-                    {ROLE_LABELS[selected.role]}
-                  </span>
+                  <RoleBadge role={selected.role} />
                   <span className="text-xs tracking-wide text-white">
                     · {SUB_ROLE_LABELS[selected.subRole]}
                   </span>
