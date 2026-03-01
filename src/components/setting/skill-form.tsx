@@ -3,6 +3,7 @@ import { SkillCard } from "@/components/setting/skill-card";
 import { SkillCreator } from "@/components/setting/skill-creator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GameButton } from "@/components/ui/game-button";
 import { MAX_CUSTOM_SKILLS } from "@/constants/skills";
 import type { Skill } from "@/types/skill";
 
@@ -72,23 +73,25 @@ export function SkillForm({
       )}
 
       <div className="flex gap-2">
-        <Button
+        <GameButton
           type="button"
-          variant="outline"
+          variant="blue"
+          skew
           data-testid="prev-button"
           className="flex-1"
           onClick={onPrev}
         >
           이전
-        </Button>
-        <Button
+        </GameButton>
+        <GameButton
           type="button"
+          skew
           data-testid="next-button"
-          className="flex-1 bg-accent-orange font-bold text-bg-primary hover:bg-accent-orange-hover"
+          className="flex-1"
           onClick={onNext}
         >
           다음
-        </Button>
+        </GameButton>
       </div>
     </div>
   );
