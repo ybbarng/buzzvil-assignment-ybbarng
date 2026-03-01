@@ -1,4 +1,9 @@
-import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn, josa } from "@/lib/utils";
 import type { SettingStep } from "@/types/game";
 
 const STEPS: { step: SettingStep; label: string }[] = [
@@ -22,8 +27,9 @@ export function StepIndicator({
         const isCurrent = step === currentStep;
         const isCompleted = step < currentStep;
         const isFuture = step > currentStep;
+        const currentLabel = STEPS[currentStep - 1].label;
 
-        return (
+        const button = (
           <button
             key={step}
             type="button"
@@ -51,6 +57,19 @@ export function StepIndicator({
             </span>
           </button>
         );
+
+        if (isFuture) {
+          return (
+            <Tooltip key={step}>
+              <TooltipTrigger asChild>{button}</TooltipTrigger>
+              <TooltipContent>
+                '{currentLabel}'{josa(currentLabel, "을", "를")} 먼저 완료하세요
+              </TooltipContent>
+            </Tooltip>
+          );
+        }
+
+        return button;
       })}
     </div>
   );
