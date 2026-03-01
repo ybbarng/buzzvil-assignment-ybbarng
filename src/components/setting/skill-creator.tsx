@@ -122,7 +122,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
         <div className="space-y-2">
           <Label className="text-text-secondary">스킬 타입</Label>
           <Select value={skillType} onValueChange={handleTypeChange}>
-            <SelectTrigger className="border-border bg-bg-tertiary text-text-primary">
+            <SelectTrigger
+              className={"border-border bg-bg-tertiary text-text-primary"}
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -192,7 +194,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                   setValue("target" as "target", v as "atk" | "def")
                 }
               >
-                <SelectTrigger className="border-border bg-bg-tertiary text-text-primary">
+                <SelectTrigger
+                  className={"border-border bg-bg-tertiary text-text-primary"}
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
