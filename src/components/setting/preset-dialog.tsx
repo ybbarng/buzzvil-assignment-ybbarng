@@ -58,7 +58,7 @@ function HeroGrid({
                 className={cn(
                   "cursor-pointer rounded-sm px-2.5 py-1.5 text-[11px] font-medium text-text-primary transition-all",
                   selected?.id === hero.id
-                    ? "border-2 border-accent-orange bg-accent-orange/20"
+                    ? "z-10 scale-110 border-2 border-accent-orange bg-accent-orange/20"
                     : "border border-transparent bg-bg-tertiary hover:bg-bg-tertiary/80",
                 )}
               >
