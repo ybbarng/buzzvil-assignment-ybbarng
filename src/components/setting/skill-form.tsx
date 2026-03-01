@@ -76,7 +76,6 @@ export function SkillForm({
         <GameButton
           type="button"
           variant="blue"
-          skew
           data-testid="prev-button"
           className="flex-1"
           onClick={onPrev}
@@ -85,7 +84,6 @@ export function SkillForm({
         </GameButton>
         <GameButton
           type="button"
-          skew
           data-testid="next-button"
           className="flex-1"
           onClick={onNext}

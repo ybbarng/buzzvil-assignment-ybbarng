@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SKILL_TYPE_LABELS } from "@/constants/skills";
+import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import type { Skill } from "@/types/skill";
 
 interface SkillCardProps {
@@ -25,12 +26,18 @@ function getSkillDescription(skill: Skill): string {
 
 export function SkillCard({ skill, onRemove }: SkillCardProps) {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-border bg-bg-tertiary px-4 py-3">
-      <div className="space-y-0.5">
+    <div
+      className={`${SKEW} flex items-center justify-between border-l-2 border-border bg-bg-tertiary px-4 py-3`}
+    >
+      <div className={`${SKEW_TEXT} space-y-0.5`}>
         <div className="flex items-center gap-2">
           <span className="font-semibold text-text-primary">{skill.name}</span>
-          <span className="rounded bg-bg-secondary px-1.5 py-0.5 text-xs text-text-muted">
-            {SKILL_TYPE_LABELS[skill.type]}
+          <span
+            className={`${SKEW} bg-bg-secondary px-1.5 py-0.5 text-xs text-text-muted`}
+          >
+            <span className={`${SKEW_TEXT} block`}>
+              {SKILL_TYPE_LABELS[skill.type]}
+            </span>
           </span>
           {skill.mpCost > 0 && (
             <span className="text-xs text-mp">MP {skill.mpCost}</span>
@@ -46,7 +53,7 @@ export function SkillCard({ skill, onRemove }: SkillCardProps) {
           variant="ghost"
           size="icon"
           data-testid="remove-skill-button"
-          className="size-8 text-text-muted hover:text-damage"
+          className={`${SKEW_TEXT} size-8 text-text-muted hover:text-damage`}
           onClick={onRemove}
         >
           <X className="size-4" />
