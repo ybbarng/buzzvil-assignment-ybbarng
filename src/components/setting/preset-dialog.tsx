@@ -95,7 +95,7 @@ function RoleSection({
             className="h-3 w-3"
           />
         </div>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-white">
+        <span className="text-sm font-black uppercase tracking-widest text-white">
           {ROLE_LABELS[role]}
         </span>
       </div>
