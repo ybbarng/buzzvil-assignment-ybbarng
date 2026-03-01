@@ -1,30 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
-import { useBattleStore } from "@/stores/battle-store";
-import { useGameStore } from "@/stores/game-store";
-import { useSettingStore } from "@/stores/setting-store";
-
-function resetStores() {
-  useGameStore.getState().restart();
-  useSettingStore.getState().reset();
-  useBattleStore.getState().reset();
-}
-
-function setStatValue(testId: string, value: number) {
-  fireEvent.change(screen.getByTestId(testId), {
-    target: { value: String(value) },
-  });
-}
-
-function allocateStats() {
-  setStatValue("stat-hp", 60);
-  setStatValue("stat-mp", 50);
-  setStatValue("stat-atk", 30);
-  setStatValue("stat-def", 30);
-  setStatValue("stat-spd", 30);
-}
+import { allocateStats, resetStores } from "@/test/helpers";
 
 describe("SettingScreen", () => {
   afterEach(() => {
