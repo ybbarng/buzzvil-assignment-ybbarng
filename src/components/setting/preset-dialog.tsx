@@ -6,7 +6,6 @@ import { PresetHeroDetail } from "@/components/setting/preset-hero-card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   getPresetsBySubRole,
-  ROLE_COLORS,
   ROLE_LABELS,
   ROLE_SUB_ROLES,
   SUB_ROLE_LABELS,
@@ -21,12 +20,6 @@ interface PresetDialogProps {
 }
 
 const ROLES: HeroRole[] = ["tank", "damage", "support"];
-
-const ROLE_ICON_COLORS: Record<HeroRole, string> = {
-  tank: "text-accent-blue",
-  damage: "text-damage",
-  support: "text-heal",
-};
 
 const ROLE_ICON_URLS: Record<HeroRole, string> = {
   tank: roleTankIcon,
@@ -160,15 +153,17 @@ export function PresetDialog({
               {/* 오른쪽: 역할군 + 스탯 */}
               <div className="flex w-64 shrink-0 flex-col gap-3">
                 <div className="flex items-center gap-2">
-                  <div
-                    className={`h-4 w-1.5 rounded-sm ${ROLE_COLORS[selected.role]}`}
-                  />
-                  <span
-                    className={`text-sm font-bold uppercase tracking-wider ${ROLE_ICON_COLORS[selected.role]}`}
-                  >
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/40">
+                    <img
+                      src={ROLE_ICON_URLS[selected.role]}
+                      alt={ROLE_LABELS[selected.role]}
+                      className="h-3 w-3"
+                    />
+                  </div>
+                  <span className="text-sm font-black uppercase tracking-widest text-white">
                     {ROLE_LABELS[selected.role]}
                   </span>
-                  <span className="text-xs text-text-muted">
+                  <span className="text-xs tracking-wide text-white">
                     · {SUB_ROLE_LABELS[selected.subRole]}
                   </span>
                 </div>
