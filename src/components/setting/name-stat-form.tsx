@@ -6,7 +6,7 @@ import { StatAllocator } from "@/components/setting/stat-allocator";
 import { GameButton } from "@/components/ui/game-button";
 import { Input } from "@/components/ui/input";
 import { TOTAL_POINTS } from "@/constants/stats";
-import { SKEW, staggerDelay } from "@/constants/theme";
+import { SKEW, slideInClass, staggerDelay } from "@/constants/theme";
 import {
   type NameStatFormData,
   nameStatSchema,
@@ -57,10 +57,7 @@ export function NameStatForm({
     setPresetOpen(false);
   };
 
-  const slideIn =
-    enterDirection === "forward"
-      ? "animate-slide-in-right"
-      : "animate-slide-in-left";
+  const slideIn = slideInClass(enterDirection);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

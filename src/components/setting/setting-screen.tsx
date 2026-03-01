@@ -3,7 +3,7 @@ import { DifficultyForm } from "@/components/setting/difficulty-form";
 import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
-import { staggerDelay } from "@/constants/theme";
+import { slideInClass, staggerDelay } from "@/constants/theme";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -124,10 +124,7 @@ export function SettingScreen() {
     withExit("forward", () => setStep(2));
   };
 
-  const slideIn =
-    enterDirection === "forward"
-      ? "animate-slide-in-right"
-      : "animate-slide-in-left";
+  const slideIn = slideInClass(enterDirection);
 
   return (
     <div>
