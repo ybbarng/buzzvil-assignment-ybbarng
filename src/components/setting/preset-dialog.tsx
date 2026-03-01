@@ -25,6 +25,14 @@ const ROLE_ICON_COLORS: Record<HeroRole, string> = {
   support: "text-heal",
 };
 
+const ROLE_ICON_URLS: Record<HeroRole, string> = {
+  tank: "https://i.namu.wiki/i/ScVs43UTdF8F0om1zWy7Ca1G7THYbpOrIN6NZTPW9fY-aXR4A5fwO9exyhFe-Cmme5He7wxQ_L0ZtN44hduTKw.svg",
+  damage:
+    "https://i.namu.wiki/i/1mmFqKtrUg7kIHNA-KYzEkbsJEXaGjpsGobn_U6r-9zaW2tLudn5o3eBjPOVdW0Isd_aA8CImkktBSKOOx02iA.svg",
+  support:
+    "https://i.namu.wiki/i/YbdVoKsNMdoSI8oMshEmhXzZz6jaVSHHaF_Akbw5x2WwbMrskZoW4iSpWWJIP0KS5KJqWxzkS2BjW3fXK5uJhQ.svg",
+};
+
 function SubRoleGroup({
   subRole,
   roleColor,
@@ -78,11 +86,18 @@ function RoleSection({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span
-        className={`text-[10px] font-bold uppercase tracking-widest ${ROLE_ICON_COLORS[role]}`}
-      >
-        {ROLE_LABELS[role]}
-      </span>
+      <div className="flex items-center gap-1.5">
+        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/40">
+          <img
+            src={ROLE_ICON_URLS[role]}
+            alt={ROLE_LABELS[role]}
+            className="h-3 w-3"
+          />
+        </div>
+        <span className="text-[10px] font-bold uppercase tracking-widest text-white">
+          {ROLE_LABELS[role]}
+        </span>
+      </div>
       <div className="flex flex-col gap-1">
         {subRoles.map((subRole) => (
           <SubRoleGroup
