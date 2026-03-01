@@ -38,33 +38,31 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-text-secondary">잔여 포인트</span>
-        <div className="flex items-center gap-2">
-          <span
-            data-testid="remaining-points"
-            className={cn(
-              "text-lg font-bold",
-              remaining === 0
-                ? "text-hp"
-                : remaining > 0
-                  ? "text-accent-orange"
-                  : "text-damage",
-            )}
-          >
-            {remaining}
-          </span>
-          <Button
-            variant="outline"
-            size="xs"
-            type="button"
-            disabled={remaining === 0}
-            onClick={() => onChange(distributeRemainingStats(stats))}
-          >
-            <Dices />
-            랜덤 배분하기
-          </Button>
-        </div>
+      <div className="flex items-center justify-end gap-3">
+        <span
+          data-testid="remaining-points"
+          className={cn(
+            "text-lg font-bold tabular-nums",
+            remaining === 0
+              ? "text-hp"
+              : remaining > 0
+                ? "text-accent-orange"
+                : "text-damage",
+          )}
+        >
+          {totalUsed} / {TOTAL_POINTS}
+        </span>
+        <span className="text-sm text-text-muted">사용</span>
+        <Button
+          variant="outline"
+          size="xs"
+          type="button"
+          disabled={remaining === 0}
+          onClick={() => onChange(distributeRemainingStats(stats))}
+        >
+          <Dices />
+          랜덤 배분하기
+        </Button>
       </div>
 
       {STAT_KEYS.map((key) => {
