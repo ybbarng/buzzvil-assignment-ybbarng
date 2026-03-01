@@ -163,7 +163,10 @@ export function PresetDialog({
 
               {/* 오른쪽: 역할군 + 스탯 */}
               <div className="flex w-64 shrink-0 flex-col gap-3">
-                <div className="flex items-center gap-2">
+                <div
+                  key={selected.id}
+                  className="flex animate-fade-in items-center gap-2"
+                >
                   <RoleBadge role={selected.role} />
                   <span className="text-xs tracking-wide text-white">
                     · {SUB_ROLE_LABELS[selected.subRole]}
