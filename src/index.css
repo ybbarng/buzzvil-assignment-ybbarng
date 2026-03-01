@@ -10,7 +10,6 @@
 }
 
 @theme {
-  --font-koverwatch: "Koverwatch", sans-serif;
   /* 게임 테마 색상 */
   --color-bg-primary: #0f0f23;
   --color-bg-secondary: #1a1a2e;
