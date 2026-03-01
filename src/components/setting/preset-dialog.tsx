@@ -46,8 +46,8 @@ function SubRoleGroup({
   const heroes = getPresetsBySubRole(subRole);
 
   return (
-    <div className="flex flex-col gap-0.5">
-      <span className="text-xs tracking-wide text-white">
+    <div className="flex items-start gap-2">
+      <span className="shrink-0 py-1.5 text-xs tracking-wide text-white">
         {SUB_ROLE_LABELS[subRole]}
       </span>
       <div className="flex flex-wrap gap-1">
