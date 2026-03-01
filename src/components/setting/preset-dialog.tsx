@@ -26,11 +26,9 @@ const ROLE_ICON_COLORS: Record<HeroRole, string> = {
 };
 
 const ROLE_ICON_URLS: Record<HeroRole, string> = {
-  tank: "https://i.namu.wiki/i/ScVs43UTdF8F0om1zWy7Ca1G7THYbpOrIN6NZTPW9fY-aXR4A5fwO9exyhFe-Cmme5He7wxQ_L0ZtN44hduTKw.svg",
-  damage:
-    "https://i.namu.wiki/i/1mmFqKtrUg7kIHNA-KYzEkbsJEXaGjpsGobn_U6r-9zaW2tLudn5o3eBjPOVdW0Isd_aA8CImkktBSKOOx02iA.svg",
-  support:
-    "https://i.namu.wiki/i/YbdVoKsNMdoSI8oMshEmhXzZz6jaVSHHaF_Akbw5x2WwbMrskZoW4iSpWWJIP0KS5KJqWxzkS2BjW3fXK5uJhQ.svg",
+  tank: "/icons/role-tank.svg",
+  damage: "/icons/role-damage.svg",
+  support: "/icons/role-support.svg",
 };
 
 function SubRoleGroup({
