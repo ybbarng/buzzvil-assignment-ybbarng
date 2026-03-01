@@ -57,9 +57,19 @@ function animateExitThenDo(
     ),
   );
 
+  const cleanup = () => {
+    container?.style.removeProperty("pointer-events");
+  };
+
   Promise.all(animations.map((a) => a.finished))
-    .then(callback)
-    .catch(callback);
+    .then(() => {
+      cleanup();
+      callback();
+    })
+    .catch(() => {
+      cleanup();
+      callback();
+    });
 }
 
 export function SettingScreen() {
