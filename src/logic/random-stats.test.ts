@@ -89,16 +89,16 @@ describe("distributeRandomToStat", () => {
     }
   });
 
-  it("잔여 포인트가 0이면 스탯이 변하지 않는다", () => {
+  it("잔여 포인트가 0이면 원본 참조를 그대로 반환한다", () => {
     const full: Stats = { hp: 100, mp: 60, atk: 20, def: 10, spd: 10 };
     const result = distributeRandomToStat(full, "hp");
-    expect(result).toEqual(full);
+    expect(result).toBe(full);
   });
 
-  it("스탯이 이미 max이면 변하지 않는다", () => {
+  it("스탯이 이미 max이면 원본 참조를 그대로 반환한다", () => {
     const base: Stats = { hp: 100, mp: 20, atk: 5, def: 5, spd: 5 };
     const result = distributeRandomToStat(base, "hp");
-    expect(result).toEqual(base);
+    expect(result).toBe(base);
   });
 
   it("항상 최소 1 이상을 배분한다", () => {
