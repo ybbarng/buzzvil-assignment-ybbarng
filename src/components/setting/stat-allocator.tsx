@@ -2,6 +2,7 @@ import { Dices, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
+  STAT_COLORS,
   STAT_KEYS,
   STAT_LABELS,
   STAT_RANGES,
@@ -71,11 +72,11 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
         return (
           <div key={key} className="space-y-1">
             <div className="flex items-center justify-between">
-              <label
-                htmlFor={`stat-${key}`}
-                className="text-sm font-medium text-text-primary"
-              >
-                {STAT_LABELS[key]}
+              <label htmlFor={`stat-${key}`} className="text-sm font-medium">
+                <span className="text-text-primary">{STAT_LABELS[key].ko}</span>
+                <span className="ml-1.5 text-text-muted">
+                  {STAT_LABELS[key].en}
+                </span>
               </label>
               <input
                 id={`stat-${key}`}
@@ -99,13 +100,14 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                 max={max}
                 value={[stats[key]]}
                 onValueChange={([v]) => handleStatChange(key, v)}
+                className={STAT_COLORS[key].slider}
               />
               <Button
                 variant="ghost"
                 size="icon-xs"
                 type="button"
-                aria-label={`${STAT_LABELS[key]} 랜덤 배분`}
-                title={`${STAT_LABELS[key]} 랜덤 배분`}
+                aria-label={`${STAT_LABELS[key].ko} 랜덤 배분`}
+                title={`${STAT_LABELS[key].ko} 랜덤 배분`}
                 disabled={remaining === 0 || stats[key] >= max}
                 onClick={() => onChange(distributeRandomToStat(stats, key))}
               >
@@ -115,8 +117,8 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                 variant="ghost"
                 size="icon-xs"
                 type="button"
-                aria-label={`${STAT_LABELS[key]} 초기화`}
-                title={`${STAT_LABELS[key]} 초기화`}
+                aria-label={`${STAT_LABELS[key].ko} 초기화`}
+                title={`${STAT_LABELS[key].ko} 초기화`}
                 disabled={stats[key] <= min}
                 onClick={() => onChange(clearStat(stats, key))}
               >
