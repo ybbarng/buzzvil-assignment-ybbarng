@@ -55,3 +55,5 @@ export const GameButton = forwardRef<HTMLButtonElement, GameButtonProps>(
     );
   },
 );
+
+GameButton.displayName = "GameButton";
