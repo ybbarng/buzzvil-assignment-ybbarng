@@ -10,7 +10,7 @@ export function GameContainer({ children, className }: GameContainerProps) {
   return (
     <div
       className={cn(
-        "flex min-h-screen items-center justify-center bg-bg-primary p-4",
+        "flex min-h-screen select-none items-center justify-center bg-bg-primary p-4",
         className,
       )}
     >
