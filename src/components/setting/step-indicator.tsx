@@ -47,7 +47,7 @@ export function StepIndicator({
           >
             <span
               className={cn(
-                "skew-x-12 block text-xs font-bold tracking-wider uppercase",
+                "skew-x-12 block text-sm tracking-wider uppercase",
                 isCurrent && "text-bg-primary",
                 isCompleted && "text-white",
                 isFuture && "text-text-muted",
