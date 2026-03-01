@@ -7,7 +7,7 @@ import { slideInClass, staggerDelay } from "@/constants/theme";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
-import type { SettingStep } from "@/types/game";
+import type { Direction, SettingStep } from "@/types/game";
 
 const STEP_GUIDES: Record<SettingStep, string> = {
   1: "영웅 등록을 시작합니다. 이름과 능력치를 설정하세요.",
@@ -15,12 +15,11 @@ const STEP_GUIDES: Record<SettingStep, string> = {
   3: "전투 난이도를 선택하세요. 난이도에 따라 적의 강도가 달라집니다.",
 };
 
-type Direction = "forward" | "backward";
-
 /**
  * Web Animations API로 [data-animate] 요소들을 순차 퇴장시킨 뒤 callback을 호출한다.
  * forward: 왼쪽으로 퇴장, backward: 오른쪽으로 퇴장.
  * jsdom(테스트 환경)에서는 el.animate가 없으므로 즉시 callback을 호출한다.
+ * prefers-reduced-motion이 활성화된 경우에도 애니메이션 없이 즉시 callback을 호출한다.
  */
 function animateExitThenDo(
   container: HTMLElement | null,
