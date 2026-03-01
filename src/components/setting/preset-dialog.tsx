@@ -36,12 +36,10 @@ const ROLE_ICON_URLS: Record<HeroRole, string> = {
 
 function SubRoleGroup({
   subRole,
-  roleColor,
   selected,
   onSelect,
 }: {
   subRole: HeroSubRole;
-  roleColor: string;
   selected: HeroPreset | null;
   onSelect: (hero: HeroPreset) => void;
 }) {
@@ -49,7 +47,7 @@ function SubRoleGroup({
 
   return (
     <div className="flex flex-col gap-0.5">
-      <span className={`text-[10px] font-medium tracking-wide ${roleColor}`}>
+      <span className="text-xs tracking-wide text-white">
         {SUB_ROLE_LABELS[subRole]}
       </span>
       <div className="flex flex-wrap gap-1">
@@ -104,7 +102,6 @@ function RoleSection({
           <SubRoleGroup
             key={subRole}
             subRole={subRole}
-            roleColor={ROLE_ICON_COLORS[role]}
             selected={selected}
             onSelect={onSelect}
           />
