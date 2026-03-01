@@ -1,8 +1,9 @@
-import { type CSSProperties, useRef } from "react";
+import { useRef } from "react";
 import { DifficultyForm } from "@/components/setting/difficulty-form";
 import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
+import { STAGGER_MS, staggerDelay } from "@/constants/theme";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -13,12 +14,6 @@ const STEP_GUIDES: Record<SettingStep, string> = {
   2: "전투에 사용할 스킬을 장착하세요. 최대 4개까지 선택할 수 있습니다.",
   3: "전투 난이도를 선택하세요. 난이도에 따라 적의 강도가 달라집니다.",
 };
-
-const STAGGER_MS = 400;
-
-function staggerDelay(index: number): CSSProperties {
-  return { animationDelay: `${index * STAGGER_MS}ms` };
-}
 
 /**
  * Web Animations API로 [data-animate] 요소들을 왼쪽으로 순차 퇴장시킨 뒤 callback을 호출한다.

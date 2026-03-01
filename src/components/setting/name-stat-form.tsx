@@ -6,7 +6,7 @@ import { StatAllocator } from "@/components/setting/stat-allocator";
 import { GameButton } from "@/components/ui/game-button";
 import { Input } from "@/components/ui/input";
 import { TOTAL_POINTS } from "@/constants/stats";
-import { SKEW, SKEW_TEXT } from "@/constants/theme";
+import { SKEW, SKEW_TEXT, staggerDelay } from "@/constants/theme";
 import {
   type NameStatFormData,
   nameStatSchema,
@@ -61,7 +61,7 @@ export function NameStatForm({
       <section
         className="animate-slide-in border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4"
         data-animate
-        style={{ animationDelay: "800ms" }}
+        style={staggerDelay(2)}
       >
         <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
           캐릭터 이름
@@ -98,7 +98,7 @@ export function NameStatForm({
       <section
         className="animate-slide-in border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4"
         data-animate
-        style={{ animationDelay: "1200ms" }}
+        style={staggerDelay(3)}
       >
         <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
           스탯 배분
@@ -118,7 +118,7 @@ export function NameStatForm({
         disabled={!isComplete}
         active={isComplete}
         className="animate-slide-in w-full"
-        style={{ animationDelay: "1600ms" }}
+        style={staggerDelay(4)}
       >
         다음
       </GameButton>

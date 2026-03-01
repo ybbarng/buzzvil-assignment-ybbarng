@@ -17,3 +17,11 @@ export const SKEW_SUBTLE = SKEW_ENABLED ? "-skew-x-6" : "";
 
 /** body에 적용할 폰트 이탤릭 여부 */
 export const FONT_ITALIC = SKEW_ENABLED;
+
+/** 스텝 전환 애니메이션의 요소 간 stagger 간격 (ms) */
+export const STAGGER_MS = 400;
+
+/** 주어진 인덱스에 해당하는 animationDelay 스타일 */
+export function staggerDelay(index: number): { animationDelay: string } {
+  return { animationDelay: `${index * STAGGER_MS}ms` };
+}
