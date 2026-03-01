@@ -6,6 +6,7 @@ import { StatAllocator } from "@/components/setting/stat-allocator";
 import { Input } from "@/components/ui/input";
 import { TOTAL_POINTS } from "@/constants/stats";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
+import { cn } from "@/lib/utils";
 import {
   type NameStatFormData,
   nameStatSchema,
@@ -106,7 +107,12 @@ export function NameStatForm({
         type="submit"
         data-testid="next-button"
         disabled={!isComplete}
-        className={`${SKEW} w-full cursor-pointer bg-accent-orange py-3 text-sm font-bold tracking-wider text-bg-primary uppercase transition-all hover:bg-accent-orange-hover disabled:cursor-not-allowed disabled:opacity-50`}
+        className={cn(
+          `${SKEW} w-full cursor-pointer px-8 py-2.5 text-sm font-bold text-white uppercase tracking-wider transition-all disabled:cursor-not-allowed disabled:opacity-40`,
+          isComplete
+            ? "animate-button-ready bg-accent-orange hover:bg-accent-orange-hover"
+            : "bg-accent-orange",
+        )}
       >
         <span className={`${SKEW_TEXT} block`}>다음</span>
       </button>
