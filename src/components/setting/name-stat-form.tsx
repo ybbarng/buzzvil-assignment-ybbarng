@@ -50,7 +50,7 @@ export function NameStatForm({
   };
 
   const handlePresetSelect = (hero: HeroPreset) => {
-    setValue("name", hero.name);
+    setValue("name", hero.name, { shouldValidate: true });
     setValue("stats", hero.stats, { shouldValidate: true });
     setPresetOpen(false);
   };
