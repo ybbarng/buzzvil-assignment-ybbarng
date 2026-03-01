@@ -28,33 +28,25 @@ export const STAT_LABELS: Record<StatKey, { en: string; ko: string }> = {
   spd: { en: "SPD", ko: "속도" },
 };
 
-export const STAT_COLORS: Record<
-  StatKey,
-  { bg: string; text: string; slider: string }
-> = {
+export const STAT_COLORS: Record<StatKey, { bg: string; slider: string }> = {
   hp: {
     bg: "bg-hp",
-    text: "text-hp",
     slider: "[&_[data-slot=slider-range]]:bg-hp",
   },
   mp: {
     bg: "bg-mp",
-    text: "text-mp",
     slider: "[&_[data-slot=slider-range]]:bg-mp",
   },
   atk: {
     bg: "bg-damage",
-    text: "text-damage",
     slider: "[&_[data-slot=slider-range]]:bg-damage",
   },
   def: {
     bg: "bg-accent-blue",
-    text: "text-accent-blue",
     slider: "[&_[data-slot=slider-range]]:bg-accent-blue",
   },
   spd: {
     bg: "bg-buff",
-    text: "text-buff",
     slider: "[&_[data-slot=slider-range]]:bg-buff",
   },
 };
