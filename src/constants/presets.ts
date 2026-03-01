@@ -208,11 +208,11 @@ export const HERO_PRESETS: HeroPreset[] = [
   },
   {
     id: "emre",
-    name: "에므레",
+    name: "엠레",
     role: "damage",
     subRole: "specialist",
     description:
-      "오버워치 타격팀에서 눈부신 활약을 펼쳤던 에므레는 자취를 감췄다가 수년 후 미지의 존재에게 조종당한 상태로 다시 나타났습니다.",
+      "오버워치 타격팀에서 눈부신 활약을 펼쳤던 엠레는 자취를 감췄다가 수년 후 미지의 존재에게 조종당한 상태로 다시 나타났습니다.",
     stats: { hp: 55, mp: 78, atk: 25, def: 12, spd: 30 },
   },
   {
@@ -483,11 +483,11 @@ export const HERO_PRESETS: HeroPreset[] = [
   },
   {
     id: "illari",
-    name: "일라리",
+    name: "일리아리",
     role: "support",
     subRole: "survivor",
     description:
-      "최후의 인티 전사인 일라리는 태양의 힘을 담는 그릇입니다. 과거를 속죄하기 위해서라면 무엇이든 할 겁니다.",
+      "최후의 인티 전사인 일리아리는 태양의 힘을 담는 그릇입니다. 과거를 속죄하기 위해서라면 무엇이든 할 겁니다.",
     stats: { hp: 50, mp: 92, atk: 18, def: 15, spd: 25 },
   },
   {
