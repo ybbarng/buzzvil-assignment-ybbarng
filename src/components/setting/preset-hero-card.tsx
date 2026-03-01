@@ -12,6 +12,9 @@ const STAT_BAR_COLORS: Record<StatKey, string> = {
 };
 
 export function PresetHeroDetail({ hero }: { hero: HeroPreset }) {
+  // 최초 마운트 시 스탯 바를 0%→실제값으로 애니메이션하기 위해
+  // rAF로 한 프레임 지연 후 mounted를 true로 전환한다.
+  // 이후 영웅 전환 시에는 컴포넌트가 유지되므로 CSS transition이 이전값→새값을 처리한다.
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

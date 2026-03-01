@@ -6,12 +6,6 @@ export const ROLE_LABELS: Record<HeroRole, string> = {
   support: "지원",
 };
 
-export const ROLE_COLORS: Record<HeroRole, string> = {
-  tank: "bg-accent-blue",
-  damage: "bg-damage",
-  support: "bg-heal",
-};
-
 export const SUB_ROLE_LABELS: Record<HeroSubRole, string> = {
   initiator: "개시자",
   brawler: "투사",
