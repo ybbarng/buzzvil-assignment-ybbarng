@@ -3,6 +3,7 @@ import { GameContainer } from "@/components/layout/game-container";
 import { ResultScreen } from "@/components/result/result-screen";
 import { SettingScreen } from "@/components/setting/setting-screen";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { FONT_ITALIC } from "@/constants/theme";
 import { useGameStore } from "@/stores/game-store";
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
 
   return (
     <TooltipProvider>
-      <GameContainer>
+      <GameContainer className={FONT_ITALIC ? "italic" : ""}>
         {phase === "setting" && <SettingScreen />}
         {phase === "battle" && <BattleScreen />}
         {phase === "result" && <ResultScreen />}

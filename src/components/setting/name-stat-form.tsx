@@ -5,6 +5,7 @@ import { PresetDialog } from "@/components/setting/preset-dialog";
 import { StatAllocator } from "@/components/setting/stat-allocator";
 import { Input } from "@/components/ui/input";
 import { TOTAL_POINTS } from "@/constants/stats";
+import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import {
   type NameStatFormData,
   nameStatSchema,
@@ -61,7 +62,7 @@ export function NameStatForm({
           캐릭터 이름
         </h2>
         <div className="flex gap-2">
-          <div className="flex-1 -skew-x-12 bg-bg-tertiary px-4 py-2">
+          <div className={`flex-1 ${SKEW} bg-bg-tertiary px-4 py-2`}>
             <Input
               data-testid="name-input"
               placeholder="이름을 입력하세요 (1~10자)"
@@ -73,9 +74,9 @@ export function NameStatForm({
           <button
             type="button"
             onClick={() => setPresetOpen(true)}
-            className="-skew-x-12 cursor-pointer bg-accent-blue px-4 py-2 text-xs font-bold tracking-wider text-white uppercase transition-all hover:scale-105 hover:brightness-125"
+            className={`${SKEW} cursor-pointer bg-accent-blue px-4 py-2 text-xs font-bold tracking-wider text-white uppercase transition-all hover:scale-105 hover:brightness-125`}
           >
-            <span className="skew-x-12 block">프리셋</span>
+            <span className={`${SKEW_TEXT} block`}>프리셋</span>
           </button>
         </div>
         {errors.name && (
@@ -105,9 +106,9 @@ export function NameStatForm({
         type="submit"
         data-testid="next-button"
         disabled={!isComplete}
-        className="-skew-x-12 w-full cursor-pointer bg-accent-orange py-3 text-sm font-bold tracking-wider text-bg-primary uppercase transition-all hover:bg-accent-orange-hover disabled:cursor-not-allowed disabled:opacity-50"
+        className={`${SKEW} w-full cursor-pointer bg-accent-orange py-3 text-sm font-bold tracking-wider text-bg-primary uppercase transition-all hover:bg-accent-orange-hover disabled:cursor-not-allowed disabled:opacity-50`}
       >
-        <span className="skew-x-12 block">다음</span>
+        <span className={`${SKEW_TEXT} block`}>다음</span>
       </button>
     </form>
   );

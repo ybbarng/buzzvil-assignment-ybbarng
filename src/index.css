@@ -47,7 +47,6 @@
 
 body {
   font-family: "Koverwatch", sans-serif;
-  font-style: italic;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
 }

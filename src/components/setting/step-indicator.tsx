@@ -3,6 +3,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { cn, josa } from "@/lib/utils";
 import type { SettingStep } from "@/types/game";
 
@@ -36,7 +37,7 @@ export function StepIndicator({
             disabled={isCurrent || isFuture}
             onClick={() => isCompleted && onStepClick?.(step)}
             className={cn(
-              "-skew-x-12 px-6 py-2 transition-all duration-300",
+              `${SKEW} px-6 py-2 transition-all duration-300`,
               isCurrent &&
                 "animate-pulse-glow bg-accent-orange hover:scale-105",
               isCompleted &&
@@ -47,7 +48,7 @@ export function StepIndicator({
           >
             <span
               className={cn(
-                "skew-x-12 block text-sm tracking-wider uppercase",
+                `${SKEW_TEXT} block text-sm tracking-wider uppercase`,
                 isCurrent && "text-bg-primary",
                 isCompleted && "text-white",
                 isFuture && "text-text-muted",

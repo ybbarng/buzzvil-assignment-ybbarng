@@ -8,6 +8,7 @@ import {
   STAT_RANGES,
   TOTAL_POINTS,
 } from "@/constants/stats";
+import { SKEW } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 import {
   clearStat,
@@ -76,7 +77,7 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
                   {STAT_LABELS[key].en}
                 </span>
               </label>
-              <div className="-skew-x-12 bg-bg-tertiary px-3 py-1">
+              <div className={`${SKEW} bg-bg-tertiary px-3 py-1`}>
                 <input
                   id={`stat-${key}`}
                   data-testid={`stat-${key}`}
