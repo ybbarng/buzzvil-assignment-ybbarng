@@ -52,6 +52,8 @@ describe("OW_HERO_STAT_META", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  // generateHeroPreset()의 런타임 assertion과 중복되나,
+  // assertion 제거 시를 대비한 defense-in-depth로 유지.
   it("모든 영웅의 조정값 합계가 0이다", () => {
     for (const hero of OW_HERO_STAT_META) {
       const adj = hero.adjustments;
@@ -81,6 +83,8 @@ describe("generateAllHeroPresets", () => {
     expect(generated.length).toBe(OW_HERO_STAT_META.length);
   });
 
+  // generateHeroPreset()의 런타임 assertion과 중복되나,
+  // assertion 제거 시를 대비한 defense-in-depth로 유지.
   it("생성된 프리셋의 스탯 총합이 모두 200이다", () => {
     for (const preset of generated) {
       const total = Object.values(preset.stats).reduce((a, b) => a + b, 0);
@@ -88,6 +92,8 @@ describe("generateAllHeroPresets", () => {
     }
   });
 
+  // generateHeroPreset()의 런타임 assertion과 중복되나,
+  // assertion 제거 시를 대비한 defense-in-depth로 유지.
   it("생성된 프리셋의 모든 스탯이 허용 범위 내에 있다", () => {
     for (const preset of generated) {
       for (const [key, value] of Object.entries(preset.stats)) {
