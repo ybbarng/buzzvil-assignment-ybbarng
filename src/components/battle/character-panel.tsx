@@ -114,14 +114,12 @@ export function CharacterPanel({
         />
         <StatLabel label="SPD" value={baseSpd} base={baseSpd} />
       </div>
-      {displayBuffs.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-1">
-          {displayBuffs.map((buff, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: buffs are ordered and index is stable within render
-            <BuffIndicator key={index} buff={buff} />
-          ))}
-        </div>
-      )}
+      <div className="mt-2 flex min-h-6 flex-wrap gap-1">
+        {displayBuffs.map((buff, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: buffs are ordered and index is stable within render
+          <BuffIndicator key={index} buff={buff} />
+        ))}
+      </div>
     </div>
   );
 }
