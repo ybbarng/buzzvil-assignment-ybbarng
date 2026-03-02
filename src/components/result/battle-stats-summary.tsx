@@ -1,5 +1,5 @@
 import { STAGGER_MS } from "@/constants/theme";
-import { useCountUp } from "@/hooks/use-count-up";
+import { useCountUpProgress } from "@/hooks/use-count-up";
 import { cn } from "@/lib/utils";
 import type { BattleStats } from "@/logic/battle-stats";
 import type { BattleCharacter } from "@/types/battle";
@@ -134,14 +134,12 @@ function StatBar({
   barColor,
   delay,
 }: RowConfig & { delay: number }) {
-  const displayedPlayer = useCountUp(playerValue, delay);
-  const displayedEnemy = useCountUp(enemyValue, delay);
+  const progress = useCountUpProgress(delay);
 
-  // 카운트업 진행률에 맞춰 바도 함께 채워짐
-  const playerBarPct =
-    playerValue === 0 ? 0 : (displayedPlayer / playerValue) * playerPct;
-  const enemyBarPct =
-    enemyValue === 0 ? 0 : (displayedEnemy / enemyValue) * enemyPct;
+  const displayedPlayer = Math.round(progress * playerValue);
+  const displayedEnemy = Math.round(progress * enemyValue);
+  const playerBarPct = progress * playerPct;
+  const enemyBarPct = progress * enemyPct;
 
   return (
     <div className="space-y-1">
