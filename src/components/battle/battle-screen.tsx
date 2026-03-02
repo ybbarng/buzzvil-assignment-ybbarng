@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
+import { SKEW, SKEW_TEXT, staggerDelay } from "@/constants/theme";
 import { useBattleStore } from "@/stores/battle-store";
 import { useSettingStore } from "@/stores/setting-store";
 
@@ -27,20 +28,30 @@ export function BattleScreen() {
 
   return (
     <div className="space-y-4">
+      {/* 라운드 배지 + 캐릭터 패널: 위에서 슬라이드 */}
       <div
-        data-testid="round-display"
-        className="text-center text-lg font-bold text-accent-orange"
+        className="animate-slide-in-top flex items-center justify-center gap-2"
+        style={staggerDelay(0)}
       >
-        라운드 {round}
+        <span
+          data-testid="round-display"
+          className={`inline-block bg-accent-orange px-4 py-1 text-lg font-bold text-bg-primary ${SKEW}`}
+        >
+          <span className={SKEW_TEXT}>라운드 {round}</span>
+        </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div
+        className="animate-slide-in-top grid grid-cols-[1fr_auto_1fr] items-center gap-4"
+        style={staggerDelay(1)}
+      >
         <CharacterPanel
           character={player}
           testId="player-panel"
           nameTestId="player-name"
           side="player"
         />
+        <span className="text-2xl font-bold text-text-muted">VS</span>
         <CharacterPanel
           character={enemy}
           testId="enemy-panel"
@@ -49,11 +60,16 @@ export function BattleScreen() {
         />
       </div>
 
+      {/* 액션 패널 + 로그: 아래에서 슬라이드 */}
       {!outcome && (
-        <ActionPanel player={player} onAction={executePlayerAction} />
+        <div className="animate-slide-in-bottom" style={staggerDelay(2)}>
+          <ActionPanel player={player} onAction={executePlayerAction} />
+        </div>
       )}
 
-      <BattleLog logs={logs} />
+      <div className="animate-slide-in-bottom" style={staggerDelay(3)}>
+        <BattleLog logs={logs} />
+      </div>
     </div>
   );
 }
