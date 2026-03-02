@@ -7,6 +7,13 @@ import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { josa } from "@/lib/utils";
 import { useBattleStore } from "@/stores/battle-store";
 import { useSettingStore } from "@/stores/setting-store";
+import type { RoundEvent } from "@/types/battle-event";
+
+type ActorEvent = Extract<RoundEvent, { actor: unknown }>;
+
+function hasActor(event: RoundEvent): event is ActorEvent {
+  return "actor" in event;
+}
 
 export function BattleScreen() {
   const player = useBattleStore((s) => s.player);
@@ -50,8 +57,8 @@ export function BattleScreen() {
     const lastEvent = events[events.length - 1];
     if (
       lastEvent &&
-      "actor" in lastEvent &&
-      "actor" in nextEvent &&
+      hasActor(lastEvent) &&
+      hasActor(nextEvent) &&
       lastEvent.actor !== nextEvent.actor
     ) {
       delay += ACTOR_CHANGE_DELAY;
