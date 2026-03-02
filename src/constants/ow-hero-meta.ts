@@ -600,13 +600,6 @@ export const OW_HERO_STAT_META: OwHeroStatMeta[] = [
   },
 ];
 
-/** heroId로 스탯 메타데이터를 찾는다 */
-export function getOwHeroStatMetaByHeroId(
-  heroId: string,
-): OwHeroStatMeta | undefined {
-  return OW_HERO_STAT_META.find((h) => h.heroId === heroId);
-}
-
 /** 메타데이터 + 변환 규칙으로 HeroPreset을 생성한다 */
 export function generateHeroPreset(
   meta: OwHeroStatMeta,
