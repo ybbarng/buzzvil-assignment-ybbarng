@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { BattleStatsSummary } from "@/components/result/battle-stats-summary";
-import { FinalStatusComparison } from "@/components/result/final-status-comparison";
 import { GameButton } from "@/components/ui/game-button";
 import { STAGGER_MS, staggerDelay } from "@/constants/theme";
 import { cn } from "@/lib/utils";
@@ -51,7 +50,6 @@ export function ResultScreen() {
   let idx = 0;
   const titleIdx = idx++;
   const turnsIdx = idx++;
-  const statusIdx = hasBattleData ? idx++ : -1;
   const statsIdx = hasBattleData ? idx++ : -1;
   const buttonIdx = idx++;
 
@@ -79,26 +77,16 @@ export function ResultScreen() {
         {totalTurns}턴 만에 전투 종료
       </p>
 
-      {/* 최종 캐릭터 상태 비교 */}
-      {hasBattleData && (
-        <div
-          className="animate-slide-in-right flex w-full justify-center"
-          style={staggerDelay(statusIdx)}
-        >
-          <FinalStatusComparison player={player} enemy={enemy} />
-        </div>
-      )}
-
-      {/* 전투 통계 */}
+      {/* 전투 통계 (HP/MP + 데미지/회복/스킬) */}
       {hasBattleData && playerStats && enemyStats && (
         <div
           className="animate-slide-in-right flex w-full justify-center"
           style={staggerDelay(statsIdx)}
         >
           <BattleStatsSummary
-            playerName={player.name}
+            player={player}
+            enemy={enemy}
             playerStats={playerStats}
-            enemyName={enemy.name}
             enemyStats={enemyStats}
             baseDelay={statsIdx * STAGGER_MS}
           />
