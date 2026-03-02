@@ -34,15 +34,27 @@ export function createLogEntry(
   };
 }
 
-/** ActionEvent만 필터링하여 레거시 BattleLogEntry[] 형태로 변환 */
+/** ActionEvent + DefendEvent를 레거시 BattleLogEntry[] 형태로 변환 */
 export function eventsToLegacyLogs(events: RoundEvent[]): BattleLogEntry[] {
-  return events
-    .filter((e) => e.type === "action")
-    .map((e) => ({
-      round: e.round,
-      actor: e.actorName,
-      skillName: e.skillName,
-      skillType: e.skillType,
-      value: e.value,
-    }));
+  const result: BattleLogEntry[] = [];
+  for (const e of events) {
+    if (e.type === "action") {
+      result.push({
+        round: e.round,
+        actor: e.actorName,
+        skillName: e.skillName,
+        skillType: e.skillType,
+        value: e.value,
+      });
+    } else if (e.type === "defend") {
+      result.push({
+        round: e.round,
+        actor: e.actorName,
+        skillName: "방어",
+        skillType: "defend",
+        value: 0,
+      });
+    }
+  }
+  return result;
 }
