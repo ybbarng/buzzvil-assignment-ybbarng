@@ -4,7 +4,10 @@ import { cn } from "@/lib/utils";
 import type { BattleStats } from "@/logic/battle-stats";
 
 interface BattleStatsSummaryProps {
-  stats: BattleStats;
+  playerName: string;
+  playerStats: BattleStats;
+  enemyName: string;
+  enemyStats: BattleStats;
   /** 카운트업 애니메이션 시작 전 대기 시간 (ms) */
   baseDelay: number;
 }
@@ -17,16 +20,32 @@ const STAT_ITEMS: { key: keyof BattleStats; label: string; color: string }[] = [
 ];
 
 export function BattleStatsSummary({
-  stats,
+  playerName,
+  playerStats,
+  enemyName,
+  enemyStats,
   baseDelay,
 }: BattleStatsSummaryProps) {
   return (
-    <div className="grid w-full max-w-md grid-cols-2 gap-x-6 gap-y-3">
+    <div className="w-full max-w-md space-y-3">
+      {/* 이름 헤더 */}
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+        <span className="text-right text-sm font-bold text-text-secondary">
+          {playerName}
+        </span>
+        <span className="text-xs text-text-muted">VS</span>
+        <span className="text-left text-sm font-bold text-text-secondary">
+          {enemyName}
+        </span>
+      </div>
+
+      {/* 통계 행 */}
       {STAT_ITEMS.map((item, i) => (
-        <StatItem
+        <StatRow
           key={item.key}
           label={item.label}
-          value={stats[item.key]}
+          playerValue={playerStats[item.key]}
+          enemyValue={enemyStats[item.key]}
           color={item.color}
           delay={baseDelay + i * (STAGGER_MS / 2)}
         />
@@ -35,23 +54,31 @@ export function BattleStatsSummary({
   );
 }
 
-function StatItem({
+function StatRow({
   label,
-  value,
+  playerValue,
+  enemyValue,
   color,
   delay,
 }: {
   label: string;
-  value: number;
+  playerValue: number;
+  enemyValue: number;
   color: string;
   delay: number;
 }) {
-  const displayed = useCountUp(value, delay);
+  const displayedPlayer = useCountUp(playerValue, delay);
+  const displayedEnemy = useCountUp(enemyValue, delay);
 
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-sm text-text-muted">{label}</span>
-      <span className={cn("text-lg font-bold", color)}>{displayed}</span>
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+      <span className={cn("text-right text-lg font-bold", color)}>
+        {displayedPlayer}
+      </span>
+      <span className="text-xs text-text-muted">{label}</span>
+      <span className={cn("text-left text-lg font-bold", color)}>
+        {displayedEnemy}
+      </span>
     </div>
   );
 }

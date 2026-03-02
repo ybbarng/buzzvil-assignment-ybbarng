@@ -42,6 +42,10 @@ export function ResultScreen() {
     () => (hasBattleData ? computeBattleStats(events, player.name) : null),
     [hasBattleData, events, player?.name],
   );
+  const enemyStats = useMemo(
+    () => (hasBattleData ? computeBattleStats(events, enemy.name) : null),
+    [hasBattleData, events, enemy?.name],
+  );
 
   // 순차 등장 인덱스 계산
   let idx = 0;
@@ -86,13 +90,16 @@ export function ResultScreen() {
       )}
 
       {/* 전투 통계 */}
-      {hasBattleData && playerStats && (
+      {hasBattleData && playerStats && enemyStats && (
         <div
           className="animate-slide-in-right flex w-full justify-center"
           style={staggerDelay(statsIdx)}
         >
           <BattleStatsSummary
-            stats={playerStats}
+            playerName={player.name}
+            playerStats={playerStats}
+            enemyName={enemy.name}
+            enemyStats={enemyStats}
             baseDelay={statsIdx * STAGGER_MS}
           />
         </div>
