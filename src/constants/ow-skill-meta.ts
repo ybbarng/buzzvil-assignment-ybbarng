@@ -1686,7 +1686,7 @@ export const OW_HERO_META: OwHeroMeta[] = [
       },
       {
         name: "볼륨을 높여라!",
-        category: "healing",
+        category: "attack_buff",
         description: "현재 노래 효과 증폭 (치유 또는 이동속도)",
         gameValues: {
           type: "buff",

@@ -98,6 +98,9 @@ describe("OW_HERO_META", () => {
         const rule = CONVERSION_RULES[skill.category];
         const gv = skill.gameValues;
 
+        // 카테고리의 예상 gameType과 실제 gameValues type이 일치해야 한다
+        expect(gv.type).toBe(rule.gameType);
+
         expect(gv.mpCost).toBeGreaterThanOrEqual(rule.mpCost.min);
         expect(gv.mpCost).toBeLessThanOrEqual(rule.mpCost.max);
 
