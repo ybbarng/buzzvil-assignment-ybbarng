@@ -163,10 +163,11 @@ export function generateRoundEvents(
       skillForEffect,
     );
 
-    const actorAfter = isPlayerTurn ? result.user : result.target;
-    const targetAfter = isPlayerTurn ? result.target : result.user;
+    // resolveSkillEffect(actor, target)이므로 result.user=actor, result.target=target
+    const actorAfter = result.user;
+    const targetAfter = result.target;
 
-    // value 계산 (기존 로직과 동일)
+    // value 계산
     let value = 0;
     switch (turn.skill.type) {
       case "attack":
@@ -181,8 +182,13 @@ export function generateRoundEvents(
         break;
     }
 
-    p = isPlayerTurn ? result.user : result.target;
-    e = isPlayerTurn ? result.target : result.user;
+    if (isPlayerTurn) {
+      p = actorAfter;
+      e = targetAfter;
+    } else {
+      p = targetAfter;
+      e = actorAfter;
+    }
 
     events.push({
       type: "skill-effect",
