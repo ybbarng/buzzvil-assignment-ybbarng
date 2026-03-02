@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { HERO_PRESETS } from "@/constants/presets";
 import {
-  SKILL_PRESETS,
   getSkillPresetByHeroId,
   presetEntryToSkill,
+  SKILL_PRESETS,
 } from "@/constants/skill-presets";
 import { SKILL_CONSTRAINTS } from "@/schemas/skill.schema";
 import type { SkillPresetEntry } from "@/types/skill-preset";
@@ -26,8 +26,12 @@ describe("SKILL_PRESETS", () => {
   it("스킬 이름은 1~8자이다", () => {
     for (const preset of SKILL_PRESETS) {
       for (const skill of preset.skills) {
-        expect(skill.name.length).toBeGreaterThanOrEqual(SKILL_CONSTRAINTS.name.min);
-        expect(skill.name.length).toBeLessThanOrEqual(SKILL_CONSTRAINTS.name.max);
+        expect(skill.name.length).toBeGreaterThanOrEqual(
+          SKILL_CONSTRAINTS.name.min,
+        );
+        expect(skill.name.length).toBeLessThanOrEqual(
+          SKILL_CONSTRAINTS.name.max,
+        );
       }
     }
   });
@@ -35,7 +39,9 @@ describe("SKILL_PRESETS", () => {
   it("mpCost는 제약 범위 내이다", () => {
     for (const preset of SKILL_PRESETS) {
       for (const skill of preset.skills) {
-        expect(skill.mpCost).toBeGreaterThanOrEqual(SKILL_CONSTRAINTS.mpCost.min);
+        expect(skill.mpCost).toBeGreaterThanOrEqual(
+          SKILL_CONSTRAINTS.mpCost.min,
+        );
         expect(skill.mpCost).toBeLessThanOrEqual(SKILL_CONSTRAINTS.mpCost.max);
       }
     }
@@ -75,7 +81,9 @@ describe("SKILL_PRESETS", () => {
     for (const preset of SKILL_PRESETS) {
       for (const skill of preset.skills) {
         if (skill.type === "buff" || skill.type === "debuff") {
-          expect(skill.value).toBeGreaterThanOrEqual(SKILL_CONSTRAINTS.value.min);
+          expect(skill.value).toBeGreaterThanOrEqual(
+            SKILL_CONSTRAINTS.value.min,
+          );
           expect(skill.value).toBeLessThanOrEqual(SKILL_CONSTRAINTS.value.max);
           expect(skill.duration).toBeGreaterThanOrEqual(
             SKILL_CONSTRAINTS.duration.min,

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { HERO_PRESETS } from "@/constants/presets";
 import {
   CONVERSION_RULES,
-  OW_HERO_META,
   getOwHeroMetaByHeroId,
+  OW_HERO_META,
 } from "@/constants/ow-skill-meta";
+import { HERO_PRESETS } from "@/constants/presets";
 import { SKILL_PRESETS } from "@/constants/skill-presets";
 
 describe("OW_HERO_META", () => {
@@ -19,7 +19,7 @@ describe("OW_HERO_META", () => {
     for (const preset of SKILL_PRESETS) {
       const meta = getOwHeroMetaByHeroId(preset.heroId);
       expect(meta).toBeDefined();
-      expect(meta!.skills.length).toBe(preset.skills.length);
+      expect(meta?.skills.length).toBe(preset.skills.length);
     }
   });
 
@@ -97,7 +97,7 @@ describe("CONVERSION_RULES", () => {
     );
     for (const rule of attackRules) {
       expect(rule.multiplier).toBeDefined();
-      expect(rule.multiplier!.min).toBeGreaterThan(0);
+      expect(rule.multiplier?.min).toBeGreaterThan(0);
     }
   });
 
@@ -107,7 +107,7 @@ describe("CONVERSION_RULES", () => {
     );
     for (const rule of healRules) {
       expect(rule.healAmount).toBeDefined();
-      expect(rule.healAmount!.min).toBeGreaterThan(0);
+      expect(rule.healAmount?.min).toBeGreaterThan(0);
     }
   });
 
@@ -118,8 +118,8 @@ describe("CONVERSION_RULES", () => {
     for (const rule of buffDebuffRules) {
       expect(rule.value).toBeDefined();
       expect(rule.duration).toBeDefined();
-      expect(rule.value!.min).toBeGreaterThan(0);
-      expect(rule.duration!.min).toBeGreaterThan(0);
+      expect(rule.value?.min).toBeGreaterThan(0);
+      expect(rule.duration?.min).toBeGreaterThan(0);
     }
   });
 });

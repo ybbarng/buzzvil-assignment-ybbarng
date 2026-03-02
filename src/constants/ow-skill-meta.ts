@@ -1493,8 +1493,6 @@ export const OW_HERO_META: OwHeroMeta[] = [
 ];
 
 /** heroId로 영웅 메타데이터를 찾는다 */
-export function getOwHeroMetaByHeroId(
-  heroId: string,
-): OwHeroMeta | undefined {
+export function getOwHeroMetaByHeroId(heroId: string): OwHeroMeta | undefined {
   return OW_HERO_META.find((hero) => hero.heroId === heroId);
 }

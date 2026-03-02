@@ -11,21 +11,21 @@ import {
 } from "@/components/ui/dialog";
 import { GameButton } from "@/components/ui/game-button";
 import {
+  getPresetsBySubRole,
   HERO_PRESETS,
   ROLE_LABELS,
   ROLE_SUB_ROLES,
   SUB_ROLE_LABELS,
-  getPresetsBySubRole,
 } from "@/constants/presets";
+import {
+  getSkillPresetByHeroId,
+  presetEntryToSkill,
+} from "@/constants/skill-presets";
 import {
   SKILL_TYPE_COLORS,
   SKILL_TYPE_ICONS,
   SKILL_TYPE_LABELS,
 } from "@/constants/skills";
-import {
-  getSkillPresetByHeroId,
-  presetEntryToSkill,
-} from "@/constants/skill-presets";
 import { STAT_LABELS } from "@/constants/stats";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { cn } from "@/lib/utils";
@@ -110,9 +110,7 @@ function SkillPresetItem({
         <p className="text-sm text-text-secondary">
           {getSkillDescription(skill)}
         </p>
-        {disabled && (
-          <p className="text-xs text-text-muted">이미 장착됨</p>
-        )}
+        {disabled && <p className="text-xs text-text-muted">이미 장착됨</p>}
       </div>
     </button>
   );
@@ -206,9 +204,7 @@ export function SkillPresetDialog({
       <DialogContent className="max-h-[80vh] overflow-y-auto border-accent-orange/30 bg-bg-secondary sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-sm font-bold tracking-wider text-accent-orange uppercase">
-            {heroName
-              ? `${heroName} 스킬 프리셋`
-              : "프리셋 스킬 선택"}
+            {heroName ? `${heroName} 스킬 프리셋` : "프리셋 스킬 선택"}
           </DialogTitle>
           <DialogDescription className="text-text-muted">
             {presetId
