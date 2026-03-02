@@ -28,19 +28,30 @@ const EVENT_ICON: Record<RoundEvent["type"], LucideIcon> = {
   "battle-end": AlertTriangle,
 };
 
+const SKILL_EFFECT_ICON: Record<string, LucideIcon> = {
+  attack: Sword,
+  heal: Heart,
+  buff: ArrowUp,
+  debuff: ArrowDown,
+};
+
+const ICON_COLOR: Record<RoundEvent["type"], string> = {
+  "round-start": "text-accent-orange",
+  defend: "text-accent-blue",
+  "speed-compare": "text-text-muted",
+  "skill-use": "text-text-secondary",
+  "skill-effect": "text-text-secondary",
+  "skip-turn": "text-text-muted",
+  "buff-expire": "text-text-muted",
+  "battle-end": "text-accent-orange",
+};
+
 function getEventIcon(event: RoundEvent): LucideIcon {
   if (event.type === "skill-use") {
     return Zap;
   }
   if (event.type === "skill-effect") {
-    const iconMap: Record<string, LucideIcon> = {
-      attack: Sword,
-      defend: Shield,
-      heal: Heart,
-      buff: ArrowUp,
-      debuff: ArrowDown,
-    };
-    return iconMap[event.skillType] ?? Sword;
+    return SKILL_EFFECT_ICON[event.skillType] ?? Sword;
   }
   return EVENT_ICON[event.type];
 }
@@ -49,18 +60,7 @@ function getIconColor(event: RoundEvent): string {
   if (event.type === "skill-use" || event.type === "skill-effect") {
     return SKILL_TYPE_COLORS[event.skillType]?.text ?? "text-text-secondary";
   }
-
-  const colorMap: Record<RoundEvent["type"], string> = {
-    "round-start": "text-accent-orange",
-    defend: "text-accent-blue",
-    "speed-compare": "text-text-muted",
-    "skill-use": "text-text-secondary",
-    "skill-effect": "text-text-secondary",
-    "skip-turn": "text-text-muted",
-    "buff-expire": "text-text-muted",
-    "battle-end": "text-accent-orange",
-  };
-  return colorMap[event.type];
+  return ICON_COLOR[event.type];
 }
 
 interface BattleLogProps {
@@ -96,9 +96,6 @@ export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
       ) : (
         <ul className="space-y-1">
           {events.map((event, index) => {
-            const Icon = getEventIcon(event);
-            const iconColor = getIconColor(event);
-
             if (event.type === "round-start") {
               return (
                 <li
@@ -112,6 +109,9 @@ export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
                 </li>
               );
             }
+
+            const Icon = getEventIcon(event);
+            const iconColor = getIconColor(event);
 
             if (event.type === "battle-end") {
               return (
