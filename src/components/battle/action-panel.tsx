@@ -1,14 +1,6 @@
 import { GameButton } from "@/components/ui/game-button";
+import { SKILL_TYPE_COLORS, SKILL_TYPE_ICONS } from "@/constants/skills";
 import type { BattleCharacter } from "@/types/battle";
-import type { SkillType } from "@/types/skill";
-
-const SKILL_TYPE_ICON: Record<SkillType, { emoji: string; color: string }> = {
-  attack: { emoji: "⚔", color: "text-damage" },
-  defend: { emoji: "🛡", color: "text-white" },
-  heal: { emoji: "💚", color: "text-hp" },
-  buff: { emoji: "⬆", color: "text-buff" },
-  debuff: { emoji: "⬇", color: "text-debuff" },
-};
 
 interface ActionPanelProps {
   player: BattleCharacter;
@@ -20,7 +12,8 @@ export function ActionPanel({ player, onAction }: ActionPanelProps) {
     <div className="grid grid-cols-2 gap-2">
       {player.skills.map((skill, index) => {
         const canUse = skill.mpCost <= player.currentMp;
-        const icon = SKILL_TYPE_ICON[skill.type];
+        const Icon = SKILL_TYPE_ICONS[skill.type];
+        const color = SKILL_TYPE_COLORS[skill.type].text;
         return (
           <GameButton
             key={skill.name}
@@ -32,7 +25,7 @@ export function ActionPanel({ player, onAction }: ActionPanelProps) {
             onClick={() => onAction(index)}
           >
             <span className="flex items-center gap-1.5 font-semibold">
-              <span className={icon.color}>{icon.emoji}</span>
+              <Icon className={`size-4 ${color}`} />
               {skill.name}
             </span>
             {skill.mpCost > 0 && (

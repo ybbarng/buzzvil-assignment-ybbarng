@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { SKILL_TYPE_COLORS, SKILL_TYPE_ICONS } from "@/constants/skills";
 import { cn, josa } from "@/lib/utils";
 import type { BattleLogEntry } from "@/types/battle";
 import type { SkillType } from "@/types/skill";
@@ -18,20 +19,12 @@ function formatLogEntry(entry: BattleLogEntry): string {
   }
 }
 
-const SKILL_TYPE_COLORS: Record<SkillType, string> = {
+const LOG_COLORS: Record<SkillType, string> = {
   attack: "text-damage",
   defend: "text-accent-blue",
   heal: "text-hp",
   buff: "text-accent-orange",
   debuff: "text-text-muted",
-};
-
-const SKILL_TYPE_PREFIX: Record<SkillType, string> = {
-  attack: "⚔",
-  defend: "🛡",
-  heal: "💚",
-  buff: "⬆",
-  debuff: "⬇",
 };
 
 interface BattleLogProps {
@@ -60,21 +53,26 @@ export function BattleLog({ logs }: BattleLogProps) {
         </p>
       ) : (
         <ul className="space-y-1">
-          {logs.map((entry, index) => (
-            <li
-              // biome-ignore lint/suspicious/noArrayIndexKey: 로그는 추가만 되고 순서가 변하지 않음
-              key={index}
-              className={cn("text-sm", SKILL_TYPE_COLORS[entry.skillType])}
-            >
-              <span className="mr-1 text-xs text-text-muted">
-                R{entry.round}
-              </span>
-              <span aria-hidden="true" className="mr-1">
-                {SKILL_TYPE_PREFIX[entry.skillType]}
-              </span>
-              {formatLogEntry(entry)}
-            </li>
-          ))}
+          {logs.map((entry, index) => {
+            const Icon = SKILL_TYPE_ICONS[entry.skillType];
+            const iconColor = SKILL_TYPE_COLORS[entry.skillType].text;
+            return (
+              <li
+                // biome-ignore lint/suspicious/noArrayIndexKey: 로그는 추가만 되고 순서가 변하지 않음
+                key={index}
+                className={cn(
+                  "flex items-center gap-1 text-sm",
+                  LOG_COLORS[entry.skillType],
+                )}
+              >
+                <span className="mr-1 text-xs text-text-muted">
+                  R{entry.round}
+                </span>
+                <Icon className={`size-3 shrink-0 ${iconColor}`} />
+                {formatLogEntry(entry)}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
