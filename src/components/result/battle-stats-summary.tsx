@@ -60,16 +60,16 @@ function buildRows(
       barColor: "bg-damage",
     },
     {
-      label: "받은 데미지",
-      playerValue: playerStats.damageReceived,
-      enemyValue: enemyStats.damageReceived,
+      label: "경감 데미지",
+      playerValue: playerStats.damageMitigated,
+      enemyValue: enemyStats.damageMitigated,
       playerPct: relativePct(
-        playerStats.damageReceived,
-        enemyStats.damageReceived,
+        playerStats.damageMitigated,
+        enemyStats.damageMitigated,
       ),
       enemyPct: relativePct(
-        enemyStats.damageReceived,
-        playerStats.damageReceived,
+        enemyStats.damageMitigated,
+        playerStats.damageMitigated,
       ),
       barColor: "bg-accent-orange",
     },
