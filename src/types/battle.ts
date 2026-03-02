@@ -24,3 +24,13 @@ export interface BattleCharacter {
   isDefending: boolean;
   buffs: ActiveBuff[];
 }
+
+/** CharacterPanel 표시용 스냅샷 (스킬 목록 제외) */
+export interface CharacterSnapshot {
+  name: string;
+  baseStats: Stats;
+  currentHp: number;
+  currentMp: number;
+  isDefending: boolean;
+  buffs: ActiveBuff[];
+}
