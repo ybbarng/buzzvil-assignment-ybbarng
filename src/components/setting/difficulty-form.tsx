@@ -1,4 +1,5 @@
 import { GameButton } from "@/components/ui/game-button";
+import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 import type { Difficulty } from "@/types/game";
 
@@ -14,24 +15,28 @@ const DIFFICULTY_OPTIONS: {
   label: string;
   description: string;
   testId: string;
+  color: { selected: string; border: string };
 }[] = [
   {
     value: "easy",
     label: "쉬움",
     description: "훈련 로봇과 대전합니다",
     testId: "difficulty-easy",
+    color: { selected: "border-heal bg-heal/10", border: "border-heal" },
   },
   {
     value: "normal",
     label: "보통",
     description: "전투 드론과 대전합니다",
     testId: "difficulty-normal",
+    color: { selected: "border-buff bg-buff/10", border: "border-buff" },
   },
   {
     value: "hard",
     label: "어려움",
     description: "타론 요원과 대전합니다",
     testId: "difficulty-hard",
+    color: { selected: "border-damage bg-damage/10", border: "border-damage" },
   },
 ];
 
@@ -54,15 +59,18 @@ export function DifficultyForm({
               type="button"
               data-testid={opt.testId}
               className={cn(
-                "w-full rounded-lg border px-4 py-3 text-left transition-colors",
+                SKEW,
+                "w-full cursor-pointer border-2 px-4 py-3 text-left transition-all",
                 difficulty === opt.value
-                  ? "border-accent-orange bg-accent-orange/10 text-text-primary"
-                  : "border-border bg-bg-tertiary text-text-secondary hover:border-text-muted",
+                  ? `${opt.color.selected} text-text-primary`
+                  : "border-border/50 bg-bg-tertiary text-text-secondary hover:border-text-muted hover:bg-bg-tertiary/80",
               )}
               onClick={() => onSelect(opt.value)}
             >
-              <div className="font-semibold">{opt.label}</div>
-              <div className="text-sm text-text-muted">{opt.description}</div>
+              <div className={`${SKEW_TEXT} font-semibold`}>{opt.label}</div>
+              <div className={`${SKEW_TEXT} text-sm text-text-muted`}>
+                {opt.description}
+              </div>
             </button>
           ))}
         </div>
