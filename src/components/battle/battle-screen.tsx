@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
@@ -11,7 +11,6 @@ import { useSettingStore } from "@/stores/setting-store";
 export function BattleScreen() {
   const player = useBattleStore((s) => s.player);
   const enemy = useBattleStore((s) => s.enemy);
-  const round = useBattleStore((s) => s.round);
   const outcome = useBattleStore((s) => s.outcome);
   const initBattle = useBattleStore((s) => s.initBattle);
   const events = useBattleStore((s) => s.events);
@@ -23,7 +22,14 @@ export function BattleScreen() {
   const advanceEvent = useBattleStore((s) => s.advanceEvent);
 
   const initialized = useRef(false);
-  const [guideRound, setGuideRound] = useState(round);
+
+  // events 배열에서 마지막 round-start의 round를 표시용으로 사용
+  const displayRound = useMemo(() => {
+    for (let i = events.length - 1; i >= 0; i--) {
+      if (events[i].type === "round-start") return events[i].round;
+    }
+    return 1;
+  }, [events]);
 
   useEffect(() => {
     if (initialized.current) return;
@@ -31,13 +37,6 @@ export function BattleScreen() {
     const { name, stats, skills, difficulty } = useSettingStore.getState();
     initBattle(name, stats, skills, difficulty);
   }, [initBattle]);
-
-  // 애니메이션 완료 후 안내 문구의 라운드를 갱신
-  useEffect(() => {
-    if (!isAnimating) {
-      setGuideRound(round);
-    }
-  }, [isAnimating, round]);
 
   // 이벤트 애니메이션 타이머
   useEffect(() => {
@@ -63,7 +62,7 @@ export function BattleScreen() {
           data-testid="round-display"
           className={`inline-block bg-accent-orange px-4 py-1 text-lg font-bold text-bg-primary ${SKEW}`}
         >
-          <span className={SKEW_TEXT}>라운드 {round}</span>
+          <span className={SKEW_TEXT}>라운드 {displayRound}</span>
         </span>
       </div>
 
@@ -105,12 +104,12 @@ export function BattleScreen() {
           style={{ animationDelay: "1400ms" }}
         >
           <p className="text-sm text-text-secondary">
-            {guideRound === 1
+            {displayRound === 1
               ? "전투가 시작되었습니다. "
-              : `${guideRound} 라운드입니다. `}
+              : `${displayRound} 라운드입니다. `}
             <span className="text-white">{player.name}</span>
             {josa(player.name, "은", "는")}{" "}
-            {guideRound === 1
+            {displayRound === 1
               ? "첫 라운드에서 무엇을 하시겠습니까?"
               : "무엇을 하시겠습니까?"}
           </p>

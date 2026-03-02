@@ -47,15 +47,7 @@ export function generateRoundEvents(
     isDefending: enemySkill.type === "defend",
   };
 
-  // 1. round-start
-  events.push({
-    type: "round-start",
-    round,
-    playerSnapshot: toSnapshot(p),
-    enemySnapshot: toSnapshot(e),
-  });
-
-  // 2. defend events
+  // 1. defend events
   if (playerSkill.type === "defend") {
     events.push({
       type: "defend",

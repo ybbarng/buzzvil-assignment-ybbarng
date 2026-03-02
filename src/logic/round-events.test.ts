@@ -56,10 +56,10 @@ describe("generateRoundEvents", () => {
     const attackSkill = player.skills[0];
     const result = generateRoundEvents(player, enemy, 1, attackSkill, "easy");
 
-    // round-start, speed-compare, action(선공), action(후공)
+    // speed-compare, action(선공), action(후공) — round-start는 스토어에서 별도 관리
     const types = result.events.map((e) => e.type);
-    expect(types[0]).toBe("round-start");
-    expect(types).toContain("speed-compare");
+    expect(types).not.toContain("round-start");
+    expect(types[0]).toBe("speed-compare");
 
     const actions = result.events.filter((e) => e.type === "action");
     expect(actions).toHaveLength(2);

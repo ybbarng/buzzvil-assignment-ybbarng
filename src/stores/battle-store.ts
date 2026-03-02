@@ -85,6 +85,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       enemyConfig.stats,
       enemyConfig.skills,
     );
+    const playerSnapshot = toSnapshot(player);
+    const enemySnapshot = toSnapshot(enemy);
     set({
       player,
       enemy,
@@ -92,10 +94,17 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       round: 1,
       outcome: null,
       logs: [],
-      events: [],
+      events: [
+        {
+          type: "round-start",
+          round: 1,
+          playerSnapshot,
+          enemySnapshot,
+        },
+      ],
       pendingEvents: [],
-      displayPlayer: toSnapshot(player),
-      displayEnemy: toSnapshot(enemy),
+      displayPlayer: playerSnapshot,
+      displayEnemy: enemySnapshot,
       isAnimating: false,
     });
   },
@@ -150,7 +159,21 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     };
 
     if (remaining.length === 0) {
-      updates.isAnimating = false;
+      // 마지막 이벤트 처리 완료 — 다음 round-start 추가 또는 애니메이션 종료
+      if (event.type !== "round-start" && !state.outcome) {
+        // 전투 계속: 다음 round-start를 pendingEvents에 추가
+        updates.pendingEvents = [
+          {
+            type: "round-start",
+            round: state.round,
+            playerSnapshot: event.playerSnapshot,
+            enemySnapshot: event.enemySnapshot,
+          },
+        ];
+      } else {
+        // round-start 표시 완료 또는 전투 종료: 액션 버튼 활성화
+        updates.isAnimating = false;
+      }
     }
 
     set(updates as BattleState);
@@ -170,6 +193,16 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
     const allEvents = [...state.events, ...state.pendingEvents];
     const lastEvent = state.pendingEvents[state.pendingEvents.length - 1];
+
+    // 전투 종료가 아니면 다음 round-start도 추가
+    if (!state.outcome) {
+      allEvents.push({
+        type: "round-start",
+        round: state.round,
+        playerSnapshot: lastEvent.playerSnapshot,
+        enemySnapshot: lastEvent.enemySnapshot,
+      });
+    }
 
     set({
       events: allEvents,

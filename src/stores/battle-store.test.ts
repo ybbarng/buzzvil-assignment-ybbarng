@@ -44,6 +44,11 @@ describe("battle-store", () => {
     expect(state.enemy?.name).toBe("훈련 로봇");
     expect(state.round).toBe(1);
     expect(state.outcome).toBeNull();
+
+    // 초기 round-start 이벤트가 events에 포함되어야 한다
+    expect(state.events).toHaveLength(1);
+    expect(state.events[0].type).toBe("round-start");
+    expect(state.events[0].round).toBe(1);
   });
 
   it("공격 시 적 HP가 감소한다", () => {
@@ -120,6 +125,28 @@ describe("battle-store", () => {
     useBattleStore.getState().executePlayerAction(0);
 
     expect(useBattleStore.getState().round).toBe(2);
+  });
+
+  it("액션 실행 후 다음 round-start가 events 마지막에 추가된다", () => {
+    const stats = { hp: 100, mp: 50, atk: 20, def: 10, spd: 99 };
+    const skills = [
+      {
+        name: "공격",
+        type: "attack" as const,
+        mpCost: 0,
+        multiplier: 1.0,
+        isDefault: true,
+      },
+      { name: "방어", type: "defend" as const, mpCost: 0, isDefault: true },
+    ];
+
+    useBattleStore.getState().initBattle("테스터", stats, skills, "easy");
+    useBattleStore.getState().executePlayerAction(0);
+
+    const state = useBattleStore.getState();
+    const lastEvent = state.events[state.events.length - 1];
+    expect(lastEvent.type).toBe("round-start");
+    expect(lastEvent.round).toBe(2);
   });
 
   it("액션 실행 시 전투 로그가 생성된다", () => {
