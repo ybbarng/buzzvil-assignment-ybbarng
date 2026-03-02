@@ -13,7 +13,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { SKILL_TYPE_ICONS, SKILL_TYPE_LABELS } from "@/constants/skills";
 import { STAT_LABELS } from "@/constants/stats";
-import { SKEW } from "@/constants/theme";
+
 import {
   type CustomSkillFormData,
   customSkillSchema,
@@ -110,15 +110,13 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label className="text-text-secondary">스킬 이름</Label>
-        <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
-          <Input
-            data-testid="skill-name-input"
-            placeholder={`스킬 이름 (최대 ${SKILL_CONSTRAINTS.name.max}자)`}
-            maxLength={SKILL_CONSTRAINTS.name.max}
-            className="border-none bg-transparent text-text-primary shadow-none placeholder:text-text-muted"
-            {...register("name")}
-          />
-        </div>
+        <Input
+          data-testid="skill-name-input"
+          placeholder={`스킬 이름 (최대 ${SKILL_CONSTRAINTS.name.max}자)`}
+          maxLength={SKILL_CONSTRAINTS.name.max}
+          className="border-border bg-bg-tertiary text-text-primary placeholder:text-text-muted"
+          {...register("name")}
+        />
         {errors.name && (
           <p className="text-xs text-damage">{errors.name.message}</p>
         )}
