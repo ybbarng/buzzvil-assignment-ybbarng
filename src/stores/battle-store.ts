@@ -21,6 +21,8 @@ interface BattleState {
 
   // 리플레이
   isReplaying: boolean;
+  isReplayPaused: boolean;
+  allReplayEvents: RoundEvent[]; // initReplay 시 전체 이벤트 보관 (seek용)
 
   // 이벤트 시스템
   events: RoundEvent[];
@@ -38,6 +40,8 @@ interface BattleState {
     difficulty: Difficulty,
   ) => void;
   initReplay: (events: RoundEvent[]) => void;
+  toggleReplayPause: () => void;
+  seekReplay: (eventIndex: number) => void;
   executePlayerAction: (skillIndex: number) => void;
   advanceEvent: () => void;
   flushEvents: () => void;
@@ -93,6 +97,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   round: 1,
   outcome: null,
   isReplaying: false,
+  isReplayPaused: false,
+  allReplayEvents: [],
 
   events: [],
   pendingEvents: [],
@@ -143,6 +149,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     const dummyEnemy = createCharacter(enemySnap.name, enemySnap.baseStats, []);
     set({
       isReplaying: true,
+      isReplayPaused: false,
+      allReplayEvents: replayEvents,
       player: dummyPlayer,
       enemy: dummyEnemy,
       events: [first],
@@ -152,6 +160,35 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       isAnimating: true,
       activeActor: null,
       outcome: null,
+    });
+  },
+
+  toggleReplayPause: () => {
+    set((s) => ({ isReplayPaused: !s.isReplayPaused }));
+  },
+
+  seekReplay: (eventIndex) => {
+    const { allReplayEvents } = get();
+    if (allReplayEvents.length === 0) return;
+    const clamped = Math.max(
+      0,
+      Math.min(eventIndex, allReplayEvents.length - 1),
+    );
+    const displayed = allReplayEvents.slice(0, clamped + 1);
+    const remaining = allReplayEvents.slice(clamped + 1);
+    const current = allReplayEvents[clamped];
+    set({
+      events: displayed,
+      pendingEvents: remaining,
+      displayPlayer: current.playerSnapshot,
+      displayEnemy: current.enemySnapshot,
+      isAnimating: remaining.length > 0,
+      isReplayPaused: true,
+      activeActor:
+        current.type === "skill-use" || current.type === "skill-effect"
+          ? current.actor
+          : null,
+      outcome: current.type === "battle-end" ? current.outcome : null,
     });
   },
 
@@ -288,6 +325,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       round: 1,
       outcome: null,
       isReplaying: false,
+      isReplayPaused: false,
+      allReplayEvents: [],
       events: [],
       pendingEvents: [],
       displayPlayer: null,

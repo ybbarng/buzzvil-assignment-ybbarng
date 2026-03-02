@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
+import { ReplayPlayer } from "@/components/replay/replay-player";
 import { ACTOR_CHANGE_DELAY, EVENT_DELAYS } from "@/constants/battle";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { josa } from "@/lib/utils";
@@ -30,6 +31,7 @@ export function BattleScreen() {
   const activeActor = useBattleStore((s) => s.activeActor);
 
   const isReplaying = useBattleStore((s) => s.isReplaying);
+  const isReplayPaused = useBattleStore((s) => s.isReplayPaused);
   const initialized = useRef(false);
 
   // events 배열에서 마지막 round-start의 round를 표시용으로 사용
@@ -52,6 +54,7 @@ export function BattleScreen() {
   // 이벤트 애니메이션 타이머
   useEffect(() => {
     if (pendingEvents.length === 0) return;
+    if (isReplayPaused) return;
 
     const nextEvent = pendingEvents[0];
     let delay = EVENT_DELAYS[nextEvent.type];
@@ -72,7 +75,7 @@ export function BattleScreen() {
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [pendingEvents, events, advanceEvent]);
+  }, [pendingEvents, events, advanceEvent, isReplayPaused]);
 
   if (!player || !enemy) return null;
 
@@ -128,7 +131,10 @@ export function BattleScreen() {
           style={{ animationDelay: "1400ms" }}
         >
           {isReplaying ? (
-            <p className="text-sm text-text-muted">리플레이 재생 중...</p>
+            <div className="space-y-2">
+              <p className="text-sm text-text-muted">리플레이 재생 중</p>
+              <ReplayPlayer />
+            </div>
           ) : (
             <>
               <p className="text-sm text-text-secondary">
