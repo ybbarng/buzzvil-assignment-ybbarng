@@ -21,6 +21,7 @@
 | 이동기/회피기 | buff DEF | value 3~6, dur 1~2 | 5~10 |
 | 방벽/보호막 | buff DEF | value 7~10, dur 2~4 | 10~18 |
 | 힐링 능력 | heal | amount 15~35 | 8~18 |
+| 자가 치유/무적 | heal | amount 15~30 | 8~15 |
 | 공격 강화 | buff ATK | value 3~8, dur 2~4 | 8~15 |
 | CC (해킹/수면 등) | debuff | value 3~8, dur 2~4 | 8~15 |
 
