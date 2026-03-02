@@ -69,7 +69,7 @@ export function generateRoundEvents(
     });
   }
 
-  // 3. speed-compare
+  // 2. speed-compare
   const firstMover = determineFirstMover(p, e);
   const [firstName, firstSpd, secondName, secondSpd] =
     firstMover === "player"
@@ -87,7 +87,7 @@ export function generateRoundEvents(
     enemySnapshot: toSnapshot(e),
   });
 
-  // 4~6. action turns
+  // 3. action turns
   const turnOrder =
     firstMover === "player"
       ? [
@@ -204,7 +204,7 @@ export function generateRoundEvents(
     });
   }
 
-  // 7. buff-expire: tickBuffs 전에 만료 예정 버프 기록
+  // 4. buff-expire: tickBuffs 전에 만료 예정 버프 기록
   const expiringPlayerBuffs = p.buffs.filter((b) => b.remainingTurns <= 1);
   const expiringEnemyBuffs = e.buffs.filter((b) => b.remainingTurns <= 1);
 
@@ -234,7 +234,7 @@ export function generateRoundEvents(
     });
   }
 
-  // 8. 라운드 종료 후 전투 종료 판정
+  // 5. 라운드 종료 후 전투 종료 판정
   const endCheck = checkBattleEnd(p, e, round + 1);
   if (endCheck) {
     events.push({
