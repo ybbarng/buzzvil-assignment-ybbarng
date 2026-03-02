@@ -71,7 +71,7 @@ export function SkillForm({
             />
           ))}
 
-          {!isCreating && emptySlotCount > 0 && (
+          {emptySlotCount > 0 && (
             <button
               type="button"
               data-testid="add-skill-button"
@@ -81,7 +81,7 @@ export function SkillForm({
               <span className={`${SKEW_TEXT} block`}>+ 스킬 추가</span>
             </button>
           )}
-          {!isCreating && emptySlotCount > 1 && (
+          {emptySlotCount > 1 && (
             <div
               className={`${SKEW} w-full border-2 border-dashed border-border/50 px-4 py-2.5 text-center text-sm text-text-muted`}
             >
