@@ -69,7 +69,7 @@ export function ResultScreen() {
       {/* 턴 수 */}
       <p
         data-testid="result-turns"
-        className="animate-slide-in-right text-lg text-text-secondary opacity-0"
+        className="animate-slide-in-right text-lg text-text-secondary"
         style={staggerDelay(turnsIdx)}
       >
         {totalTurns}턴 만에 전투 종료
@@ -78,7 +78,7 @@ export function ResultScreen() {
       {/* 최종 캐릭터 상태 비교 */}
       {hasBattleData && (
         <div
-          className="animate-slide-in-right flex w-full justify-center opacity-0"
+          className="animate-slide-in-right flex w-full justify-center"
           style={staggerDelay(statusIdx)}
         >
           <FinalStatusComparison player={player} enemy={enemy} />
@@ -88,7 +88,7 @@ export function ResultScreen() {
       {/* 전투 통계 */}
       {hasBattleData && playerStats && (
         <div
-          className="animate-slide-in-right flex w-full justify-center opacity-0"
+          className="animate-slide-in-right flex w-full justify-center"
           style={staggerDelay(statsIdx)}
         >
           <BattleStatsSummary
@@ -100,7 +100,7 @@ export function ResultScreen() {
 
       {/* 다시 시작 버튼 */}
       <div
-        className="animate-slide-in-right mt-2 opacity-0"
+        className="animate-slide-in-right mt-2"
         style={staggerDelay(buttonIdx)}
       >
         <GameButton
