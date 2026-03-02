@@ -52,7 +52,7 @@ function buildRows(
       barColor: "bg-mp",
     },
     {
-      label: "가한 데미지",
+      label: "가한 대미지",
       playerValue: playerStats.damageDealt,
       enemyValue: enemyStats.damageDealt,
       playerPct: relativePct(playerStats.damageDealt, enemyStats.damageDealt),

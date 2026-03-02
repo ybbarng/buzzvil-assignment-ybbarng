@@ -67,7 +67,7 @@ pnpm build      # 프로덕션 빌드
 src/
 ├── types/              # 도메인 타입 (Stats, Skill, BattleCharacter 등)
 ├── constants/          # 게임 상수 (스탯 범위, 기본 스킬, 난이도별 적 정의)
-├── logic/              # 순수 함수 (데미지 계산, 버프, 적 AI, 턴 진행 등)
+├── logic/              # 순수 함수 (대미지 계산, 버프, 적 AI, 턴 진행 등)
 ├── schemas/            # zod 폼 검증 스키마
 ├── stores/             # zustand 스토어 (game, setting, battle)
 ├── components/

@@ -23,7 +23,7 @@ export function formatEvent(event: RoundEvent): string {
     case "skill-effect":
       switch (event.skillType) {
         case "attack":
-          return `${event.actorName}의 ${event.skillName}! ${event.targetName}에게 ${event.value} 데미지!`;
+          return `${event.actorName}의 ${event.skillName}! ${event.targetName}에게 ${event.value} 대미지!`;
         case "heal":
           return `${event.actorName}의 ${event.skillName}! HP ${event.value} 회복!`;
         case "buff":

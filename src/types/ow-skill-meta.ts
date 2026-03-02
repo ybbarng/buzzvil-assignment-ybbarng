@@ -8,7 +8,7 @@ import type { DistributiveOmit } from "@/types/utils";
  * 자가 치유(self_heal)를 별도 분류로 추가.
  */
 export type OwSkillCategory =
-  | "ultimate_damage" // 궁극기 - 고데미지
+  | "ultimate_damage" // 궁극기 - 고대미지
   | "ultimate_cc" // 궁극기 - CC/범위 제어
   | "ultimate_heal" // 궁극기 - 힐/부활
   | "ultimate_buff" // 궁극기 - 강화/변신

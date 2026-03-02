@@ -66,7 +66,7 @@ describe("BattleStatsSummary", () => {
     const labels = [
       "남은 체력",
       "남은 마나",
-      "가한 데미지",
+      "가한 대미지",
       "방어 시 피해",
       "회복량",
       "스킬 사용",

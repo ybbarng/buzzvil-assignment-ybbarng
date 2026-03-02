@@ -40,7 +40,7 @@ describe("computeBattleStats", () => {
     });
   });
 
-  it("공격 이벤트에서 가한 데미지를 합산한다", () => {
+  it("공격 이벤트에서 가한 대미지를 합산한다", () => {
     const events: RoundEvent[] = [
       effect({
         actorName: "용사",
@@ -60,7 +60,7 @@ describe("computeBattleStats", () => {
     expect(result.skillsUsed).toBe(2);
   });
 
-  it("방어 중 받은 공격의 경감 데미지를 합산한다", () => {
+  it("방어 중 받은 공격의 경감 대미지를 합산한다", () => {
     const events: RoundEvent[] = [
       // 라운드 1: 용사가 방어
       {
