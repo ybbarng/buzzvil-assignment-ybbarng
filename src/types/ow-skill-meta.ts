@@ -1,3 +1,4 @@
+import type { HeroRole } from "@/types/preset";
 import type { SkillPresetEntry } from "@/types/skill-preset";
 import type { DistributiveOmit } from "@/types/utils";
 
@@ -48,7 +49,7 @@ export interface OwHeroMeta {
   /** 영웅 한국어 이름 */
   name: string;
   /** 역할군 */
-  role: "tank" | "damage" | "support";
+  role: HeroRole;
   /** 스킬 메타데이터 (skill-presets.ts와 같은 순서) */
   skills: OwSkillMeta[];
 }
