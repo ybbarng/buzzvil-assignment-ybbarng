@@ -18,17 +18,22 @@ type IntroPhase = "center" | "moving" | "done";
 
 /** fade-in(800ms) 완료 후 여유 시간을 포함한 대기 시간 */
 export const INTRO_FADE_IN_WAIT_MS = 1500;
-/** intro-settle(700ms) + 여유. onAnimationEnd가 동작하지 않을 때의 fallback */
+/** intro 위치 전환(700ms) + 여유. onTransitionEnd가 동작하지 않을 때의 fallback */
 export const INTRO_SETTLE_FALLBACK_MS = 800;
-/** CSS @keyframes 이름. onAnimationEnd에서 버블링 필터링에 사용 */
-const INTRO_SETTLE_ANIMATION = "intro-settle";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
+/** 위치(transform)는 인라인 스타일 + transition으로 제어하여 클래스 교체 시 1프레임 점프를 방지한다. */
 const INTRO_PHASE_CLASS: Record<IntroPhase, string> = {
-  center: "animate-intro-fade-in",
-  moving: "animate-intro-settle",
+  center: "animate-intro-fade-in transition-transform duration-700 ease-in-out",
+  moving: "transition-transform duration-700 ease-in-out",
   done: "",
 };
+
+function getIntroStyle(phase: IntroPhase): React.CSSProperties | undefined {
+  if (phase === "center") return { transform: "translateY(calc(50svh - 50%))" };
+  if (phase === "moving") return { transform: "translateY(0)" };
+  return undefined;
+}
 
 function getStepGuide(step: SettingStep, name: string): React.ReactNode {
   if (step === 2 && name) {
@@ -243,10 +248,11 @@ export function SettingScreen() {
     <div>
       <header
         className={cn("mb-8 text-center", INTRO_PHASE_CLASS[introPhase])}
-        onAnimationEnd={
+        style={getIntroStyle(introPhase)}
+        onTransitionEnd={
           introPhase === "moving"
             ? (e) => {
-                if (e.animationName !== INTRO_SETTLE_ANIMATION) return;
+                if (e.propertyName !== "transform") return;
                 setIntroPhase("done");
               }
             : undefined
