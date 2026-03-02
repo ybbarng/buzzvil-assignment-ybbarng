@@ -38,7 +38,13 @@ function App() {
             </h1>
           </div>
         )}
-        <Suspense>
+        <Suspense
+          fallback={
+            <p className="py-12 text-center text-sm text-text-muted">
+              로딩 중...
+            </p>
+          }
+        >
           {phase === "setting" && <SettingScreen />}
           {isBattle && <BattleScreen />}
           {isResult && <ResultScreen />}
