@@ -45,9 +45,3 @@ export function useCountUpProgress(delay = 0): number {
 
   return progress;
 }
-
-/** 0에서 target까지 카운트업 애니메이션. reduced-motion 시 즉시 표시. */
-export function useCountUp(target: number, delay = 0): number {
-  const progress = useCountUpProgress(delay);
-  return target === 0 ? 0 : Math.round(progress * target);
-}
