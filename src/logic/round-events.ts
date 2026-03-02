@@ -101,12 +101,12 @@ function processTurn(
     enemySnapshot: toSnapshot(updatedEnemy),
   });
 
-  // skill-effect: 실제 효과 적용 (MP 소비는 이미 반영했으므로 mpCost=0 으로 호출)
-  const skillForEffect = { ...skill, mpCost: 0 };
+  // skill-effect: 실제 효과 적용 (MP는 skill-use에서 이미 차감됨)
   const result = resolveSkillEffect(
     isPlayerTurn ? updatedPlayer : updatedEnemy,
     isPlayerTurn ? updatedEnemy : updatedPlayer,
-    skillForEffect,
+    skill,
+    { skipMpCost: true },
   );
 
   const actorAfter = result.user;
