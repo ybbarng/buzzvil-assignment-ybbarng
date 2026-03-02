@@ -297,6 +297,64 @@ textarea {
   animation: hp-danger-pulse 1.5s ease-in-out infinite;
 }
 
+/* 결과 화면: 블러→선명 스케일 등장 */
+@keyframes result-scale-in {
+  0% {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+@utility animate-result-scale-in {
+  animation: result-scale-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 결과 화면: 승리 금색 글로우 */
+@keyframes result-glow-win {
+  0%,
+  100% {
+    text-shadow:
+      0 0 8px var(--color-accent-orange),
+      0 0 16px rgba(249, 158, 26, 0.6);
+  }
+  50% {
+    text-shadow:
+      0 0 16px var(--color-accent-orange),
+      0 0 32px rgba(249, 158, 26, 0.5),
+      0 0 64px rgba(249, 158, 26, 0.3);
+  }
+}
+
+@utility animate-result-glow-win {
+  animation: result-glow-win 2.5s ease-in-out infinite;
+}
+
+/* 결과 화면: 패배 빨간 글로우 */
+@keyframes result-glow-lose {
+  0%,
+  100% {
+    text-shadow:
+      0 0 8px var(--color-damage),
+      0 0 16px rgba(239, 68, 68, 0.6);
+  }
+  50% {
+    text-shadow:
+      0 0 16px var(--color-damage),
+      0 0 32px rgba(239, 68, 68, 0.5),
+      0 0 64px rgba(239, 68, 68, 0.3);
+  }
+}
+
+@utility animate-result-glow-lose {
+  animation: result-glow-lose 2.5s ease-in-out infinite;
+}
+
 /* 모션 감소 선호 시 애니메이션 비활성화.
    모든 선언을 강제로 덮어써야 하므로 !important 필수. */
 @media (prefers-reduced-motion: reduce) {
