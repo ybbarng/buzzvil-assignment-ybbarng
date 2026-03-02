@@ -86,6 +86,8 @@ export function NameStatForm({
               data-testid="name-input"
               placeholder="이름을 입력하세요 (1~10자)"
               maxLength={10}
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
               className="border-none bg-transparent text-text-primary shadow-none placeholder:text-text-muted"
               {...register("name")}
             />
@@ -101,7 +103,9 @@ export function NameStatForm({
           </GameButton>
         </div>
         {errors.name && (
-          <p className="mt-1 text-sm text-damage">{errors.name.message}</p>
+          <p id="name-error" className="mt-1 text-sm text-damage">
+            {errors.name.message}
+          </p>
         )}
       </section>
       <PresetDialog

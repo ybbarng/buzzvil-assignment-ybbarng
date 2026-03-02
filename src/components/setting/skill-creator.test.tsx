@@ -40,12 +40,16 @@ describe("SkillCreator", () => {
     );
   });
 
-  it("이름이 비어있으면 제출 시 유효성 에러가 표시된다", async () => {
+  it("이름이 비어있으면 제출 시 유효성 에러와 aria-invalid가 표시된다", async () => {
     render(<SkillCreator {...defaultProps} />);
     await userEvent.click(screen.getByTestId("submit-skill-button"));
 
     expect(defaultProps.onAdd).not.toHaveBeenCalled();
     expect(screen.getByText("스킬 이름을 입력해주세요")).toBeInTheDocument();
+
+    const input = screen.getByTestId("skill-name-input");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("aria-describedby", "skill-name-error");
   });
 
   it("기본 타입이 attack이면 공격 배율 슬라이더가 표시된다", () => {

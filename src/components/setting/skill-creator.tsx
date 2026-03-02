@@ -151,11 +151,15 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
           data-testid="skill-name-input"
           placeholder={`스킬 이름 (최대 ${SKILL_CONSTRAINTS.name.max}자)`}
           maxLength={SKILL_CONSTRAINTS.name.max}
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "skill-name-error" : undefined}
           className="border-border bg-bg-tertiary text-text-primary placeholder:text-text-muted"
           {...register("name")}
         />
         {errors.name && (
-          <p className="text-xs text-damage">{errors.name.message}</p>
+          <p id="skill-name-error" className="text-xs text-damage">
+            {errors.name.message}
+          </p>
         )}
       </div>
 
