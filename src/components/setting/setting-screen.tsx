@@ -11,6 +11,8 @@ import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
 import type { Direction, SettingStep } from "@/types/game";
 
+type IntroPhase = "center" | "moving" | "done";
+
 function getStepGuide(step: SettingStep, name: string): React.ReactNode {
   if (step === 2 && name) {
     return (
@@ -94,8 +96,37 @@ export function SettingScreen() {
   const indicatorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isExiting = useRef(false);
+  const introCompleted = useRef(false);
   const [enterDirection, setEnterDirection] = useState<Direction>("forward");
   const [indicatorStep, setIndicatorStep] = useState<SettingStep>(step);
+  const [introPhase, setIntroPhase] = useState<IntroPhase>(() => {
+    if (introCompleted.current) return "done";
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    return prefersReduced ? "done" : "center";
+  });
+
+  useEffect(() => {
+    if (introPhase !== "center") return;
+
+    const timer = setTimeout(() => {
+      setIntroPhase("moving");
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [introPhase]);
+
+  useEffect(() => {
+    if (introPhase !== "moving") return;
+
+    // intro-settle 애니메이션 종료 후 done으로 전환 (fallback 800ms)
+    const fallback = setTimeout(() => {
+      introCompleted.current = true;
+      setIntroPhase("done");
+    }, 800);
+
+    return () => clearTimeout(fallback);
+  }, [introPhase]);
 
   // 외부에서 step이 변경될 경우에도 indicatorStep을 동기화
   useEffect(() => {
@@ -138,7 +169,23 @@ export function SettingScreen() {
 
   return (
     <div>
-      <div className="mb-8 text-center">
+      <div
+        className={`mb-8 text-center ${
+          introPhase === "center"
+            ? "animate-intro-fade-in"
+            : introPhase === "moving"
+              ? "animate-intro-settle"
+              : ""
+        }`}
+        onAnimationEnd={
+          introPhase === "moving"
+            ? () => {
+                introCompleted.current = true;
+                setIntroPhase("done");
+              }
+            : undefined
+        }
+      >
         <h1 className="animate-title-blaze text-6xl font-bold tracking-wide text-accent-orange uppercase">
           BUZZ ARENA
         </h1>
@@ -147,62 +194,66 @@ export function SettingScreen() {
         </p>
       </div>
 
-      <div ref={indicatorRef} className="animate-slide-in-right">
-        <StepIndicator
-          currentStep={indicatorStep}
-          onStepClick={(s) =>
-            withExit(s < step ? "backward" : "forward", () => setStep(s), {
-              targetStep: s,
-            })
-          }
-        />
-      </div>
+      {introPhase === "done" && (
+        <>
+          <div ref={indicatorRef} className="animate-slide-in-right">
+            <StepIndicator
+              currentStep={indicatorStep}
+              onStepClick={(s) =>
+                withExit(s < step ? "backward" : "forward", () => setStep(s), {
+                  targetStep: s,
+                })
+              }
+            />
+          </div>
 
-      <div key={step} ref={contentRef}>
-        <div className={slideIn} data-animate style={staggerDelay(1)}>
-          <p className="mb-6 text-sm tracking-wide text-text-secondary">
-            {getStepGuide(step, name)}
-          </p>
-        </div>
+          <div key={step} ref={contentRef}>
+            <div className={slideIn} data-animate style={staggerDelay(1)}>
+              <p className="mb-6 text-sm tracking-wide text-text-secondary">
+                {getStepGuide(step, name)}
+              </p>
+            </div>
 
-        {step === 1 && (
-          <NameStatForm
-            defaultName={name}
-            defaultStats={stats}
-            onSubmit={handleStep1Submit}
-            enterDirection={enterDirection}
-          />
-        )}
+            {step === 1 && (
+              <NameStatForm
+                defaultName={name}
+                defaultStats={stats}
+                onSubmit={handleStep1Submit}
+                enterDirection={enterDirection}
+              />
+            )}
 
-        {step === 2 && (
-          <SkillForm
-            skills={skills}
-            onAddSkill={addSkill}
-            onRemoveSkill={removeSkill}
-            onPrev={() =>
-              withExit("backward", () => setStep(1), { targetStep: 1 })
-            }
-            onNext={() =>
-              withExit("forward", () => setStep(3), { targetStep: 3 })
-            }
-            enterDirection={enterDirection}
-          />
-        )}
+            {step === 2 && (
+              <SkillForm
+                skills={skills}
+                onAddSkill={addSkill}
+                onRemoveSkill={removeSkill}
+                onPrev={() =>
+                  withExit("backward", () => setStep(1), { targetStep: 1 })
+                }
+                onNext={() =>
+                  withExit("forward", () => setStep(3), { targetStep: 3 })
+                }
+                enterDirection={enterDirection}
+              />
+            )}
 
-        {step === 3 && (
-          <DifficultyForm
-            difficulty={difficulty}
-            onSelect={setDifficulty}
-            onPrev={() =>
-              withExit("backward", () => setStep(2), { targetStep: 2 })
-            }
-            onStartBattle={() =>
-              withExit("forward", startBattle, { includeIndicator: true })
-            }
-            enterDirection={enterDirection}
-          />
-        )}
-      </div>
+            {step === 3 && (
+              <DifficultyForm
+                difficulty={difficulty}
+                onSelect={setDifficulty}
+                onPrev={() =>
+                  withExit("backward", () => setStep(2), { targetStep: 2 })
+                }
+                onStartBattle={() =>
+                  withExit("forward", startBattle, { includeIndicator: true })
+                }
+                enterDirection={enterDirection}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
