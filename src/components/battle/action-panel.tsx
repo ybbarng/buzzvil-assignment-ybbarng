@@ -27,7 +27,7 @@ export function ActionPanel({ player, onAction }: ActionPanelProps) {
             type="button"
             data-testid={`skill-button-${index}`}
             disabled={!canUse}
-            variant="blue"
+            variant="dark"
             className={cn(
               "h-auto flex-col gap-0.5 py-2",
               SKILL_TYPE_BORDER[skill.type],
