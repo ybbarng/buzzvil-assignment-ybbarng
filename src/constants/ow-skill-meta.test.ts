@@ -10,6 +10,8 @@ import {
 import { HERO_PRESETS } from "@/constants/presets";
 import { SKILL_CONSTRAINTS } from "@/schemas/skill.schema";
 
+// 메타데이터 원본(OW_HERO_META)과 생성 함수를 검증한다.
+// 최종 산출물(SKILL_PRESETS)의 공개 API 검증은 skill-presets.test.ts에서 수행.
 describe("OW_HERO_META", () => {
   // OW2 2026년 기준 50명. 영웅 추가/제거 시 이 값도 함께 업데이트할 것.
   it("50명 영웅이 모두 포함되어 있다", () => {

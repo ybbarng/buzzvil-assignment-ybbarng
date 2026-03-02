@@ -8,6 +8,9 @@ import {
 import { SKILL_CONSTRAINTS } from "@/schemas/skill.schema";
 import type { SkillPresetEntry } from "@/types/skill-preset";
 
+// ow-skill-meta.test.ts가 메타데이터 원본(OW_HERO_META)과 생성 함수를 검증한다면,
+// 이 파일은 최종 산출물(SKILL_PRESETS)의 공개 API를 검증한다.
+// 일부 검증이 겹치지만, 생성 로직 변경 시 독립적으로 회귀를 감지하기 위해 유지한다.
 describe("SKILL_PRESETS", () => {
   it("모든 HERO_PRESETS에 대응하는 스킬 프리셋이 존재한다", () => {
     const presetHeroIds = new Set(SKILL_PRESETS.map((p) => p.heroId));
