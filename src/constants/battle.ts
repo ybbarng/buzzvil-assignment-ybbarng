@@ -5,12 +5,12 @@ export const DEF_REDUCTION_RATE = 0.5;
 
 /** 이벤트 타입별 표시 지연시간 (ms) */
 export const EVENT_DELAYS: Record<string, number> = {
-  "round-start": 600,
-  defend: 800,
-  "speed-compare": 800,
-  "skill-use": 600,
-  "skill-effect": 700,
-  "skip-turn": 600,
-  "buff-expire": 600,
-  "battle-end": 400,
+  "round-start": 1000,
+  defend: 1200,
+  "speed-compare": 1200,
+  "skill-use": 1200,
+  "skill-effect": 1400,
+  "skip-turn": 1000,
+  "buff-expire": 1000,
+  "battle-end": 800,
 };
