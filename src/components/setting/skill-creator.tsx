@@ -232,8 +232,8 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="atk">ATK</SelectItem>
-                  <SelectItem value="def">DEF</SelectItem>
+                  <SelectItem value="atk">공격력 ATK</SelectItem>
+                  <SelectItem value="def">방어력 DEF</SelectItem>
                 </SelectContent>
               </Select>
             </div>
