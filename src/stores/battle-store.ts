@@ -104,7 +104,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
   executePlayerAction: (skillIndex) => {
     const state = get();
-    if (!state.player || !state.enemy || state.outcome) return;
+    if (!state.player || !state.enemy || state.outcome || state.isAnimating)
+      return;
 
     const playerSkill = state.player.skills[skillIndex];
     if (!playerSkill) return;
