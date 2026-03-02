@@ -229,6 +229,15 @@ describe("eventsToLegacyLogs", () => {
         enemySnapshot: snap,
       },
       {
+        type: "skip-turn",
+        round: 1,
+        actor: "enemy",
+        actorName: "B",
+        reason: "defeated",
+        playerSnapshot: snap,
+        enemySnapshot: snap,
+      },
+      {
         type: "buff-expire",
         round: 1,
         targetName: "A",
