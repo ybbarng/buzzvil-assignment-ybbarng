@@ -1,4 +1,5 @@
 import type { SkillPresetEntry } from "@/types/skill-preset";
+import type { DistributiveOmit } from "@/types/utils";
 
 /**
  * 오버워치 스킬의 원본 분류.
@@ -17,9 +18,6 @@ export type OwSkillCategory =
   | "self_heal" // 자가 치유/무적
   | "attack_buff" // 공격 강화
   | "cc"; // CC (스턴/둔화/해킹 등)
-
-/** Omit을 discriminated union에서 분산 적용 */
-type DistributiveOmit<T, K extends keyof T> = T extends T ? Omit<T, K> : never;
 
 /**
  * 스킬별 게임 수치.
