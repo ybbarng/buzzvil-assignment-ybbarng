@@ -1,9 +1,14 @@
 import { HpBar } from "@/components/battle/hp-bar";
 import { cn } from "@/lib/utils";
-import type { ActiveBuff, BattleCharacter } from "@/types/battle";
+import type {
+  ActiveBuff,
+  BattleCharacter,
+  CharacterSnapshot,
+} from "@/types/battle";
 
 interface CharacterPanelProps {
   character: BattleCharacter;
+  snapshot?: CharacterSnapshot | null;
   testId: string;
   nameTestId: string;
   side: "player" | "enemy";
@@ -30,11 +35,17 @@ function BuffIndicator({ buff }: { buff: ActiveBuff }) {
 
 export function CharacterPanel({
   character,
+  snapshot,
   testId,
   nameTestId,
   side,
 }: CharacterPanelProps) {
   const isPlayer = side === "player";
+
+  // 스냅샷이 있으면 display용 값 사용, 없으면 character 직접 사용
+  const displayHp = snapshot?.currentHp ?? character.currentHp;
+  const displayMp = snapshot?.currentMp ?? character.currentMp;
+  const displayBuffs = snapshot?.buffs ?? character.buffs;
 
   return (
     <div
@@ -54,20 +65,12 @@ export function CharacterPanel({
         {character.name}
       </h3>
       <div className="space-y-2">
-        <HpBar
-          current={character.currentHp}
-          max={character.baseStats.hp}
-          type="hp"
-        />
-        <HpBar
-          current={character.currentMp}
-          max={character.baseStats.mp}
-          type="mp"
-        />
+        <HpBar current={displayHp} max={character.baseStats.hp} type="hp" />
+        <HpBar current={displayMp} max={character.baseStats.mp} type="mp" />
       </div>
-      {character.buffs.length > 0 && (
+      {displayBuffs.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
-          {character.buffs.map((buff, index) => (
+          {displayBuffs.map((buff, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: buffs are ordered and index is stable within render
             <BuffIndicator key={index} buff={buff} />
           ))}

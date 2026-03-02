@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
+import { EVENT_DELAYS } from "@/constants/battle";
 import { SKEW, SKEW_TEXT, staggerDelay } from "@/constants/theme";
 import { josa } from "@/lib/utils";
 import { useBattleStore } from "@/stores/battle-store";
@@ -15,6 +16,11 @@ export function BattleScreen() {
   const initBattle = useBattleStore((s) => s.initBattle);
   const events = useBattleStore((s) => s.events);
   const executePlayerAction = useBattleStore((s) => s.executePlayerAction);
+  const displayPlayer = useBattleStore((s) => s.displayPlayer);
+  const displayEnemy = useBattleStore((s) => s.displayEnemy);
+  const isAnimating = useBattleStore((s) => s.isAnimating);
+  const pendingEvents = useBattleStore((s) => s.pendingEvents);
+  const advanceEvent = useBattleStore((s) => s.advanceEvent);
 
   const initialized = useRef(false);
 
@@ -24,6 +30,20 @@ export function BattleScreen() {
     const { name, stats, skills, difficulty } = useSettingStore.getState();
     initBattle(name, stats, skills, difficulty);
   }, [initBattle]);
+
+  // 이벤트 애니메이션 타이머
+  useEffect(() => {
+    if (pendingEvents.length === 0) return;
+
+    const nextEvent = pendingEvents[0];
+    const delay = EVENT_DELAYS[nextEvent.type] ?? 600;
+
+    const timer = setTimeout(() => {
+      advanceEvent();
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [pendingEvents, advanceEvent]);
 
   if (!player || !enemy) return null;
 
@@ -48,6 +68,7 @@ export function BattleScreen() {
       >
         <CharacterPanel
           character={player}
+          snapshot={displayPlayer}
           testId="player-panel"
           nameTestId="player-name"
           side="player"
@@ -55,6 +76,7 @@ export function BattleScreen() {
         <span className="text-2xl font-bold text-text-muted">VS</span>
         <CharacterPanel
           character={enemy}
+          snapshot={displayEnemy}
           testId="enemy-panel"
           nameTestId="enemy-name"
           side="enemy"
@@ -62,7 +84,7 @@ export function BattleScreen() {
       </div>
 
       {/* 액션 패널 + 로그: 아래에서 슬라이드 */}
-      {!outcome && (
+      {!outcome && !isAnimating && (
         <div
           className="animate-slide-in-bottom space-y-2"
           style={staggerDelay(2)}
