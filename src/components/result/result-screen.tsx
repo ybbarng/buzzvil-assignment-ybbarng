@@ -29,7 +29,7 @@ export function ResultScreen() {
 
   const player = useBattleStore((s) => s.player);
   const enemy = useBattleStore((s) => s.enemy);
-  const logs = useBattleStore((s) => s.logs);
+  const events = useBattleStore((s) => s.events);
 
   const handleRestart = () => {
     useBattleStore.getState().reset();
@@ -39,8 +39,8 @@ export function ResultScreen() {
 
   const hasBattleData = player !== null && enemy !== null;
   const playerStats = useMemo(
-    () => (hasBattleData ? computeBattleStats(logs, player.name) : null),
-    [hasBattleData, logs, player?.name],
+    () => (hasBattleData ? computeBattleStats(events, player.name) : null),
+    [hasBattleData, events, player?.name],
   );
 
   // 순차 등장 인덱스 계산
