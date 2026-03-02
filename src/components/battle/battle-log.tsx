@@ -201,7 +201,7 @@ export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
               <li
                 // biome-ignore lint/suspicious/noArrayIndexKey: 이벤트는 추가만 되고 순서가 변하지 않음
                 key={index}
-                className="flex items-center gap-1 text-sm text-text-secondary"
+                className="flex items-center gap-1 text-sm text-white"
               >
                 <Icon className={`size-3 shrink-0 ${iconColor}`} />
                 <span>
