@@ -101,13 +101,13 @@ function animateExitThenDo(
 
 /**
  * 전투 시작 퇴장 애니메이션.
- * 헤더(<header>)는 위로, 설정 구성요소들은 아래로 동시 퇴장시킨 뒤 callback을 호출한다.
+ * 헤더는 위로, 설정 구성요소들은 아래로 동시 퇴장시킨 뒤 callback을 호출한다.
  */
 function animateBattleExitThenDo(
+  headerEl: HTMLElement | null,
   settingEls: HTMLElement[],
   callback: () => void,
 ) {
-  const headerEl = document.querySelector<HTMLElement>("header");
   const allEls = [headerEl, ...settingEls].filter(
     (el): el is HTMLElement => el != null,
   );
@@ -172,6 +172,7 @@ export function SettingScreen() {
   const replays = useReplayStore((s) => s.replays);
   const [replayOpen, setReplayOpen] = useState(false);
 
+  const headerRef = useRef<HTMLElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isExiting = useRef(false);
@@ -247,6 +248,7 @@ export function SettingScreen() {
   return (
     <div>
       <header
+        ref={headerRef}
         className={cn("mb-8 text-center", INTRO_PHASE_CLASS[introPhase])}
         style={getIntroStyle(introPhase)}
         onTransitionEnd={
@@ -340,10 +342,14 @@ export function SettingScreen() {
                       indicatorRef.current,
                       contentRef.current,
                     ].filter((el): el is HTMLDivElement => el != null);
-                    animateBattleExitThenDo(settingEls, () => {
-                      isExiting.current = false;
-                      startBattle();
-                    });
+                    animateBattleExitThenDo(
+                      headerRef.current,
+                      settingEls,
+                      () => {
+                        isExiting.current = false;
+                        startBattle();
+                      },
+                    );
                   }}
                   enterDirection={enterDirection}
                 />
