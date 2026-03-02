@@ -64,7 +64,7 @@ function getIconColor(event: RoundEvent): string {
 }
 
 /**
- * 문자열 내 플레이어/적 이름을 각각의 팀 색상 span으로 교체한 React 노드를 반환한다.
+ * 문자열 내 플레이어/적 이름을 팀 색상 볼드로, 숫자를 녹색 볼드로 교체한 React 노드를 반환한다.
  * 이름이 겹치지 않는다고 가정한다.
  */
 function colorizeNames(
@@ -72,41 +72,66 @@ function colorizeNames(
   playerName: string,
   enemyName: string,
 ): React.ReactNode {
-  const names = [
-    { name: playerName, color: "text-accent-blue" },
-    { name: enemyName, color: "text-damage" },
+  const patterns: { regex: RegExp; className: string }[] = [
+    {
+      regex: new RegExp(playerName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+      className: "font-bold text-accent-blue",
+    },
+    {
+      regex: new RegExp(enemyName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+      className: "font-bold text-damage",
+    },
+    { regex: /\d+/g, className: "font-bold text-hp" },
   ];
 
   const segments: React.ReactNode[] = [];
-  let remaining = text;
   let key = 0;
 
-  while (remaining.length > 0) {
-    let earliest = -1;
-    let matched: (typeof names)[number] | null = null;
-
-    for (const entry of names) {
-      const idx = remaining.indexOf(entry.name);
-      if (idx !== -1 && (earliest === -1 || idx < earliest)) {
-        earliest = idx;
-        matched = entry;
-      }
+  // 모든 매치를 찾아 위치순으로 정렬
+  const matches: {
+    start: number;
+    end: number;
+    text: string;
+    className: string;
+  }[] = [];
+  for (const { regex, className } of patterns) {
+    let m: RegExpExecArray | null = null;
+    // biome-ignore lint/suspicious/noAssignInExpressions: regex exec loop
+    while ((m = regex.exec(text)) !== null) {
+      matches.push({
+        start: m.index,
+        end: m.index + m[0].length,
+        text: m[0],
+        className,
+      });
     }
+  }
+  matches.sort((a, b) => a.start - b.start);
 
-    if (earliest === -1 || !matched) {
-      segments.push(remaining);
-      break;
+  // 겹치는 매치 제거 (먼저 나온 것 우선)
+  const filtered: typeof matches = [];
+  let lastEnd = 0;
+  for (const match of matches) {
+    if (match.start >= lastEnd) {
+      filtered.push(match);
+      lastEnd = match.end;
     }
+  }
 
-    if (earliest > 0) {
-      segments.push(remaining.slice(0, earliest));
+  let cursor = 0;
+  for (const match of filtered) {
+    if (match.start > cursor) {
+      segments.push(text.slice(cursor, match.start));
     }
     segments.push(
-      <span key={key++} className={matched.color}>
-        {matched.name}
+      <span key={key++} className={match.className}>
+        {match.text}
       </span>,
     );
-    remaining = remaining.slice(earliest + matched.name.length);
+    cursor = match.end;
+  }
+  if (cursor < text.length) {
+    segments.push(text.slice(cursor));
   }
 
   return segments;
@@ -175,7 +200,7 @@ export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
               <li
                 // biome-ignore lint/suspicious/noArrayIndexKey: 이벤트는 추가만 되고 순서가 변하지 않음
                 key={index}
-                className="flex items-center gap-1 text-sm text-white"
+                className="flex items-center gap-1 text-sm text-text-secondary"
               >
                 <Icon className={`size-3 shrink-0 ${iconColor}`} />
                 {colorizeNames(formatEvent(event), playerName, enemyName)}
