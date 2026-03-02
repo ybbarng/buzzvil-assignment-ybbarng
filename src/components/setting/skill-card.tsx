@@ -30,6 +30,8 @@ function getSkillDescription(skill: Skill): string {
 }
 
 export function SkillCard({ skill, onRemove }: SkillCardProps) {
+  const TypeIcon = SKILL_TYPE_ICONS[skill.type];
+
   return (
     <div
       className={`${SKEW} flex items-center justify-between border-l-2 ${SKILL_TYPE_COLORS[skill.type].border} bg-bg-tertiary px-4 py-3 animate-fade-in transition-colors hover:bg-bg-tertiary/80`}
@@ -37,14 +39,9 @@ export function SkillCard({ skill, onRemove }: SkillCardProps) {
       <div className={`${SKEW_TEXT} space-y-0.5`}>
         <div className="flex items-center gap-2">
           <span className="font-semibold text-text-primary">{skill.name}</span>
-          {(() => {
-            const Icon = SKILL_TYPE_ICONS[skill.type];
-            return (
-              <Icon
-                className={`size-4 ${SKILL_TYPE_COLORS[skill.type].text}`}
-              />
-            );
-          })()}
+          <TypeIcon
+            className={`size-4 ${SKILL_TYPE_COLORS[skill.type].text}`}
+          />
           {skill.mpCost > 0 && (
             <span className="text-xs text-mp">
               마나(MP) {skill.mpCost} 소모
