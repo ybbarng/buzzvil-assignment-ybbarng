@@ -1,4 +1,5 @@
-import type { Stats } from "@/types/character";
+import { STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
+import type { StatKey, Stats } from "@/types/character";
 import type { OwHeroStatMeta, SubRoleBaseStats } from "@/types/ow-hero-meta";
 import type { HeroPreset } from "@/types/preset";
 
@@ -554,19 +555,47 @@ export const OW_HERO_STAT_META: OwHeroStatMeta[] = [
   },
 ];
 
-/** 메타데이터 + 변환 규칙으로 HeroPreset을 생성한다 */
+/**
+ * 메타데이터 + 변환 규칙으로 HeroPreset을 생성한다.
+ *
+ * 조정값 합계가 0이 아니거나 결과 스탯이 허용 범위를 벗어나면 에러를 던진다.
+ */
 export function generateHeroPreset(
   meta: OwHeroStatMeta,
   baseStats: SubRoleBaseStats,
 ): HeroPreset {
+  const adj = meta.adjustments;
+  const adjSum = adj.hp + adj.mp + adj.atk + adj.def + adj.spd;
+  if (adjSum !== 0) {
+    throw new Error(
+      `${meta.name}(${meta.heroId}): 조정값 합계가 ${adjSum} (expected 0)`,
+    );
+  }
+
   const base = baseStats[meta.subRole];
   const stats: Stats = {
-    hp: base.hp + meta.adjustments.hp,
-    mp: base.mp + meta.adjustments.mp,
-    atk: base.atk + meta.adjustments.atk,
-    def: base.def + meta.adjustments.def,
-    spd: base.spd + meta.adjustments.spd,
+    hp: base.hp + adj.hp,
+    mp: base.mp + adj.mp,
+    atk: base.atk + adj.atk,
+    def: base.def + adj.def,
+    spd: base.spd + adj.spd,
   };
+
+  for (const [key, value] of Object.entries(stats)) {
+    const range = STAT_RANGES[key as StatKey];
+    if (value < range.min || value > range.max) {
+      throw new Error(
+        `${meta.name}(${meta.heroId}): ${key}=${value}이 범위 [${range.min}, ${range.max}] 밖`,
+      );
+    }
+  }
+
+  const total = Object.values(stats).reduce((a, b) => a + b, 0);
+  if (total !== TOTAL_POINTS) {
+    throw new Error(
+      `${meta.name}(${meta.heroId}): 스탯 총합 ${total} (expected ${TOTAL_POINTS})`,
+    );
+  }
 
   return {
     id: meta.heroId,
