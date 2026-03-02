@@ -31,7 +31,7 @@ export const ENEMIES: Record<Difficulty, EnemyConfig> = {
     ],
   },
   normal: {
-    name: "전투 드론",
+    name: "탈론 돌격병",
     stats: { hp: 110, mp: 50, atk: 15, def: 12, spd: 10 },
     skills: [
       {
@@ -59,7 +59,7 @@ export const ENEMIES: Record<Difficulty, EnemyConfig> = {
     ],
   },
   hard: {
-    name: "타론 요원",
+    name: "탈론 정예 요원",
     stats: { hp: 140, mp: 70, atk: 20, def: 16, spd: 14 },
     skills: [
       {
