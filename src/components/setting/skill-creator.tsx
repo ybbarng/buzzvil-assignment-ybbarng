@@ -15,6 +15,7 @@ import { SKEW } from "@/constants/theme";
 import {
   type CustomSkillFormData,
   customSkillSchema,
+  SKILL_RANGES,
 } from "@/schemas/skill.schema";
 import type { Skill, SkillType } from "@/types/skill";
 
@@ -157,16 +158,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             </span>
           </div>
           <Slider
-            min={1}
-            max={30}
+            min={SKILL_RANGES.mpCost.min}
+            max={SKILL_RANGES.mpCost.max}
             step={1}
             value={[mpCost]}
             onValueChange={([v]) => setValue("mpCost", v)}
             className={SLIDER_COLOR}
           />
           <div className="flex justify-between text-xs text-text-muted">
-            <span>1</span>
-            <span>30</span>
+            <span>{SKILL_RANGES.mpCost.min}</span>
+            <span>{SKILL_RANGES.mpCost.max}</span>
           </div>
         </div>
 
@@ -179,9 +180,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               </span>
             </div>
             <Slider
-              min={1.0}
-              max={3.0}
-              step={0.1}
+              min={SKILL_RANGES.multiplier.min}
+              max={SKILL_RANGES.multiplier.max}
+              step={SKILL_RANGES.multiplier.step}
               value={[multiplier as number]}
               onValueChange={([v]) =>
                 setValue("multiplier" as "multiplier", Math.round(v * 10) / 10)
@@ -189,8 +190,8 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               className={SLIDER_COLOR}
             />
             <div className="flex justify-between text-xs text-text-muted">
-              <span>1.0</span>
-              <span>3.0</span>
+              <span>{SKILL_RANGES.multiplier.min.toFixed(1)}</span>
+              <span>{SKILL_RANGES.multiplier.max.toFixed(1)}</span>
             </div>
           </div>
         )}
@@ -204,16 +205,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               </span>
             </div>
             <Slider
-              min={10}
-              max={50}
+              min={SKILL_RANGES.healAmount.min}
+              max={SKILL_RANGES.healAmount.max}
               step={1}
               value={[healAmount as number]}
               onValueChange={([v]) => setValue("healAmount" as "healAmount", v)}
               className={SLIDER_COLOR}
             />
             <div className="flex justify-between text-xs text-text-muted">
-              <span>10</span>
-              <span>50</span>
+              <span>{SKILL_RANGES.healAmount.min}</span>
+              <span>{SKILL_RANGES.healAmount.max}</span>
             </div>
           </div>
         )}
@@ -245,16 +246,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 </span>
               </div>
               <Slider
-                min={1}
-                max={10}
+                min={SKILL_RANGES.value.min}
+                max={SKILL_RANGES.value.max}
                 step={1}
                 value={[buffValue as number]}
                 onValueChange={([v]) => setValue("value" as "value", v)}
                 className={SLIDER_COLOR}
               />
               <div className="flex justify-between text-xs text-text-muted">
-                <span>1</span>
-                <span>10</span>
+                <span>{SKILL_RANGES.value.min}</span>
+                <span>{SKILL_RANGES.value.max}</span>
               </div>
             </div>
             <div className="space-y-2">
@@ -265,16 +266,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 </span>
               </div>
               <Slider
-                min={1}
-                max={5}
+                min={SKILL_RANGES.duration.min}
+                max={SKILL_RANGES.duration.max}
                 step={1}
                 value={[duration as number]}
                 onValueChange={([v]) => setValue("duration" as "duration", v)}
                 className={SLIDER_COLOR}
               />
               <div className="flex justify-between text-xs text-text-muted">
-                <span>1</span>
-                <span>5</span>
+                <span>{SKILL_RANGES.duration.min}</span>
+                <span>{SKILL_RANGES.duration.max}</span>
               </div>
             </div>
           </>
