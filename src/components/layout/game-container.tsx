@@ -16,9 +16,9 @@ export function GameContainer({
   return (
     <div
       className={cn(
-        "flex min-h-screen select-none justify-center bg-bg-primary p-4",
+        "flex select-none justify-center bg-bg-primary p-4",
+        stretch ? "h-screen" : "min-h-screen",
         align === "start" ? "items-start" : "items-center",
-        stretch && "h-screen",
       )}
     >
       <div

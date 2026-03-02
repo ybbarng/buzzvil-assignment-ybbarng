@@ -55,5 +55,8 @@ export const useReplayStore = create<ReplayState>((set, get) => ({
 
   setActive: (replay) => set({ activeReplay: replay }),
 
-  reset: () => set({ replays: [], activeReplay: null }),
+  reset: () => {
+    localStorage.removeItem(STORAGE_KEY);
+    set({ replays: [], activeReplay: null });
+  },
 }));

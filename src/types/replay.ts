@@ -16,6 +16,9 @@ export interface ReplayData {
   events: RoundEvent[];
 }
 
+const VALID_DIFFICULTIES = new Set<string>(["easy", "normal", "hard"]);
+const VALID_OUTCOMES = new Set<string>(["win", "lose", "draw"]);
+
 /** localStorage에서 읽은 데이터가 유효한 ReplayData인지 검증 */
 export function isValidReplay(data: unknown): data is ReplayData {
   if (typeof data !== "object" || data === null) return false;
@@ -26,6 +29,11 @@ export function isValidReplay(data: unknown): data is ReplayData {
     typeof r.timestamp === "number" &&
     typeof r.playerName === "string" &&
     typeof r.enemyName === "string" &&
+    typeof r.totalTurns === "number" &&
+    typeof r.difficulty === "string" &&
+    VALID_DIFFICULTIES.has(r.difficulty) &&
+    typeof r.outcome === "string" &&
+    VALID_OUTCOMES.has(r.outcome) &&
     Array.isArray(r.events) &&
     r.events.length > 0
   );

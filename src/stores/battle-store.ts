@@ -65,11 +65,28 @@ function createCharacter(
   };
 }
 
+/** battle-end 이벤트에서 outcome을 추출하여 state에 설정하고 결과 화면 전환 */
+function processBattleEnd(
+  get: () => BattleState,
+  set: (partial: Partial<BattleState>) => void,
+  event: RoundEvent,
+) {
+  if (event.type !== "battle-end") return;
+  // zustand의 set은 동기적이므로 get()은 최신 상태를 반환
+  if (!get().outcome) {
+    set({ outcome: event.outcome });
+  }
+  handleBattleEnd(get);
+}
+
 /** battle-end 후 리플레이 저장 + 결과 화면 전환 */
 function handleBattleEnd(get: () => BattleState) {
   const { outcome, round, isReplaying, player, enemy, difficulty, events } =
     get();
   if (!outcome) return;
+  // 이미 결과 화면으로 전환된 경우 중복 호출 방지 (seek 후 재생 재개 시)
+  const currentPhase = useGameStore.getState().phase;
+  if (currentPhase === "result" || currentPhase === "replay-result") return;
   if (isReplaying) {
     useGameStore.getState().showReplayResult(outcome, round - 1);
   } else {
@@ -141,6 +158,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   },
 
   initReplay: (replayEvents) => {
+    if (replayEvents.length === 0) return;
     const [first, ...rest] = replayEvents;
     const snap = first.playerSnapshot;
     const enemySnap = first.enemySnapshot;
@@ -268,14 +286,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     }
 
     set(updates);
-
-    if (event.type === "battle-end") {
-      // 리플레이에서는 outcome이 state에 없으므로 이벤트에서 추출하여 설정
-      if (!get().outcome) {
-        set({ outcome: event.outcome });
-      }
-      handleBattleEnd(get);
-    }
+    processBattleEnd(get, set, event);
   },
 
   flushEvents: () => {
@@ -308,10 +319,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       (e) => e.type === "battle-end",
     );
     if (battleEndEvent) {
-      if (!get().outcome && battleEndEvent.type === "battle-end") {
-        set({ outcome: battleEndEvent.outcome });
-      }
-      handleBattleEnd(get);
+      processBattleEnd(get, set, battleEndEvent);
     }
   },
 

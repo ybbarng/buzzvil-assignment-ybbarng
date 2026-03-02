@@ -66,4 +66,29 @@ describe("isValidReplay", () => {
   it("events가 배열이 아니면 거부한다", () => {
     expect(isValidReplay({ ...validData, events: "not-array" })).toBe(false);
   });
+
+  it("difficulty가 없는 데이터를 거부한다", () => {
+    const { difficulty: _, ...noDifficulty } = validData;
+    expect(isValidReplay(noDifficulty)).toBe(false);
+  });
+
+  it("difficulty가 유효하지 않은 값이면 거부한다", () => {
+    expect(isValidReplay({ ...validData, difficulty: "impossible" })).toBe(
+      false,
+    );
+  });
+
+  it("outcome이 없는 데이터를 거부한다", () => {
+    const { outcome: _, ...noOutcome } = validData;
+    expect(isValidReplay(noOutcome)).toBe(false);
+  });
+
+  it("outcome이 유효하지 않은 값이면 거부한다", () => {
+    expect(isValidReplay({ ...validData, outcome: "surrender" })).toBe(false);
+  });
+
+  it("totalTurns가 없는 데이터를 거부한다", () => {
+    const { totalTurns: _, ...noTotalTurns } = validData;
+    expect(isValidReplay(noTotalTurns)).toBe(false);
+  });
 });

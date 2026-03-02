@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { CharacterSnapshot } from "@/types/battle";
+import { TEST_ENEMY_SNAPSHOT, TEST_PLAYER_SNAPSHOT } from "@/test/helpers";
 import type { RoundEvent } from "@/types/battle-event";
 import { useBattleStore } from "./battle-store";
 
@@ -15,23 +15,8 @@ function getEnemy() {
   return enemy;
 }
 
-const playerSnapshot: CharacterSnapshot = {
-  name: "플레이어",
-  baseStats: { hp: 100, mp: 50, atk: 20, def: 10, spd: 15 },
-  currentHp: 100,
-  currentMp: 50,
-  isDefending: false,
-  buffs: [],
-};
-
-const enemySnapshot: CharacterSnapshot = {
-  name: "적",
-  baseStats: { hp: 80, mp: 40, atk: 15, def: 8, spd: 10 },
-  currentHp: 80,
-  currentMp: 40,
-  isDefending: false,
-  buffs: [],
-};
+const playerSnapshot = TEST_PLAYER_SNAPSHOT;
+const enemySnapshot = TEST_ENEMY_SNAPSHOT;
 
 function createReplayEvents(): RoundEvent[] {
   return [

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -17,7 +17,7 @@ const STEPS: { step: SettingStep; label: string }[] = [
 interface StepIndicatorProps {
   currentStep: SettingStep;
   onStepClick?: (step: SettingStep) => void;
-  trailing?: React.ReactNode;
+  trailing?: ReactNode;
 }
 
 export function StepIndicator({

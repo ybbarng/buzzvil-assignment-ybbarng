@@ -1,3 +1,4 @@
+import { Pause, Play } from "lucide-react";
 import { useCallback, useRef } from "react";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { cn } from "@/lib/utils";
@@ -60,19 +61,30 @@ export function ReplayPlayer() {
         <button
           type="button"
           onClick={toggleReplayPause}
+          aria-label={isReplayPaused ? "재생" : "일시정지"}
           className={cn(
             `${SKEW} flex h-7 w-9 items-center justify-center bg-accent-blue`,
             "transition-all hover:scale-105 hover:brightness-110",
           )}
         >
-          <span className={`${SKEW_TEXT} text-sm font-bold text-white`}>
-            {isReplayPaused ? "\u25B6" : "\u275A\u275A"}
+          <span className={SKEW_TEXT}>
+            {isReplayPaused ? (
+              <Play className="size-3.5 fill-white text-white" />
+            ) : (
+              <Pause className="size-3.5 fill-white text-white" />
+            )}
           </span>
         </button>
 
         {/* 프로그레스 바 */}
         <div
           ref={barRef}
+          role="slider"
+          aria-label="리플레이 진행률"
+          aria-valuenow={current}
+          aria-valuemin={0}
+          aria-valuemax={total}
+          tabIndex={0}
           className="relative h-2 flex-1 cursor-pointer bg-bg-tertiary"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -85,7 +97,9 @@ export function ReplayPlayer() {
           {/* 드래그 핸들 */}
           <div
             className="absolute top-1/2 -translate-y-1/2 h-4 w-2 bg-white shadow-md"
-            style={{ left: `calc(${progress * 100}% - 4px)` }}
+            style={{
+              left: `clamp(0px, calc(${progress * 100}% - 4px), calc(100% - 8px))`,
+            }}
           />
         </div>
 

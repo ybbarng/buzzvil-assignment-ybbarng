@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { TEST_ENEMY_SNAPSHOT, TEST_PLAYER_SNAPSHOT } from "@/test/helpers";
 import type { ReplayData } from "@/types/replay";
 import { REPLAY_VERSION } from "@/types/replay";
 import { useReplayStore } from "./replay-store";
@@ -19,22 +20,8 @@ function createReplay(overrides?: Partial<ReplayData>): ReplayData {
       {
         type: "round-start",
         round: 1,
-        playerSnapshot: {
-          name: "플레이어",
-          baseStats: { hp: 100, mp: 50, atk: 20, def: 10, spd: 15 },
-          currentHp: 100,
-          currentMp: 50,
-          isDefending: false,
-          buffs: [],
-        },
-        enemySnapshot: {
-          name: "적",
-          baseStats: { hp: 80, mp: 40, atk: 15, def: 8, spd: 10 },
-          currentHp: 80,
-          currentMp: 40,
-          isDefending: false,
-          buffs: [],
-        },
+        playerSnapshot: TEST_PLAYER_SNAPSHOT,
+        enemySnapshot: TEST_ENEMY_SNAPSHOT,
       },
     ],
     ...overrides,
@@ -44,7 +31,6 @@ function createReplay(overrides?: Partial<ReplayData>): ReplayData {
 describe("replay-store", () => {
   afterEach(() => {
     useReplayStore.getState().reset();
-    localStorage.removeItem(STORAGE_KEY);
   });
 
   describe("save", () => {

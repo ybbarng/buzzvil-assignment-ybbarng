@@ -88,10 +88,7 @@ export function ReplayListDialog({
                 className={`${SKEW} bg-bg-tertiary px-4 py-3`}
               >
                 <div
-                  className={`${SKEW_TEXT} grid items-center gap-x-3`}
-                  style={{
-                    gridTemplateColumns: "auto 1fr auto auto auto auto",
-                  }}
+                  className={`${SKEW_TEXT} grid grid-cols-[auto_1fr_auto_auto_auto_auto] items-center gap-x-3`}
                 >
                   <span className="text-xs text-text-muted">
                     {formatDate(replay.timestamp)}
