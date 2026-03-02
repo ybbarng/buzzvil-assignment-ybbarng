@@ -17,6 +17,8 @@ type IntroPhase = "center" | "moving" | "done";
 const INTRO_FADE_IN_WAIT_MS = 1500;
 /** intro-settle(700ms) + 여유. onAnimationEnd가 동작하지 않을 때의 fallback */
 const INTRO_SETTLE_FALLBACK_MS = 800;
+/** CSS @keyframes 이름. onAnimationEnd에서 버블링 필터링에 사용 */
+const INTRO_SETTLE_ANIMATION = "intro-settle";
 
 const INTRO_PHASE_CLASS: Record<IntroPhase, string> = {
   center: "animate-intro-fade-in",
@@ -128,7 +130,6 @@ export function SettingScreen() {
   useEffect(() => {
     if (introPhase !== "moving") return;
 
-    // intro-settle 애니메이션 종료 후 done으로 전환 (fallback 800ms)
     const fallback = setTimeout(() => {
       setIntroPhase("done");
     }, INTRO_SETTLE_FALLBACK_MS);
@@ -182,7 +183,7 @@ export function SettingScreen() {
         onAnimationEnd={
           introPhase === "moving"
             ? (e) => {
-                if (e.animationName !== "intro-settle") return;
+                if (e.animationName !== INTRO_SETTLE_ANIMATION) return;
                 setIntroPhase("done");
               }
             : undefined
