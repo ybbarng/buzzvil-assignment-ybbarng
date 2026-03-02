@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SKILL_TYPE_LABELS } from "@/constants/skills";
+import { SKILL_TYPE_ICONS } from "@/constants/skills";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import type { Skill } from "@/types/skill";
 
@@ -32,13 +32,10 @@ export function SkillCard({ skill, onRemove }: SkillCardProps) {
       <div className={`${SKEW_TEXT} space-y-0.5`}>
         <div className="flex items-center gap-2">
           <span className="font-semibold text-text-primary">{skill.name}</span>
-          <span
-            className={`${SKEW} bg-bg-secondary px-1.5 py-0.5 text-xs text-text-muted`}
-          >
-            <span className={`${SKEW_TEXT} block`}>
-              {SKILL_TYPE_LABELS[skill.type]}
-            </span>
-          </span>
+          {(() => {
+            const Icon = SKILL_TYPE_ICONS[skill.type];
+            return <Icon className="size-4 text-text-muted" />;
+          })()}
           {skill.mpCost > 0 && (
             <span className="text-xs text-mp">MP {skill.mpCost}</span>
           )}

@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { SKILL_TYPE_ICONS, SKILL_TYPE_LABELS } from "@/constants/skills";
 import { SKEW } from "@/constants/theme";
 import {
   type CustomSkillFormData,
@@ -24,14 +25,11 @@ interface SkillCreatorProps {
   onCancel: () => void;
 }
 
-const SKILL_TYPE_OPTIONS: {
-  value: Exclude<SkillType, "defend">;
-  label: string;
-}[] = [
-  { value: "attack", label: "공격" },
-  { value: "heal", label: "회복" },
-  { value: "buff", label: "버프" },
-  { value: "debuff", label: "디버프" },
+const SKILL_TYPE_OPTIONS: Exclude<SkillType, "defend">[] = [
+  "attack",
+  "heal",
+  "buff",
+  "debuff",
 ];
 
 const SLIDER_COLOR = "[&_[data-slot=slider-range]]:bg-accent-orange";
@@ -135,11 +133,14 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {SKILL_TYPE_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
+              {SKILL_TYPE_OPTIONS.map((type) => {
+                const Icon = SKILL_TYPE_ICONS[type];
+                return (
+                  <SelectItem key={type} value={type}>
+                    <Icon className="size-4" /> {SKILL_TYPE_LABELS[type]}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>

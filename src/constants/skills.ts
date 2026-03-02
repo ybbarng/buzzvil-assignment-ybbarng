@@ -1,3 +1,11 @@
+import {
+  ArrowDown,
+  ArrowUp,
+  Heart,
+  type LucideIcon,
+  Shield,
+  Sword,
+} from "lucide-react";
 import type { Skill, SkillType } from "@/types/skill";
 
 export const DEFAULT_SKILLS: Skill[] = [
@@ -24,4 +32,12 @@ export const SKILL_TYPE_LABELS: Record<SkillType, string> = {
   heal: "회복",
   buff: "버프",
   debuff: "디버프",
+};
+
+export const SKILL_TYPE_ICONS: Record<SkillType, LucideIcon> = {
+  attack: Sword,
+  defend: Shield,
+  heal: Heart,
+  buff: ArrowUp,
+  debuff: ArrowDown,
 };
