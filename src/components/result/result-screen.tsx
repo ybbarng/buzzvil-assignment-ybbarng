@@ -97,7 +97,7 @@ export function ResultScreen() {
           skew
           onClick={handleRestart}
         >
-          다시 시작
+          새 게임
         </GameButton>
       </div>
 
