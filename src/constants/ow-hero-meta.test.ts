@@ -62,15 +62,6 @@ describe("OW_HERO_STAT_META", () => {
     }
   });
 
-  it("모든 영웅에 rationale이 있다", () => {
-    for (const hero of OW_HERO_STAT_META) {
-      expect(
-        hero.rationale.length,
-        `${hero.name}의 rationale이 비어 있음`,
-      ).toBeGreaterThan(0);
-    }
-  });
-
   it("모든 영웅의 서브역할군이 역할군에 유효하다", () => {
     for (const hero of OW_HERO_STAT_META) {
       const validSubRoles = ROLE_SUB_ROLES[hero.role];

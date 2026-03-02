@@ -15,8 +15,6 @@ export interface OwHeroStatMeta {
   description: string;
   /** 서브역할군 기본 스탯 대비 조정값 (합계 0) */
   adjustments: StatAdjustments;
-  /** 조정 근거 — OW에서의 캐릭터 특성 기반 */
-  rationale: string;
 }
 
 /** 서브역할군별 기본 스탯 규칙 */
