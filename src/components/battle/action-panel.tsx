@@ -12,6 +12,15 @@ const SKILL_ICON_COLOR: Record<SkillType, string> = {
   debuff: "text-debuff",
 };
 
+/** 버튼 배경색을 기술 타입에 맞춤 */
+const SKILL_BUTTON_STYLE: Record<SkillType, string> = {
+  attack: "bg-damage",
+  defend: "bg-accent-blue",
+  heal: "bg-heal",
+  buff: "bg-buff text-bg-primary",
+  debuff: "bg-debuff",
+};
+
 interface ActionPanelProps {
   player: BattleCharacter;
   onAction: (skillIndex: number) => void;
@@ -31,7 +40,7 @@ export function ActionPanel({ player, onAction, disabled }: ActionPanelProps) {
             data-testid={`skill-button-${index}`}
             disabled={!canUse}
             variant="blue"
-            className="h-auto flex-col gap-0.5 py-2"
+            className={`h-auto flex-col gap-0.5 py-2 ${SKILL_BUTTON_STYLE[skill.type]}`}
             onClick={() => onAction(index)}
           >
             <span className="flex items-center justify-center gap-1.5 font-semibold">
