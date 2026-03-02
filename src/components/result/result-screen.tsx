@@ -51,16 +51,18 @@ export function ResultScreen() {
 
   return (
     <div className="flex flex-col items-center gap-6 py-8">
-      {/* 결과 텍스트 */}
-      <h2
-        data-testid="result-title"
-        className={`animate-result-scale-in text-7xl font-bold ${
-          outcome ? OUTCOME_STYLES[outcome] : "text-accent-orange"
-        }`}
-        style={staggerDelay(titleIdx)}
-      >
-        {outcome ? OUTCOME_LABELS[outcome] : ""}
-      </h2>
+      {/* 결과 텍스트: scale-in(래퍼)과 glow(h2) 분리 — 같은 요소에 두면 animation 충돌 */}
+      <div className="animate-result-scale-in" style={staggerDelay(titleIdx)}>
+        <h2
+          data-testid="result-title"
+          className={cn(
+            "text-7xl font-bold",
+            outcome ? OUTCOME_STYLES[outcome] : "text-accent-orange",
+          )}
+        >
+          {outcome ? OUTCOME_LABELS[outcome] : ""}
+        </h2>
+      </div>
 
       {/* 턴 수 */}
       <p
