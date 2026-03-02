@@ -173,7 +173,7 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             <div className="flex items-center justify-between">
               <Label className="text-text-secondary">공격 배율</Label>
               <span className="text-sm font-bold tabular-nums text-accent-orange">
-                {(multiplier as number)?.toFixed(1) ?? "1.5"}
+                {multiplier?.toFixed(1)}
               </span>
             </div>
             <Slider
