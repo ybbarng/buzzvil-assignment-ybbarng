@@ -237,4 +237,33 @@ describe("formatEvent", () => {
     };
     expect(formatEvent(event)).toBe("무승부로 전투가 종료되었습니다.");
   });
+
+  it("skip-turn(defeated) 이벤트를 포맷한다", () => {
+    const event: RoundEvent = {
+      type: "skip-turn",
+      round: 3,
+      actor: "enemy",
+      actorName: "훈련 로봇",
+      reason: "defeated",
+      playerSnapshot: snap,
+      enemySnapshot: snap,
+    };
+    expect(formatEvent(event)).toBe("훈련 로봇은 쓰러졌습니다.");
+  });
+
+  it("skip-turn(no-mp) 이벤트를 포맷한다", () => {
+    const event: RoundEvent = {
+      type: "skip-turn",
+      round: 2,
+      actor: "player",
+      actorName: "테스터",
+      reason: "no-mp",
+      skillName: "강타",
+      playerSnapshot: snap,
+      enemySnapshot: snap,
+    };
+    expect(formatEvent(event)).toBe(
+      "테스터는 마나가 부족하여 강타를 시전하지 못했습니다.",
+    );
+  });
 });
