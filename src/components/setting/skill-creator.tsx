@@ -86,20 +86,14 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
     defaultValues: DEFAULT_VALUES,
   });
 
-  const skillType = useWatch({ control, name: "type" });
-  // "target"은 buff/debuff 변형에만 존재하는 필드라 discriminated union 추론이 안 됨
-  const targetValue = useWatch({ control, name: "target" as "target" });
-  const mpCost = useWatch({ control, name: "mpCost" });
-  const multiplier = useWatch({
-    control,
-    name: "multiplier" as "multiplier",
-  });
-  const healAmount = useWatch({
-    control,
-    name: "healAmount" as "healAmount",
-  });
-  const buffValue = useWatch({ control, name: "value" as "value" });
-  const duration = useWatch({ control, name: "duration" as "duration" });
+  // discriminated union 필드들을 개별 useWatch 대신 단일 구독으로 통합
+  const watched = useWatch({ control }) as CustomSkillFormData;
+  const { type: skillType, mpCost } = watched;
+  const targetValue = "target" in watched ? watched.target : undefined;
+  const multiplier = "multiplier" in watched ? watched.multiplier : undefined;
+  const healAmount = "healAmount" in watched ? watched.healAmount : undefined;
+  const buffValue = "value" in watched ? watched.value : undefined;
+  const duration = "duration" in watched ? watched.duration : undefined;
 
   const handleTypeChange = (value: string) => {
     const newType = value as CustomSkillFormData["type"];
