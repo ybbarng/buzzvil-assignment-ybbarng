@@ -76,7 +76,7 @@ export function ResultScreen() {
       {/* 최종 캐릭터 상태 비교 */}
       {hasBattleData && (
         <div
-          className="animate-slide-in-right w-full opacity-0"
+          className="animate-slide-in-right flex w-full justify-center opacity-0"
           style={staggerDelay(statusIdx)}
         >
           <FinalStatusComparison player={player} enemy={enemy} />
@@ -86,7 +86,7 @@ export function ResultScreen() {
       {/* 전투 통계 */}
       {hasBattleData && playerStats && (
         <div
-          className="animate-slide-in-right w-full opacity-0"
+          className="animate-slide-in-right flex w-full justify-center opacity-0"
           style={staggerDelay(statsIdx)}
         >
           <BattleStatsSummary
