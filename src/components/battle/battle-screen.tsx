@@ -69,8 +69,13 @@ export function BattleScreen() {
         >
           <p className="text-sm text-text-secondary">
             {round === 1
-              ? `전투가 시작되었습니다. ${player.name}${josa(player.name, "은", "는")} 이번 라운드에서 무엇을 하시겠습니까?`
-              : `${round} 라운드입니다. ${player.name}${josa(player.name, "은", "는")} 무엇을 하시겠습니까?`}
+              ? "전투가 시작되었습니다. "
+              : `${round} 라운드입니다. `}
+            <span className="text-white">{player.name}</span>
+            {josa(player.name, "은", "는")}{" "}
+            {round === 1
+              ? "이번 라운드에서 무엇을 하시겠습니까?"
+              : "무엇을 하시겠습니까?"}
           </p>
           <ActionPanel player={player} onAction={executePlayerAction} />
         </div>
