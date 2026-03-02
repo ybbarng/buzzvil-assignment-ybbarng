@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { ReplayData } from "@/types/replay";
+import { isValidReplay } from "@/types/replay";
 
 const STORAGE_KEY = "buzz-arena-replays";
 const MAX_REPLAYS = 10;
@@ -18,7 +19,11 @@ interface ReplayState {
 function readFromStorage(): ReplayData[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as ReplayData[]) : [];
+    if (!raw) return [];
+    const parsed: unknown[] = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    // 호환되지 않는 버전의 데이터는 자동 제거
+    return parsed.filter(isValidReplay);
   } catch {
     return [];
   }

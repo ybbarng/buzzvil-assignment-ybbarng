@@ -8,6 +8,7 @@ import type { BattleCharacter, CharacterSnapshot } from "@/types/battle";
 import type { RoundEvent } from "@/types/battle-event";
 import type { Stats } from "@/types/character";
 import type { BattleOutcome, Difficulty } from "@/types/game";
+import { REPLAY_VERSION } from "@/types/replay";
 import type { Skill } from "@/types/skill";
 
 interface BattleState {
@@ -70,6 +71,7 @@ function handleBattleEnd(get: () => BattleState) {
   } else {
     if (player && enemy) {
       useReplayStore.getState().save({
+        version: REPLAY_VERSION,
         id: crypto.randomUUID(),
         timestamp: Date.now(),
         playerName: player.name,
