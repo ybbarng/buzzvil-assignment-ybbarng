@@ -40,20 +40,22 @@ export function ActionPanel({ player, onAction, disabled }: ActionPanelProps) {
             data-testid={`skill-button-${index}`}
             disabled={!canUse}
             variant="blue"
-            className={`h-auto flex-col gap-0.5 py-2 ${SKILL_BUTTON_STYLE[skill.type]}`}
+            className={`h-auto py-2 ${SKILL_BUTTON_STYLE[skill.type]}`}
             onClick={() => onAction(index)}
           >
-            <span className="flex items-center justify-center gap-1.5 font-semibold">
-              {skill.name}
-              <span
-                className={`inline-flex items-center justify-center rounded-full bg-white p-0.5 ${SKILL_ICON_COLOR[skill.type]}`}
-              >
-                <Icon className="size-3.5" />
+            <span className="flex w-full items-center justify-between gap-1">
+              <span className="flex items-center gap-1.5 font-semibold">
+                {skill.name}
+                <span
+                  className={`inline-flex items-center justify-center rounded-full bg-white p-0.5 ${SKILL_ICON_COLOR[skill.type]}`}
+                >
+                  <Icon className="size-3.5" />
+                </span>
               </span>
+              {skill.mpCost > 0 && (
+                <span className="text-xs text-mp">MP {skill.mpCost}</span>
+              )}
             </span>
-            {skill.mpCost > 0 && (
-              <span className="text-xs text-mp">MP {skill.mpCost}</span>
-            )}
           </GameButton>
         );
       })}
