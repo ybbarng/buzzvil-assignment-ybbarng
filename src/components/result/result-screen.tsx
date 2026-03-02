@@ -1,7 +1,13 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BattleStatsSummary } from "@/components/result/battle-stats-summary";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { GameButton } from "@/components/ui/game-button";
-import { STAGGER_MS, staggerDelay } from "@/constants/theme";
+import { staggerDelay } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 import { computeBattleStats } from "@/logic/battle-stats";
 import { useBattleStore } from "@/stores/battle-store";
@@ -30,6 +36,8 @@ export function ResultScreen() {
   const enemy = useBattleStore((s) => s.enemy);
   const events = useBattleStore((s) => s.events);
 
+  const [statsOpen, setStatsOpen] = useState(false);
+
   const handleRestart = () => {
     useBattleStore.getState().reset();
     useSettingStore.getState().reset();
@@ -50,8 +58,8 @@ export function ResultScreen() {
   let idx = 0;
   const titleIdx = idx++;
   const turnsIdx = idx++;
-  const statsIdx = hasBattleData ? idx++ : -1;
   const buttonIdx = idx++;
+  const analysisIdx = hasBattleData ? idx++ : -1;
 
   return (
     <div className="flex flex-col items-center gap-6 py-8">
@@ -77,22 +85,6 @@ export function ResultScreen() {
         {totalTurns}턴 만에 전투 종료
       </p>
 
-      {/* 전투 통계 (HP/MP + 데미지/회복/스킬) */}
-      {hasBattleData && playerStats && enemyStats && (
-        <div
-          className="animate-slide-in-right flex w-full justify-center"
-          style={staggerDelay(statsIdx)}
-        >
-          <BattleStatsSummary
-            player={player}
-            enemy={enemy}
-            playerStats={playerStats}
-            enemyStats={enemyStats}
-            baseDelay={statsIdx * STAGGER_MS}
-          />
-        </div>
-      )}
-
       {/* 다시 시작 버튼 */}
       <div
         className="animate-slide-in-right mt-2"
@@ -108,6 +100,43 @@ export function ResultScreen() {
           다시 시작
         </GameButton>
       </div>
+
+      {/* 전투 분석 버튼 */}
+      {hasBattleData && (
+        <div
+          className="animate-slide-in-right"
+          style={staggerDelay(analysisIdx)}
+        >
+          <GameButton
+            type="button"
+            variant="blue"
+            skew
+            onClick={() => setStatsOpen(true)}
+          >
+            전투 분석
+          </GameButton>
+        </div>
+      )}
+
+      {/* 전투 분석 모달 */}
+      {hasBattleData && playerStats && enemyStats && (
+        <Dialog open={statsOpen} onOpenChange={setStatsOpen}>
+          <DialogContent className="border-border bg-bg-secondary">
+            <DialogHeader>
+              <DialogTitle className="text-center text-text-primary">
+                전투 분석
+              </DialogTitle>
+            </DialogHeader>
+            <BattleStatsSummary
+              player={player}
+              enemy={enemy}
+              playerStats={playerStats}
+              enemyStats={enemyStats}
+              baseDelay={0}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
