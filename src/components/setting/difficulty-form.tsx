@@ -28,14 +28,14 @@ const DIFFICULTY_OPTIONS: {
   {
     value: "normal",
     label: "보통",
-    description: "전투 드론과 대전합니다.",
+    description: "탈론 돌격병과 대전합니다.",
     testId: "difficulty-normal",
     color: { selected: "border-buff bg-buff/10", border: "border-buff" },
   },
   {
     value: "hard",
     label: "어려움",
-    description: "타론 요원과 대전합니다.",
+    description: "탈론 정예 요원과 대전합니다.",
     testId: "difficulty-hard",
     color: { selected: "border-damage bg-damage/10", border: "border-damage" },
   },
