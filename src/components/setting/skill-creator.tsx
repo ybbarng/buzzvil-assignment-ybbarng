@@ -35,10 +35,11 @@ const SKILL_TYPE_OPTIONS: Exclude<SkillType, "defend">[] = [
 
 const SLIDER_COLOR = "[&_[data-slot=slider-range]]:bg-accent-orange";
 
-/** SKILL_CONSTRAINTS의 min과 max의 중간값을 반환 (정수 필드는 반올림) */
+/** SKILL_CONSTRAINTS의 min과 max의 중간값을 반환. step이 있으면 해당 단위로 반올림 */
 function mid(field: { min: number; max: number; step?: number }) {
   const raw = (field.min + field.max) / 2;
-  return "step" in field ? Math.round(raw * 10) / 10 : Math.round(raw);
+  const step = field.step ?? 1;
+  return Math.round(raw / step) * step;
 }
 
 const DEFAULT_VALUES: CustomSkillFormData = {
