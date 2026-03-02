@@ -170,25 +170,9 @@ export function generateRoundEvents(
       enemySnapshot: toSnapshot(e),
     });
 
-    // 선공 행동 후 전투 종료 판정
-    if (i === 0) {
-      const midCheck = checkBattleEnd(p, e, round);
-      if (midCheck) {
-        events.push({
-          type: "battle-end",
-          round,
-          outcome: midCheck,
-          playerSnapshot: toSnapshot(p),
-          enemySnapshot: toSnapshot(e),
-        });
-        return {
-          events,
-          finalPlayer: p,
-          finalEnemy: e,
-          nextRound: round + 1,
-          outcome: midCheck,
-        };
-      }
+    // 선공 행동 후 상대가 쓰러지면 후공 행동 스킵
+    if (i === 0 && (p.currentHp <= 0 || e.currentHp <= 0)) {
+      break;
     }
   }
 
