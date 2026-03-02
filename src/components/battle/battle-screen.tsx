@@ -80,7 +80,7 @@ export function BattleScreen() {
   if (!player || !enemy) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-1 flex-col gap-4 min-h-0">
       {/* 라운드 배지: 위에서 슬라이드 */}
       <div className="animate-slide-in-top flex items-center justify-center gap-2">
         <span
@@ -157,9 +157,9 @@ export function BattleScreen() {
         </div>
       )}
 
-      {/* 전투 로그: 아래에서 슬라이드 */}
+      {/* 전투 로그: 아래에서 슬라이드, 남은 공간 채움 */}
       <div
-        className="animate-slide-in-bottom"
+        className="animate-slide-in-bottom flex-1 min-h-0"
         style={{ animationDelay: "1800ms" }}
       >
         <BattleLog

@@ -87,7 +87,7 @@ export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
     <div
       data-testid="battle-log"
       ref={scrollRef}
-      className="h-40 overflow-y-auto border-l-2 border-accent-orange bg-bg-secondary p-3"
+      className="h-full overflow-y-auto border-l-2 border-accent-orange bg-bg-secondary p-3"
     >
       {events.length === 0 ? (
         <p className="text-center text-sm text-text-muted">
