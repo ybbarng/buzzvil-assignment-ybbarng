@@ -60,6 +60,52 @@
 | value (buff/debuff) | 1 | 10 | |
 | duration | 1 | 5 | 턴 단위 |
 
+## 메타데이터 기반 자동 생성
+
+### 설계 의도
+
+오버워치 스킬 데이터를 게임 프리셋으로 직접 하드코딩하지 않고, **원본 메타데이터(이름, 분류, 설명, 수치)를 별도로 저장**한 뒤 변환 함수를 통해 프리셋을 생성한다.
+
+이 구조를 선택한 이유는, 게임 시스템이 변경될 때(예: 스킬 타입 추가, 수치 범위 변경, 밸런스 재조정) **메타데이터나 변환 규칙만 수정하면 50명 전원의 스킬 프리셋을 일괄 재생성**할 수 있기 때문이다.
+
+### 파일 구조
+
+| 파일 | 역할 |
+|---|---|
+| `src/types/ow-skill-meta.ts` | 메타데이터 타입 정의 (`OwHeroMeta`, `OwSkillMeta`, `SkillGameValues`, `ConversionRule`) |
+| `src/constants/ow-skill-meta.ts` | 변환 규칙, 50명 영웅 스킬 메타데이터, 프리셋 생성 함수 |
+| `src/constants/skill-presets.ts` | `generateAllSkillPresets()`를 호출하여 최종 프리셋 배열 제공 |
+
+### 생성 흐름
+
+```
+OW_HERO_META (50명 영웅 × 4 스킬, gameValues 포함)
+  + SKILL_NAME_MAP (8자 초과 스킬명 축약)
+  → generateSkillPreset()
+  → HeroSkillPreset (SkillPresetEntry[])
+```
+
+### 이름 축약
+
+스킬 이름은 게임 시스템 제약(최대 8자)을 따라야 한다. 8자를 초과하는 오버워치 원본 이름은 `SKILL_NAME_MAP`에서 축약한다.
+
+| 원본 이름 | 축약 이름 |
+|---|---|
+| A-36 전술 수류탄 | 전술 수류탄 |
+| 사이버 파편 수류탄 | 파편 수류탄 |
+| 오버라이드 프로토콜 | 오버라이드 |
+
+### 데이터 검증
+
+`src/constants/ow-skill-meta.test.ts`에서 자동 검증:
+
+- 50명 영웅이 모두 포함, heroId 고유
+- 영웅당 정확히 4개 스킬
+- 모든 gameValues가 SKILL_CONSTRAINTS 범위 내
+- SKILL_NAME_MAP의 원본 이름이 실제로 존재
+- 축약 후 이름이 8자 이하
+- 대표 영웅(D.Va, 겐지)의 스킬 스냅샷 검증
+
 ## 예시: D.Va
 
 | OW 스킬 | 게임 변환 | 근거 |

@@ -94,6 +94,9 @@ export const SKILL_NAME_MAP: Record<string, string> = {
  * 오버워치 영웅별 스킬 메타데이터.
  * 각 스킬의 공식 이름(축약 전), 분류, 동작 설명, 게임 수치를 저장.
  * SKILL_PRESETS는 이 메타데이터에서 자동 생성된다.
+ *
+ * OW2 2026년 기준 50명 영웅. 영웅 추가/제거 시 이 배열과
+ * ow-skill-meta.test.ts의 검증도 함께 업데이트할 것.
  */
 export const OW_HERO_META: OwHeroMeta[] = [
   // ── 돌격 (Tank) ──────────────────────────────

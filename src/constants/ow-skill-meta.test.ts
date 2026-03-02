@@ -11,6 +11,11 @@ import { HERO_PRESETS } from "@/constants/presets";
 import { SKILL_CONSTRAINTS } from "@/schemas/skill.schema";
 
 describe("OW_HERO_META", () => {
+  // OW2 2026년 기준 50명. 영웅 추가/제거 시 이 값도 함께 업데이트할 것.
+  it("50명 영웅이 모두 포함되어 있다", () => {
+    expect(OW_HERO_META.length).toBe(50);
+  });
+
   it("모든 HERO_PRESETS에 대응하는 메타데이터가 존재한다", () => {
     const metaHeroIds = new Set(OW_HERO_META.map((h) => h.heroId));
     for (const hero of HERO_PRESETS) {
@@ -48,6 +53,8 @@ describe("OW_HERO_META", () => {
     }
   });
 
+  // generateSkillPreset()이 gameValues를 그대로 전달하므로,
+  // 이 검증이 프리셋 수치의 범위 보장에도 역할한다 (defense-in-depth).
   it("gameValues의 수치가 게임 제약 범위 내이다", () => {
     for (const hero of OW_HERO_META) {
       for (const skill of hero.skills) {
@@ -178,6 +185,48 @@ describe("generateSkillPreset", () => {
 
     const grenadeSkill = preset.skills.find((s) => s.name === "전술 수류탄");
     expect(grenadeSkill).toBeDefined();
+  });
+
+  it("대표 영웅의 스킬 변환이 정확하다", () => {
+    const dvaMeta = getOwHeroMetaByHeroId("dva");
+    if (!dvaMeta) throw new Error("dva meta not found");
+    const dvaPreset = generateSkillPreset(dvaMeta);
+
+    // movement(부스터) → buff DEF +4, 2턴, MP 7
+    expect(dvaPreset.skills[0]).toEqual({
+      name: "부스터",
+      type: "buff",
+      target: "def",
+      mpCost: 7,
+      value: 4,
+      duration: 2,
+    });
+    // ultimate_damage(자폭) → attack ×2.8, MP 25
+    expect(dvaPreset.skills[3]).toEqual({
+      name: "자폭",
+      type: "attack",
+      mpCost: 25,
+      multiplier: 2.8,
+    });
+
+    const genjiMeta = getOwHeroMetaByHeroId("genji");
+    if (!genjiMeta) throw new Error("genji meta not found");
+    const genjiPreset = generateSkillPreset(genjiMeta);
+
+    // attack(수리검) → attack ×1.4, MP 8
+    expect(genjiPreset.skills[0]).toEqual({
+      name: "수리검",
+      type: "attack",
+      mpCost: 8,
+      multiplier: 1.4,
+    });
+    // ultimate_damage(용검) → attack ×2.8, MP 25
+    expect(genjiPreset.skills[3]).toEqual({
+      name: "용검",
+      type: "attack",
+      mpCost: 25,
+      multiplier: 2.8,
+    });
   });
 });
 
