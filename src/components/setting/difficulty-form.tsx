@@ -16,28 +16,28 @@ const DIFFICULTY_OPTIONS: {
   label: string;
   description: string;
   testId: string;
-  color: { selected: string; border: string };
+  selectedColor: string;
 }[] = [
   {
     value: "easy",
     label: "쉬움",
     description: "훈련 로봇과 대전합니다.",
     testId: "difficulty-easy",
-    color: { selected: "border-heal bg-heal/10", border: "border-heal" },
+    selectedColor: "border-heal bg-heal/10",
   },
   {
     value: "normal",
     label: "보통",
     description: "탈론 돌격병과 대전합니다.",
     testId: "difficulty-normal",
-    color: { selected: "border-buff bg-buff/10", border: "border-buff" },
+    selectedColor: "border-buff bg-buff/10",
   },
   {
     value: "hard",
     label: "어려움",
     description: "탈론 정예 요원과 대전합니다.",
     testId: "difficulty-hard",
-    color: { selected: "border-damage bg-damage/10", border: "border-damage" },
+    selectedColor: "border-damage bg-damage/10",
   },
 ];
 
@@ -70,7 +70,7 @@ export function DifficultyForm({
                 SKEW,
                 "w-full cursor-pointer border-2 px-4 py-3 text-left transition-all",
                 difficulty === opt.value
-                  ? `${opt.color.selected} text-text-primary`
+                  ? `${opt.selectedColor} text-text-primary`
                   : "border-border/50 bg-bg-tertiary text-text-secondary hover:border-text-muted hover:bg-bg-tertiary/80",
               )}
               onClick={() => onSelect(opt.value)}
