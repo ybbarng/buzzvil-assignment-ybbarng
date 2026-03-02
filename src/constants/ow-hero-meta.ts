@@ -590,6 +590,8 @@ export function generateHeroPreset(
     }
   }
 
+  // adjSum===0이면 수학적으로 base 총합과 동일하나,
+  // SUB_ROLE_BASE_STATS 자체가 잘못된 경우를 대비한 defense-in-depth.
   const total = Object.values(stats).reduce((a, b) => a + b, 0);
   if (total !== TOTAL_POINTS) {
     throw new Error(
