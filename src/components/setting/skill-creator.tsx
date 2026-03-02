@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { SKILL_TYPE_ICONS, SKILL_TYPE_LABELS } from "@/constants/skills";
+import { STAT_LABELS } from "@/constants/stats";
 import { SKEW } from "@/constants/theme";
 import {
   type CustomSkillFormData,
@@ -234,8 +235,11 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="atk">공격력 ATK</SelectItem>
-                <SelectItem value="def">방어력 DEF</SelectItem>
+                {(["atk", "def"] as const).map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {STAT_LABELS[key].ko} {STAT_LABELS[key].en}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
