@@ -62,6 +62,39 @@ describe("SkillPresetDialog", () => {
         expect(screen.getByText(skill.name)).toBeInTheDocument();
       }
     });
+
+    it("스킬 선택 후 재오픈 시 마지막 선택 영웅이 유지된다", async () => {
+      const user = userEvent.setup();
+      const onOpenChange = vi.fn();
+      const { rerender } = render(
+        <SkillPresetDialog
+          {...defaultProps}
+          onOpenChange={onOpenChange}
+          onSelect={vi.fn()}
+        />,
+      );
+
+      // 영웅 선택 → 스킬 선택 → 다이얼로그 닫힘
+      await user.click(screen.getByText("D.Va"));
+      const preset = getDvaPreset();
+      await user.click(screen.getByText(preset.skills[0].name));
+      expect(onOpenChange).toHaveBeenCalledWith(false);
+
+      // 닫힌 상태에서 재오픈
+      rerender(
+        <SkillPresetDialog
+          {...defaultProps}
+          open={true}
+          onOpenChange={onOpenChange}
+          onSelect={vi.fn()}
+        />,
+      );
+
+      // 영웅을 다시 선택하지 않아도 스킬 목록이 표시된다
+      for (const skill of preset.skills) {
+        expect(screen.getByText(skill.name)).toBeInTheDocument();
+      }
+    });
   });
 
   describe("스킬 선택", () => {

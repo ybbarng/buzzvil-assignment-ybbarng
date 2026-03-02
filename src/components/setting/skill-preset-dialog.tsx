@@ -196,7 +196,8 @@ export function SkillPresetDialog({
 
   const handleSelect = (entry: SkillPresetEntry) => {
     onSelect(presetEntryToSkill(entry));
-    handleOpenChange(false);
+    // 스킬 선택 시에는 browseHeroId를 유지하여, 재오픈 시 같은 영웅의 스킬 목록을 바로 표시
+    onOpenChange(false);
   };
 
   return (
