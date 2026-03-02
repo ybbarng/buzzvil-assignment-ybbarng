@@ -101,6 +101,11 @@ describe("OW_HERO_META", () => {
         // 카테고리의 예상 gameType과 실제 gameValues type이 일치해야 한다
         expect(gv.type).toBe(rule.gameType);
 
+        // buff/debuff 규칙에 target이 지정된 경우, gameValues.target도 일치해야 한다
+        if (rule.target && (gv.type === "buff" || gv.type === "debuff")) {
+          expect(gv.target).toBe(rule.target);
+        }
+
         expect(gv.mpCost).toBeGreaterThanOrEqual(rule.mpCost.min);
         expect(gv.mpCost).toBeLessThanOrEqual(rule.mpCost.max);
 

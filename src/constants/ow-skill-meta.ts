@@ -32,7 +32,7 @@ export const CONVERSION_RULES: Record<OwSkillCategory, ConversionRule> = {
   },
   ultimate_buff: {
     gameType: "buff",
-    target: "atk",
+    // target 미지정: ATK 강화(나노 강화제)와 DEF 강화(소리 방벽) 모두 포함
     mpCost: { min: 18, max: 25 },
     value: { min: 8, max: 10 },
     duration: { min: 3, max: 5 },
