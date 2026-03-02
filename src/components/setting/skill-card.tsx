@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SKILL_TYPE_ICONS } from "@/constants/skills";
+import { SKILL_TYPE_COLORS, SKILL_TYPE_ICONS } from "@/constants/skills";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import type { Skill } from "@/types/skill";
 
@@ -27,7 +27,7 @@ function getSkillDescription(skill: Skill): string {
 export function SkillCard({ skill, onRemove }: SkillCardProps) {
   return (
     <div
-      className={`${SKEW} flex items-center justify-between border-l-2 border-border bg-bg-tertiary px-4 py-3`}
+      className={`${SKEW} flex items-center justify-between border-l-2 ${SKILL_TYPE_COLORS[skill.type].border} bg-bg-tertiary px-4 py-3`}
     >
       <div className={`${SKEW_TEXT} space-y-0.5`}>
         <div className="flex items-center gap-2">

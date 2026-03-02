@@ -41,3 +41,14 @@ export const SKILL_TYPE_ICONS: Record<SkillType, LucideIcon> = {
   buff: ArrowUp,
   debuff: ArrowDown,
 };
+
+export const SKILL_TYPE_COLORS: Record<
+  SkillType,
+  { border: string; text: string }
+> = {
+  attack: { border: "border-damage", text: "text-damage" },
+  defend: { border: "border-accent-blue", text: "text-accent-blue" },
+  heal: { border: "border-heal", text: "text-heal" },
+  buff: { border: "border-buff", text: "text-buff" },
+  debuff: { border: "border-debuff", text: "text-debuff" },
+};
