@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ReplayListDialog } from "@/components/replay/replay-list-dialog";
 import { BattleStatsSummary } from "@/components/result/battle-stats-summary";
 import {
   Dialog,
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { computeBattleStats } from "@/logic/battle-stats";
 import { useBattleStore } from "@/stores/battle-store";
 import { useGameStore } from "@/stores/game-store";
+import { useReplayStore } from "@/stores/replay-store";
 import { useSettingStore } from "@/stores/setting-store";
 import type { BattleOutcome } from "@/types/game";
 
@@ -28,6 +30,7 @@ const OUTCOME_STYLES: Record<BattleOutcome, string> = {
 };
 
 export function ResultScreen() {
+  const phase = useGameStore((s) => s.phase);
   const outcome = useGameStore((s) => s.outcome);
   const totalTurns = useGameStore((s) => s.totalTurns);
   const restart = useGameStore((s) => s.restart);
@@ -36,7 +39,10 @@ export function ResultScreen() {
   const enemy = useBattleStore((s) => s.enemy);
   const events = useBattleStore((s) => s.events);
 
+  const replays = useReplayStore((s) => s.replays);
+
   const [statsOpen, setStatsOpen] = useState(false);
+  const [replayOpen, setReplayOpen] = useState(false);
 
   const handleRestart = () => {
     useBattleStore.getState().reset();
@@ -60,6 +66,7 @@ export function ResultScreen() {
   const turnsIdx = idx++;
   const buttonIdx = idx++;
   const analysisIdx = hasBattleData ? idx++ : -1;
+  const replayIdx = replays.length > 0 ? idx++ : -1;
 
   return (
     <div className="flex flex-col items-center gap-6 py-8">
@@ -118,6 +125,20 @@ export function ResultScreen() {
         </div>
       )}
 
+      {/* 다시보기 버튼 */}
+      {replays.length > 0 && (
+        <div className="animate-slide-in-right" style={staggerDelay(replayIdx)}>
+          <GameButton
+            type="button"
+            variant="blue"
+            skew
+            onClick={() => setReplayOpen(true)}
+          >
+            다시보기
+          </GameButton>
+        </div>
+      )}
+
       {/* 전투 분석 모달 */}
       {hasBattleData && playerStats && enemyStats && (
         <Dialog open={statsOpen} onOpenChange={setStatsOpen}>
@@ -139,6 +160,11 @@ export function ResultScreen() {
             />
           </DialogContent>
         </Dialog>
+      )}
+
+      {/* 리플레이 목록 모달 */}
+      {(phase === "result" || phase === "replay-result") && (
+        <ReplayListDialog open={replayOpen} onOpenChange={setReplayOpen} />
       )}
     </div>
   );

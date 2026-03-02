@@ -33,4 +33,27 @@ describe("game-store", () => {
     expect(state.outcome).toBeNull();
     expect(state.totalTurns).toBe(0);
   });
+
+  it("startReplay로 replay phase로 전환된다", () => {
+    useGameStore.getState().startReplay();
+    expect(useGameStore.getState().phase).toBe("replay");
+  });
+
+  it("showReplayResult로 replay-result phase로 전환되고 결과가 저장된다", () => {
+    useGameStore.getState().startReplay();
+    useGameStore.getState().showReplayResult("lose", 8);
+    const state = useGameStore.getState();
+    expect(state.phase).toBe("replay-result");
+    expect(state.outcome).toBe("lose");
+    expect(state.totalTurns).toBe(8);
+  });
+
+  it("replay-result에서 restart로 setting으로 돌아간다", () => {
+    useGameStore.getState().startReplay();
+    useGameStore.getState().showReplayResult("win", 5);
+    useGameStore.getState().restart();
+    const state = useGameStore.getState();
+    expect(state.phase).toBe("setting");
+    expect(state.outcome).toBeNull();
+  });
 });

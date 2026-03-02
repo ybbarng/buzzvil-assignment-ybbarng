@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
+import { ReplayPlayer } from "@/components/replay/replay-player";
 import { ACTOR_CHANGE_DELAY, EVENT_DELAYS } from "@/constants/battle";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { josa } from "@/lib/utils";
@@ -29,6 +30,8 @@ export function BattleScreen() {
   const advanceEvent = useBattleStore((s) => s.advanceEvent);
   const activeActor = useBattleStore((s) => s.activeActor);
 
+  const isReplaying = useBattleStore((s) => s.isReplaying);
+  const isReplayPaused = useBattleStore((s) => s.isReplayPaused);
   const initialized = useRef(false);
 
   // events 배열에서 마지막 round-start의 round를 표시용으로 사용
@@ -42,13 +45,16 @@ export function BattleScreen() {
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
-    const { name, stats, skills, difficulty } = useSettingStore.getState();
-    initBattle(name, stats, skills, difficulty);
-  }, [initBattle]);
+    if (!isReplaying) {
+      const { name, stats, skills, difficulty } = useSettingStore.getState();
+      initBattle(name, stats, skills, difficulty);
+    }
+  }, [initBattle, isReplaying]);
 
   // 이벤트 애니메이션 타이머
   useEffect(() => {
     if (pendingEvents.length === 0) return;
+    if (isReplayPaused) return;
 
     const nextEvent = pendingEvents[0];
     let delay = EVENT_DELAYS[nextEvent.type];
@@ -69,12 +75,12 @@ export function BattleScreen() {
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [pendingEvents, events, advanceEvent]);
+  }, [pendingEvents, events, advanceEvent, isReplayPaused]);
 
   if (!player || !enemy) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-1 flex-col gap-4 min-h-0">
       {/* 라운드 배지: 위에서 슬라이드 */}
       <div className="animate-slide-in-top flex items-center justify-center gap-2">
         <span
@@ -124,27 +130,36 @@ export function BattleScreen() {
           className="animate-slide-in-bottom space-y-2"
           style={{ animationDelay: "1400ms" }}
         >
-          <p className="text-sm text-text-secondary">
-            {displayRound === 1
-              ? "전투가 시작되었습니다. "
-              : `${displayRound} 라운드입니다. `}
-            <span className="text-white">{player.name}</span>
-            {josa(player.name, "은", "는")}{" "}
-            {displayRound === 1
-              ? "첫 라운드에서 무엇을 하시겠습니까?"
-              : "무엇을 하시겠습니까?"}
-          </p>
-          <ActionPanel
-            player={player}
-            onAction={executePlayerAction}
-            disabled={isAnimating}
-          />
+          {isReplaying ? (
+            <div className="space-y-2">
+              <p className="text-sm text-text-muted">리플레이 재생 중</p>
+              <ReplayPlayer />
+            </div>
+          ) : (
+            <>
+              <p className="text-sm text-text-secondary">
+                {displayRound === 1
+                  ? "전투가 시작되었습니다. "
+                  : `${displayRound} 라운드입니다. `}
+                <span className="text-white">{player.name}</span>
+                {josa(player.name, "은", "는")}{" "}
+                {displayRound === 1
+                  ? "첫 라운드에서 무엇을 하시겠습니까?"
+                  : "무엇을 하시겠습니까?"}
+              </p>
+              <ActionPanel
+                player={player}
+                onAction={executePlayerAction}
+                disabled={isAnimating}
+              />
+            </>
+          )}
         </div>
       )}
 
-      {/* 전투 로그: 아래에서 슬라이드 */}
+      {/* 전투 로그: 아래에서 슬라이드, 남은 공간 채움 */}
       <div
-        className="animate-slide-in-bottom"
+        className="animate-slide-in-bottom flex-1 min-h-0"
         style={{ animationDelay: "1800ms" }}
       >
         <BattleLog

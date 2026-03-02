@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -17,16 +17,18 @@ const STEPS: { step: SettingStep; label: string }[] = [
 interface StepIndicatorProps {
   currentStep: SettingStep;
   onStepClick?: (step: SettingStep) => void;
+  trailing?: ReactNode;
 }
 
 export function StepIndicator({
   currentStep,
   onStepClick,
+  trailing,
 }: StepIndicatorProps) {
   const currentLabel = STEPS[currentStep - 1].label;
 
   return (
-    <div className="mb-6 flex items-center justify-center gap-1">
+    <div className="relative mb-6 flex items-center justify-center gap-1">
       {STEPS.map(({ step, label }) => {
         const isCurrent = step === currentStep;
         const isCompleted = step < currentStep;
@@ -71,6 +73,11 @@ export function StepIndicator({
 
         return <Fragment key={step}>{button}</Fragment>;
       })}
+      {trailing && (
+        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          {trailing}
+        </div>
+      )}
     </div>
   );
 }
