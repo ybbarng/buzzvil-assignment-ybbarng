@@ -2,7 +2,7 @@ import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 
-type GameButtonVariant = "orange" | "blue" | "dark";
+type GameButtonVariant = "orange" | "blue";
 type GameButtonSize = "sm" | "default";
 
 interface GameButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -40,8 +40,6 @@ export const GameButton = forwardRef<HTMLButtonElement, GameButtonProps>(
           variant === "orange" && active && "animate-button-ready",
           variant === "blue" &&
             "bg-accent-blue enabled:hover:scale-105 enabled:hover:brightness-110",
-          variant === "dark" &&
-            "bg-bg-secondary enabled:hover:scale-105 enabled:hover:brightness-125",
           skew && SKEW,
           className,
         )}

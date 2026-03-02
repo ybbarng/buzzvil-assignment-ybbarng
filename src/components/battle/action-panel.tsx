@@ -1,14 +1,13 @@
 import { GameButton } from "@/components/ui/game-button";
-import { cn } from "@/lib/utils";
 import type { BattleCharacter } from "@/types/battle";
 import type { SkillType } from "@/types/skill";
 
-const SKILL_TYPE_BORDER: Record<SkillType, string> = {
-  attack: "border-l-2 border-damage",
-  defend: "border-l-2 border-accent-blue",
-  heal: "border-l-2 border-hp",
-  buff: "border-l-2 border-buff",
-  debuff: "border-l-2 border-debuff",
+const SKILL_TYPE_ICON: Record<SkillType, { emoji: string; color: string }> = {
+  attack: { emoji: "⚔", color: "text-damage" },
+  defend: { emoji: "🛡", color: "text-white" },
+  heal: { emoji: "💚", color: "text-hp" },
+  buff: { emoji: "⬆", color: "text-buff" },
+  debuff: { emoji: "⬇", color: "text-debuff" },
 };
 
 interface ActionPanelProps {
@@ -21,20 +20,21 @@ export function ActionPanel({ player, onAction }: ActionPanelProps) {
     <div className="grid grid-cols-2 gap-2">
       {player.skills.map((skill, index) => {
         const canUse = skill.mpCost <= player.currentMp;
+        const icon = SKILL_TYPE_ICON[skill.type];
         return (
           <GameButton
             key={skill.name}
             type="button"
             data-testid={`skill-button-${index}`}
             disabled={!canUse}
-            variant="dark"
-            className={cn(
-              "h-auto flex-col gap-0.5 py-2",
-              SKILL_TYPE_BORDER[skill.type],
-            )}
+            variant="blue"
+            className="h-auto flex-col gap-0.5 py-2"
             onClick={() => onAction(index)}
           >
-            <span className="font-semibold">{skill.name}</span>
+            <span className="flex items-center gap-1.5 font-semibold">
+              <span className={icon.color}>{icon.emoji}</span>
+              {skill.name}
+            </span>
             {skill.mpCost > 0 && (
               <span className="text-xs text-mp">MP {skill.mpCost}</span>
             )}
