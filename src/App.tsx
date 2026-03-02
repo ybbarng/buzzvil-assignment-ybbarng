@@ -16,7 +16,17 @@ function App() {
 
   return (
     <TooltipProvider>
-      <GameContainer align={phase === "setting" ? "start" : "center"}>
+      <GameContainer align={phase === "result" ? "center" : "start"}>
+        {phase !== "result" && (
+          <div className="mb-8 text-center">
+            <h1 className="animate-title-blaze text-6xl font-bold tracking-wide text-accent-orange uppercase">
+              BUZZ ARENA
+            </h1>
+            <p className="mt-2 text-base tracking-wide text-text-secondary">
+              자신만의 강력한 영웅을 구성하고 치열한 전투에 참가해보세요!
+            </p>
+          </div>
+        )}
         {phase === "setting" && <SettingScreen />}
         {phase === "battle" && <BattleScreen />}
         {phase === "result" && <ResultScreen />}
