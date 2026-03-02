@@ -21,6 +21,20 @@ import {
 } from "@/schemas/skill.schema";
 import type { Skill, SkillType } from "@/types/skill";
 
+/** CustomSkillFormData → Skill 변환. switch로 타입을 좁혀 as 캐스팅 없이 변환 */
+function toSkill(data: CustomSkillFormData): Skill {
+  switch (data.type) {
+    case "attack":
+      return { ...data, isDefault: false };
+    case "heal":
+      return { ...data, isDefault: false };
+    case "buff":
+      return { ...data, isDefault: false };
+    case "debuff":
+      return { ...data, isDefault: false };
+  }
+}
+
 interface SkillCreatorProps {
   onAdd: (skill: Skill) => void;
   onCancel: () => void;
@@ -103,7 +117,8 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
     defaultValues: DEFAULT_VALUES,
   });
 
-  // discriminated union 필드들을 개별 useWatch 대신 단일 구독으로 통합
+  // useWatch는 DeepPartial을 반환하지만, zod resolver + defaultValues로
+  // 항상 완전한 값이 보장되므로 CustomSkillFormData로 취급
   const watched = useWatch({ control }) as CustomSkillFormData;
   const { type: skillType, mpCost } = watched;
   const targetValue = "target" in watched ? watched.target : undefined;
@@ -112,7 +127,12 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
   const buffValue = "value" in watched ? watched.value : undefined;
   const duration = "duration" in watched ? watched.duration : undefined;
 
+  // discriminated union의 variant-specific 필드에 setValue 호출 시
+  // react-hook-form 타입이 공통 필드만 허용하므로 래퍼 사용
+  const setField = setValue as (name: string, value: unknown) => void;
+
   const handleTypeChange = (value: string) => {
+    // Select 옵션이 SKILL_TYPE_OPTIONS로 제한되므로 항상 유효한 타입
     const newType = value as CustomSkillFormData["type"];
     const currentName = getValues("name");
     const defaults = getDefaultForType(newType);
@@ -120,8 +140,7 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
   };
 
   const onSubmit = (data: CustomSkillFormData) => {
-    const skill = { ...data, isDefault: false } as Skill;
-    onAdd(skill);
+    onAdd(toSkill(data));
   };
 
   return (
@@ -195,9 +214,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             min={SKILL_CONSTRAINTS.multiplier.min}
             max={SKILL_CONSTRAINTS.multiplier.max}
             step={SKILL_CONSTRAINTS.multiplier.step}
-            value={[multiplier as number]}
+            value={[multiplier ?? 0]}
             onValueChange={([v]) =>
-              setValue("multiplier" as "multiplier", Math.round(v * 10) / 10)
+              setField("multiplier", Math.round(v * 10) / 10)
             }
             className={SLIDER_COLOR}
           />
@@ -216,15 +235,15 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
           <div className="flex items-center justify-between">
             <Label className="text-text-secondary">회복량</Label>
             <span className="text-sm font-bold tabular-nums text-accent-orange">
-              {healAmount as number}
+              {healAmount ?? 0}
             </span>
           </div>
           <Slider
             min={SKILL_CONSTRAINTS.healAmount.min}
             max={SKILL_CONSTRAINTS.healAmount.max}
             step={1}
-            value={[healAmount as number]}
-            onValueChange={([v]) => setValue("healAmount" as "healAmount", v)}
+            value={[healAmount ?? 0]}
+            onValueChange={([v]) => setField("healAmount", v)}
             className={SLIDER_COLOR}
           />
           <div className="flex justify-between text-xs text-text-muted">
@@ -243,9 +262,7 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             <Label className="text-text-secondary">대상 스탯</Label>
             <Select
               value={targetValue ?? "atk"}
-              onValueChange={(v) =>
-                setValue("target" as "target", v as "atk" | "def")
-              }
+              onValueChange={(v) => setField("target", v)}
             >
               <SelectTrigger className="border-border bg-bg-tertiary text-text-primary">
                 <SelectValue />
@@ -263,15 +280,15 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             <div className="flex items-center justify-between">
               <Label className="text-text-secondary">수치</Label>
               <span className="text-sm font-bold tabular-nums text-accent-orange">
-                {buffValue as number}
+                {buffValue ?? 0}
               </span>
             </div>
             <Slider
               min={SKILL_CONSTRAINTS.value.min}
               max={SKILL_CONSTRAINTS.value.max}
               step={1}
-              value={[buffValue as number]}
-              onValueChange={([v]) => setValue("value" as "value", v)}
+              value={[buffValue ?? 0]}
+              onValueChange={([v]) => setField("value", v)}
               className={SLIDER_COLOR}
             />
             <div className="flex justify-between text-xs text-text-muted">
@@ -286,15 +303,15 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             <div className="flex items-center justify-between">
               <Label className="text-text-secondary">지속 턴</Label>
               <span className="text-sm font-bold tabular-nums text-accent-orange">
-                {duration as number}턴
+                {duration ?? 0}턴
               </span>
             </div>
             <Slider
               min={SKILL_CONSTRAINTS.duration.min}
               max={SKILL_CONSTRAINTS.duration.max}
               step={1}
-              value={[duration as number]}
-              onValueChange={([v]) => setValue("duration" as "duration", v)}
+              value={[duration ?? 0]}
+              onValueChange={([v]) => setField("duration", v)}
               className={SLIDER_COLOR}
             />
             <div className="flex justify-between text-xs text-text-muted">
