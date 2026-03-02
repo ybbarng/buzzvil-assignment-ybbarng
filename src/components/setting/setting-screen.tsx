@@ -13,6 +13,17 @@ import type { Direction, SettingStep } from "@/types/game";
 
 type IntroPhase = "center" | "moving" | "done";
 
+/** fade-in(800ms) 완료 후 여유 시간을 포함한 대기 시간 */
+const INTRO_FADE_IN_WAIT_MS = 1500;
+/** intro-settle(700ms) + 여유. onAnimationEnd가 동작하지 않을 때의 fallback */
+const INTRO_SETTLE_FALLBACK_MS = 800;
+
+const INTRO_PHASE_CLASS: Record<IntroPhase, string> = {
+  center: "animate-intro-fade-in",
+  moving: "animate-intro-settle",
+  done: "",
+};
+
 function getStepGuide(step: SettingStep, name: string): React.ReactNode {
   if (step === 2 && name) {
     return (
@@ -110,7 +121,7 @@ export function SettingScreen() {
 
     const timer = setTimeout(() => {
       setIntroPhase("moving");
-    }, 1500);
+    }, INTRO_FADE_IN_WAIT_MS);
     return () => clearTimeout(timer);
   }, [introPhase]);
 
@@ -120,7 +131,7 @@ export function SettingScreen() {
     // intro-settle 애니메이션 종료 후 done으로 전환 (fallback 800ms)
     const fallback = setTimeout(() => {
       setIntroPhase("done");
-    }, 800);
+    }, INTRO_SETTLE_FALLBACK_MS);
 
     return () => clearTimeout(fallback);
   }, [introPhase]);
@@ -167,13 +178,7 @@ export function SettingScreen() {
   return (
     <div>
       <div
-        className={`mb-8 text-center ${
-          introPhase === "center"
-            ? "animate-intro-fade-in"
-            : introPhase === "moving"
-              ? "animate-intro-settle"
-              : ""
-        }`}
+        className={`mb-8 text-center ${INTRO_PHASE_CLASS[introPhase]}`}
         onAnimationEnd={
           introPhase === "moving"
             ? (e) => {
