@@ -1,4 +1,5 @@
 import type { BattleCharacter, BattleLogEntry } from "@/types/battle";
+import type { RoundEvent } from "@/types/battle-event";
 import type { Skill } from "@/types/skill";
 
 export function createLogEntry(
@@ -31,4 +32,17 @@ export function createLogEntry(
     skillType: skill.type,
     value,
   };
+}
+
+/** ActionEvent만 필터링하여 레거시 BattleLogEntry[] 형태로 변환 */
+export function eventsToLegacyLogs(events: RoundEvent[]): BattleLogEntry[] {
+  return events
+    .filter((e) => e.type === "action")
+    .map((e) => ({
+      round: e.round,
+      actor: e.actorName,
+      skillName: e.skillName,
+      skillType: e.skillType,
+      value: e.value,
+    }));
 }
