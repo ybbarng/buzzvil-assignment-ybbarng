@@ -2,7 +2,7 @@ import type { ActiveBuff, BattleCharacter } from "@/types/battle";
 import type { BuffTarget } from "@/types/skill";
 
 export function getEffectiveStat(
-  character: BattleCharacter,
+  character: Pick<BattleCharacter, "baseStats" | "buffs">,
   stat: BuffTarget,
 ): number {
   const base = character.baseStats[stat];

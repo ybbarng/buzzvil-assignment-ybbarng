@@ -1,5 +1,6 @@
 import { HpBar } from "@/components/battle/hp-bar";
 import { cn } from "@/lib/utils";
+import { getEffectiveStat } from "@/logic/buff";
 import type {
   ActiveBuff,
   BattleCharacter,
@@ -13,6 +14,29 @@ interface CharacterPanelProps {
   nameTestId: string;
   side: "player" | "enemy";
   isActive?: boolean;
+}
+
+function StatLabel({
+  label,
+  value,
+  base,
+}: {
+  label: string;
+  value: number;
+  base: number;
+}) {
+  const color =
+    value > base
+      ? "text-buff"
+      : value < base
+        ? "text-debuff"
+        : "text-text-secondary";
+
+  return (
+    <span>
+      {label} <span className={color}>{value}</span>
+    </span>
+  );
 }
 
 function BuffIndicator({ buff }: { buff: ActiveBuff }) {
@@ -49,6 +73,11 @@ export function CharacterPanel({
   const displayMp = snapshot?.currentMp ?? character.currentMp;
   const displayBuffs = snapshot?.buffs ?? character.buffs;
 
+  const source = snapshot ?? character;
+  const effectiveAtk = getEffectiveStat(source, "atk");
+  const effectiveDef = getEffectiveStat(source, "def");
+  const baseSpd = source.baseStats.spd;
+
   return (
     <div
       data-testid={testId}
@@ -71,6 +100,19 @@ export function CharacterPanel({
       <div className="space-y-2">
         <HpBar current={displayHp} max={character.baseStats.hp} type="hp" />
         <HpBar current={displayMp} max={character.baseStats.mp} type="mp" />
+      </div>
+      <div className="mt-2 flex gap-3 text-xs text-text-secondary">
+        <StatLabel
+          label="ATK"
+          value={effectiveAtk}
+          base={source.baseStats.atk}
+        />
+        <StatLabel
+          label="DEF"
+          value={effectiveDef}
+          base={source.baseStats.def}
+        />
+        <StatLabel label="SPD" value={baseSpd} base={baseSpd} />
       </div>
       {displayBuffs.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
