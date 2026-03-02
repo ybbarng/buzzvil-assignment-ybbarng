@@ -34,10 +34,16 @@ describe("DifficultyForm", () => {
     expect(defaultProps.onSelect).toHaveBeenCalledWith("hard");
   });
 
-  it("선택된 난이도가 강조 표시된다", () => {
+  it("선택된 난이도에 aria-pressed=true가 설정된다", () => {
     render(<DifficultyForm {...defaultProps} difficulty="hard" />);
-    const hardButton = screen.getByTestId("difficulty-hard");
-    expect(hardButton.className).toContain("border-damage");
+    expect(screen.getByTestId("difficulty-hard")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByTestId("difficulty-easy")).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
   });
 
   it("이전 버튼 클릭 시 onPrev가 호출된다", async () => {
