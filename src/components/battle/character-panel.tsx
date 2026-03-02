@@ -6,6 +6,7 @@ interface CharacterPanelProps {
   character: BattleCharacter;
   testId: string;
   nameTestId: string;
+  side: "player" | "enemy";
 }
 
 function BuffIndicator({ buff }: { buff: ActiveBuff }) {
@@ -31,15 +32,24 @@ export function CharacterPanel({
   character,
   testId,
   nameTestId,
+  side,
 }: CharacterPanelProps) {
+  const isPlayer = side === "player";
+
   return (
     <div
       data-testid={testId}
-      className="rounded-lg border border-border bg-bg-secondary p-4"
+      className={cn(
+        "border-l-2 bg-bg-secondary p-4",
+        isPlayer ? "border-accent-blue" : "border-damage",
+      )}
     >
       <h3
         data-testid={nameTestId}
-        className="mb-3 text-lg font-bold text-text-primary"
+        className={cn(
+          "mb-3 text-lg font-bold",
+          isPlayer ? "text-accent-blue" : "text-damage",
+        )}
       >
         {character.name}
       </h3>

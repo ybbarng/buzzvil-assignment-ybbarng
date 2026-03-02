@@ -39,11 +39,13 @@ export function BattleScreen() {
           character={player}
           testId="player-panel"
           nameTestId="player-name"
+          side="player"
         />
         <CharacterPanel
           character={enemy}
           testId="enemy-panel"
           nameTestId="enemy-name"
+          side="enemy"
         />
       </div>
 
