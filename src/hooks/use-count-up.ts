@@ -20,7 +20,7 @@ export function useCountUp(target: number, delay = 0): number {
       return;
     }
 
-    let rafId: number;
+    let rafId = 0;
     const timerId = window.setTimeout(() => {
       const start = performance.now();
 
