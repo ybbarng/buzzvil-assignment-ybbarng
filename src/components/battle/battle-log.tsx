@@ -1,45 +1,89 @@
+import {
+  AlertTriangle,
+  ArrowDown,
+  ArrowUp,
+  Clock,
+  Flag,
+  Heart,
+  type LucideIcon,
+  Shield,
+  Sword,
+  Zap,
+} from "lucide-react";
 import { useEffect, useRef } from "react";
-import { SKILL_TYPE_COLORS, SKILL_TYPE_ICONS } from "@/constants/skills";
-import { cn, josa } from "@/lib/utils";
-import type { BattleLogEntry } from "@/types/battle";
-import type { SkillType } from "@/types/skill";
+import { SKILL_TYPE_COLORS } from "@/constants/skills";
+import { cn } from "@/lib/utils";
+import { formatEvent } from "@/logic/event-formatter";
+import type { RoundEvent } from "@/types/battle-event";
 
-function formatLogEntry(entry: BattleLogEntry): string {
-  switch (entry.skillType) {
-    case "attack":
-      return `${entry.actor}의 ${entry.skillName}! ${entry.value} 데미지`;
-    case "defend":
-      return `${entry.actor}${josa(entry.actor, "이", "가")} 방어 태세`;
-    case "heal":
-      return `${entry.actor}의 ${entry.skillName}! HP ${entry.value} 회복`;
-    case "buff":
-      return `${entry.actor}의 ${entry.skillName}! 능력치 강화`;
-    case "debuff":
-      return `${entry.actor}의 ${entry.skillName}! 능력치 약화`;
-  }
-}
-
-const LOG_COLORS: Record<SkillType, string> = {
-  attack: "text-damage",
-  defend: "text-accent-blue",
-  heal: "text-hp",
-  buff: "text-accent-orange",
-  debuff: "text-text-muted",
+const EVENT_ICON: Record<RoundEvent["type"], LucideIcon> = {
+  "round-start": Flag,
+  defend: Shield,
+  "speed-compare": Zap,
+  action: Sword,
+  "buff-expire": Clock,
+  "battle-end": AlertTriangle,
 };
 
-interface BattleLogProps {
-  logs: BattleLogEntry[];
+function getEventIcon(event: RoundEvent): LucideIcon {
+  if (event.type === "action") {
+    const iconMap: Record<string, LucideIcon> = {
+      attack: Sword,
+      defend: Shield,
+      heal: Heart,
+      buff: ArrowUp,
+      debuff: ArrowDown,
+    };
+    return iconMap[event.skillType] ?? Sword;
+  }
+  return EVENT_ICON[event.type];
 }
 
-export function BattleLog({ logs }: BattleLogProps) {
+function getEventColor(event: RoundEvent): string {
+  if (event.type === "action") {
+    return SKILL_TYPE_COLORS[event.skillType]?.text ?? "text-text-secondary";
+  }
+
+  const colorMap: Record<RoundEvent["type"], string> = {
+    "round-start": "text-accent-orange",
+    defend: "text-accent-blue",
+    "speed-compare": "text-text-muted",
+    action: "text-text-secondary",
+    "buff-expire": "text-text-muted",
+    "battle-end": "text-accent-orange",
+  };
+  return colorMap[event.type];
+}
+
+function getTextColor(event: RoundEvent): string {
+  if (event.type === "action") {
+    const logColors: Record<string, string> = {
+      attack: "text-damage",
+      defend: "text-accent-blue",
+      heal: "text-hp",
+      buff: "text-accent-orange",
+      debuff: "text-text-muted",
+    };
+    return logColors[event.skillType] ?? "text-text-secondary";
+  }
+  if (event.type === "round-start") return "text-accent-orange";
+  if (event.type === "battle-end") return "text-accent-orange";
+  return "text-text-secondary";
+}
+
+interface BattleLogProps {
+  events: RoundEvent[];
+}
+
+export function BattleLog({ events }: BattleLogProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: logs.length 변화 시 스크롤 필요
+  // biome-ignore lint/correctness/useExhaustiveDependencies: events.length 변화 시 스크롤 필요
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [logs.length]);
+  }, [events.length]);
 
   return (
     <div
@@ -47,29 +91,39 @@ export function BattleLog({ logs }: BattleLogProps) {
       ref={scrollRef}
       className="h-40 overflow-y-auto border-l-2 border-accent-orange bg-bg-secondary p-3"
     >
-      {logs.length === 0 ? (
+      {events.length === 0 ? (
         <p className="text-center text-sm text-text-muted">
           전투가 시작되었습니다
         </p>
       ) : (
         <ul className="space-y-1">
-          {logs.map((entry, index) => {
-            const Icon = SKILL_TYPE_ICONS[entry.skillType];
-            const iconColor = SKILL_TYPE_COLORS[entry.skillType].text;
+          {events.map((event, index) => {
+            const Icon = getEventIcon(event);
+            const iconColor = getEventColor(event);
+            const textColor = getTextColor(event);
+
+            if (event.type === "round-start") {
+              return (
+                <li
+                  // biome-ignore lint/suspicious/noArrayIndexKey: 이벤트는 추가만 되고 순서가 변하지 않음
+                  key={index}
+                  className="my-2 flex items-center gap-2 text-xs text-accent-orange"
+                >
+                  <span className="h-px flex-1 bg-accent-orange/30" />
+                  <span className="font-bold">{formatEvent(event)}</span>
+                  <span className="h-px flex-1 bg-accent-orange/30" />
+                </li>
+              );
+            }
+
             return (
               <li
-                // biome-ignore lint/suspicious/noArrayIndexKey: 로그는 추가만 되고 순서가 변하지 않음
+                // biome-ignore lint/suspicious/noArrayIndexKey: 이벤트는 추가만 되고 순서가 변하지 않음
                 key={index}
-                className={cn(
-                  "flex items-center gap-1 text-sm",
-                  LOG_COLORS[entry.skillType],
-                )}
+                className={cn("flex items-center gap-1 text-sm", textColor)}
               >
-                <span className="mr-1 text-xs text-text-muted">
-                  R{entry.round}
-                </span>
                 <Icon className={`size-3 shrink-0 ${iconColor}`} />
-                {formatLogEntry(entry)}
+                {formatEvent(event)}
               </li>
             );
           })}

@@ -13,7 +13,7 @@ export function BattleScreen() {
   const round = useBattleStore((s) => s.round);
   const outcome = useBattleStore((s) => s.outcome);
   const initBattle = useBattleStore((s) => s.initBattle);
-  const logs = useBattleStore((s) => s.logs);
+  const events = useBattleStore((s) => s.events);
   const executePlayerAction = useBattleStore((s) => s.executePlayerAction);
 
   const initialized = useRef(false);
@@ -82,7 +82,7 @@ export function BattleScreen() {
       )}
 
       <div className="animate-slide-in-bottom" style={staggerDelay(3)}>
-        <BattleLog logs={logs} />
+        <BattleLog events={events} />
       </div>
     </div>
   );
