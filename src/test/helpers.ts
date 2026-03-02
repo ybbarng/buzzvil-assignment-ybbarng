@@ -7,6 +7,7 @@ export function resetStores() {
   useGameStore.getState().restart();
   useSettingStore.getState().reset();
   useBattleStore.getState().reset();
+  useBattleStore.getState().setAnimationEnabled(false);
 }
 
 /**

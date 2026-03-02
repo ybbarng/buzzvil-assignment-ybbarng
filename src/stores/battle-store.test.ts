@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useBattleStore } from "./battle-store";
 
 function getPlayer() {
@@ -14,6 +14,10 @@ function getEnemy() {
 }
 
 describe("battle-store", () => {
+  beforeEach(() => {
+    useBattleStore.getState().setAnimationEnabled(false);
+  });
+
   afterEach(() => {
     useBattleStore.getState().reset();
     vi.restoreAllMocks();
@@ -90,6 +94,7 @@ describe("battle-store", () => {
 
     // 방어 시 받는 데미지
     useBattleStore.getState().reset();
+    useBattleStore.getState().setAnimationEnabled(false);
     useBattleStore.getState().initBattle("테스터", stats, skills, "easy");
     useBattleStore.getState().executePlayerAction(1);
     const hpAfterDefend = getPlayer().currentHp;
