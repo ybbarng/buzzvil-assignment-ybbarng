@@ -5,11 +5,27 @@ import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
 import { slideInClass, staggerDelay } from "@/constants/theme";
-import { josa } from "@/lib/utils";
+import { cn, josa } from "@/lib/utils";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
 import type { Direction, SettingStep } from "@/types/game";
+
+type IntroPhase = "center" | "moving" | "done";
+
+/** fade-in(800ms) 완료 후 여유 시간을 포함한 대기 시간 */
+export const INTRO_FADE_IN_WAIT_MS = 1500;
+/** intro-settle(700ms) + 여유. onAnimationEnd가 동작하지 않을 때의 fallback */
+export const INTRO_SETTLE_FALLBACK_MS = 800;
+/** CSS @keyframes 이름. onAnimationEnd에서 버블링 필터링에 사용 */
+const INTRO_SETTLE_ANIMATION = "intro-settle";
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+const INTRO_PHASE_CLASS: Record<IntroPhase, string> = {
+  center: "animate-intro-fade-in",
+  moving: "animate-intro-settle",
+  done: "",
+};
 
 function getStepGuide(step: SettingStep, name: string): React.ReactNode {
   if (step === 2 && name) {
@@ -46,9 +62,7 @@ function animateExitThenDo(
     : [];
   const items = [...extraElements, ...containerItems];
 
-  const prefersReduced = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
+  const prefersReduced = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
   if (items.length === 0 || !items[0].animate || prefersReduced) {
     callback();
@@ -96,6 +110,29 @@ export function SettingScreen() {
   const isExiting = useRef(false);
   const [enterDirection, setEnterDirection] = useState<Direction>("forward");
   const [indicatorStep, setIndicatorStep] = useState<SettingStep>(step);
+  const [introPhase, setIntroPhase] = useState<IntroPhase>(() => {
+    const prefersReduced = window.matchMedia(REDUCED_MOTION_QUERY).matches;
+    return prefersReduced ? "done" : "center";
+  });
+
+  useEffect(() => {
+    if (introPhase !== "center") return;
+
+    const timer = setTimeout(() => {
+      setIntroPhase("moving");
+    }, INTRO_FADE_IN_WAIT_MS);
+    return () => clearTimeout(timer);
+  }, [introPhase]);
+
+  useEffect(() => {
+    if (introPhase !== "moving") return;
+
+    const fallback = setTimeout(() => {
+      setIntroPhase("done");
+    }, INTRO_SETTLE_FALLBACK_MS);
+
+    return () => clearTimeout(fallback);
+  }, [introPhase]);
 
   // 외부에서 step이 변경될 경우에도 indicatorStep을 동기화
   useEffect(() => {
@@ -138,7 +175,17 @@ export function SettingScreen() {
 
   return (
     <div>
-      <div className="mb-8 text-center">
+      <div
+        className={cn("mb-8 text-center", INTRO_PHASE_CLASS[introPhase])}
+        onAnimationEnd={
+          introPhase === "moving"
+            ? (e) => {
+                if (e.animationName !== INTRO_SETTLE_ANIMATION) return;
+                setIntroPhase("done");
+              }
+            : undefined
+        }
+      >
         <h1 className="animate-title-blaze text-6xl font-bold tracking-wide text-accent-orange uppercase">
           BUZZ ARENA
         </h1>
@@ -147,62 +194,66 @@ export function SettingScreen() {
         </p>
       </div>
 
-      <div ref={indicatorRef} className="animate-slide-in-right">
-        <StepIndicator
-          currentStep={indicatorStep}
-          onStepClick={(s) =>
-            withExit(s < step ? "backward" : "forward", () => setStep(s), {
-              targetStep: s,
-            })
-          }
-        />
-      </div>
+      {introPhase === "done" && (
+        <>
+          <div ref={indicatorRef} className="animate-slide-in-right">
+            <StepIndicator
+              currentStep={indicatorStep}
+              onStepClick={(s) =>
+                withExit(s < step ? "backward" : "forward", () => setStep(s), {
+                  targetStep: s,
+                })
+              }
+            />
+          </div>
 
-      <div key={step} ref={contentRef}>
-        <div className={slideIn} data-animate style={staggerDelay(1)}>
-          <p className="mb-6 text-sm tracking-wide text-text-secondary">
-            {getStepGuide(step, name)}
-          </p>
-        </div>
+          <div key={step} ref={contentRef}>
+            <div className={slideIn} data-animate style={staggerDelay(1)}>
+              <p className="mb-6 text-sm tracking-wide text-text-secondary">
+                {getStepGuide(step, name)}
+              </p>
+            </div>
 
-        {step === 1 && (
-          <NameStatForm
-            defaultName={name}
-            defaultStats={stats}
-            onSubmit={handleStep1Submit}
-            enterDirection={enterDirection}
-          />
-        )}
+            {step === 1 && (
+              <NameStatForm
+                defaultName={name}
+                defaultStats={stats}
+                onSubmit={handleStep1Submit}
+                enterDirection={enterDirection}
+              />
+            )}
 
-        {step === 2 && (
-          <SkillForm
-            skills={skills}
-            onAddSkill={addSkill}
-            onRemoveSkill={removeSkill}
-            onPrev={() =>
-              withExit("backward", () => setStep(1), { targetStep: 1 })
-            }
-            onNext={() =>
-              withExit("forward", () => setStep(3), { targetStep: 3 })
-            }
-            enterDirection={enterDirection}
-          />
-        )}
+            {step === 2 && (
+              <SkillForm
+                skills={skills}
+                onAddSkill={addSkill}
+                onRemoveSkill={removeSkill}
+                onPrev={() =>
+                  withExit("backward", () => setStep(1), { targetStep: 1 })
+                }
+                onNext={() =>
+                  withExit("forward", () => setStep(3), { targetStep: 3 })
+                }
+                enterDirection={enterDirection}
+              />
+            )}
 
-        {step === 3 && (
-          <DifficultyForm
-            difficulty={difficulty}
-            onSelect={setDifficulty}
-            onPrev={() =>
-              withExit("backward", () => setStep(2), { targetStep: 2 })
-            }
-            onStartBattle={() =>
-              withExit("forward", startBattle, { includeIndicator: true })
-            }
-            enterDirection={enterDirection}
-          />
-        )}
-      </div>
+            {step === 3 && (
+              <DifficultyForm
+                difficulty={difficulty}
+                onSelect={setDifficulty}
+                onPrev={() =>
+                  withExit("backward", () => setStep(2), { targetStep: 2 })
+                }
+                onStartBattle={() =>
+                  withExit("forward", startBattle, { includeIndicator: true })
+                }
+                enterDirection={enterDirection}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
