@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { SKEW } from "@/constants/theme";
 import {
   type CustomSkillFormData,
@@ -31,6 +32,8 @@ const SKILL_TYPE_OPTIONS: {
   { value: "buff", label: "버프" },
   { value: "debuff", label: "디버프" },
 ];
+
+const SLIDER_COLOR = "[&_[data-slot=slider-range]]:bg-accent-orange";
 
 const DEFAULT_VALUES: CustomSkillFormData = {
   name: "",
@@ -85,6 +88,17 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
   const skillType = useWatch({ control, name: "type" });
   // "target"은 buff/debuff 변형에만 존재하는 필드라 discriminated union 추론이 안 됨
   const targetValue = useWatch({ control, name: "target" as "target" });
+  const mpCost = useWatch({ control, name: "mpCost" });
+  const multiplier = useWatch({
+    control,
+    name: "multiplier" as "multiplier",
+  });
+  const healAmount = useWatch({
+    control,
+    name: "healAmount" as "healAmount",
+  });
+  const buffValue = useWatch({ control, name: "value" as "value" });
+  const duration = useWatch({ control, name: "duration" as "duration" });
 
   const handleTypeChange = (value: string) => {
     const newType = value as CustomSkillFormData["type"];
@@ -136,49 +150,71 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-text-secondary">MP 소모량</Label>
-          <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
-            <Input
-              type="number"
-              className="border-none bg-transparent text-text-primary shadow-none"
-              {...register("mpCost", { valueAsNumber: true })}
-            />
+          <div className="flex items-center justify-between">
+            <Label className="text-text-secondary">MP 소모량</Label>
+            <span className="text-sm font-bold tabular-nums text-accent-orange">
+              {mpCost}
+            </span>
           </div>
-          {errors.mpCost && (
-            <p className="text-xs text-damage">{errors.mpCost.message}</p>
-          )}
+          <Slider
+            min={1}
+            max={30}
+            step={1}
+            value={[mpCost]}
+            onValueChange={([v]) => setValue("mpCost", v)}
+            className={SLIDER_COLOR}
+          />
+          <div className="flex justify-between text-xs text-text-muted">
+            <span>1</span>
+            <span>30</span>
+          </div>
         </div>
 
         {skillType === "attack" && (
           <div className="space-y-2">
-            <Label className="text-text-secondary">공격 배율 (1.0 ~ 3.0)</Label>
-            <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
-              <Input
-                type="number"
-                step="0.1"
-                className="border-none bg-transparent text-text-primary shadow-none"
-                {...register("multiplier", { valueAsNumber: true })}
-              />
+            <div className="flex items-center justify-between">
+              <Label className="text-text-secondary">공격 배율</Label>
+              <span className="text-sm font-bold tabular-nums text-accent-orange">
+                {(multiplier as number)?.toFixed(1) ?? "1.5"}
+              </span>
             </div>
-            {"multiplier" in errors && errors.multiplier && (
-              <p className="text-xs text-damage">{errors.multiplier.message}</p>
-            )}
+            <Slider
+              min={1.0}
+              max={3.0}
+              step={0.1}
+              value={[multiplier as number]}
+              onValueChange={([v]) =>
+                setValue("multiplier" as "multiplier", Math.round(v * 10) / 10)
+              }
+              className={SLIDER_COLOR}
+            />
+            <div className="flex justify-between text-xs text-text-muted">
+              <span>1.0</span>
+              <span>3.0</span>
+            </div>
           </div>
         )}
 
         {skillType === "heal" && (
           <div className="space-y-2">
-            <Label className="text-text-secondary">회복량 (10 ~ 50)</Label>
-            <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
-              <Input
-                type="number"
-                className="border-none bg-transparent text-text-primary shadow-none"
-                {...register("healAmount", { valueAsNumber: true })}
-              />
+            <div className="flex items-center justify-between">
+              <Label className="text-text-secondary">회복량</Label>
+              <span className="text-sm font-bold tabular-nums text-accent-orange">
+                {healAmount as number}
+              </span>
             </div>
-            {"healAmount" in errors && errors.healAmount && (
-              <p className="text-xs text-damage">{errors.healAmount.message}</p>
-            )}
+            <Slider
+              min={10}
+              max={50}
+              step={1}
+              value={[healAmount as number]}
+              onValueChange={([v]) => setValue("healAmount" as "healAmount", v)}
+              className={SLIDER_COLOR}
+            />
+            <div className="flex justify-between text-xs text-text-muted">
+              <span>10</span>
+              <span>50</span>
+            </div>
           </div>
         )}
 
@@ -202,30 +238,44 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="text-text-secondary">수치 (1 ~ 10)</Label>
-              <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
-                <Input
-                  type="number"
-                  className="border-none bg-transparent text-text-primary shadow-none"
-                  {...register("value", { valueAsNumber: true })}
-                />
+              <div className="flex items-center justify-between">
+                <Label className="text-text-secondary">수치</Label>
+                <span className="text-sm font-bold tabular-nums text-accent-orange">
+                  {buffValue as number}
+                </span>
               </div>
-              {"value" in errors && errors.value && (
-                <p className="text-xs text-damage">{errors.value.message}</p>
-              )}
+              <Slider
+                min={1}
+                max={10}
+                step={1}
+                value={[buffValue as number]}
+                onValueChange={([v]) => setValue("value" as "value", v)}
+                className={SLIDER_COLOR}
+              />
+              <div className="flex justify-between text-xs text-text-muted">
+                <span>1</span>
+                <span>10</span>
+              </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-text-secondary">지속 턴 (1 ~ 5)</Label>
-              <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
-                <Input
-                  type="number"
-                  className="border-none bg-transparent text-text-primary shadow-none"
-                  {...register("duration", { valueAsNumber: true })}
-                />
+              <div className="flex items-center justify-between">
+                <Label className="text-text-secondary">지속 턴</Label>
+                <span className="text-sm font-bold tabular-nums text-accent-orange">
+                  {duration as number}턴
+                </span>
               </div>
-              {"duration" in errors && errors.duration && (
-                <p className="text-xs text-damage">{errors.duration.message}</p>
-              )}
+              <Slider
+                min={1}
+                max={5}
+                step={1}
+                value={[duration as number]}
+                onValueChange={([v]) => setValue("duration" as "duration", v)}
+                className={SLIDER_COLOR}
+              />
+              <div className="flex justify-between text-xs text-text-muted">
+                <span>1</span>
+                <span>5</span>
+              </div>
             </div>
           </>
         )}
