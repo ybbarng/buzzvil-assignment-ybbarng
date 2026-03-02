@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { BattleStatsSummary } from "@/components/result/battle-stats-summary";
 import { FinalStatusComparison } from "@/components/result/final-status-comparison";
 import { GameButton } from "@/components/ui/game-button";
@@ -37,9 +38,10 @@ export function ResultScreen() {
   };
 
   const hasBattleData = player !== null && enemy !== null;
-  const playerStats = hasBattleData
-    ? computeBattleStats(logs, player.name)
-    : null;
+  const playerStats = useMemo(
+    () => (hasBattleData ? computeBattleStats(logs, player.name) : null),
+    [hasBattleData, logs, player?.name],
+  );
 
   // 순차 등장 인덱스 계산
   let idx = 0;
