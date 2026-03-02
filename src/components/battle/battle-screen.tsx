@@ -44,7 +44,7 @@ export function BattleScreen() {
     if (pendingEvents.length === 0) return;
 
     const nextEvent = pendingEvents[0];
-    let delay = EVENT_DELAYS[nextEvent.type] ?? 600;
+    let delay = EVENT_DELAYS[nextEvent.type];
 
     // 직전 이벤트와 시전자가 바뀌면 추가 여백
     const lastEvent = events[events.length - 1];
