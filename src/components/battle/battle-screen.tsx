@@ -74,7 +74,7 @@ export function BattleScreen() {
             <span className="text-white">{player.name}</span>
             {josa(player.name, "은", "는")}{" "}
             {round === 1
-              ? "이번 라운드에서 무엇을 하시겠습니까?"
+              ? "첫 라운드에서 무엇을 하시겠습니까?"
               : "무엇을 하시겠습니까?"}
           </p>
           <ActionPanel player={player} onAction={executePlayerAction} />
