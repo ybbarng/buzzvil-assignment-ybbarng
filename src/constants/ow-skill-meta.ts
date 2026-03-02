@@ -2269,7 +2269,10 @@ export function generateSkillPreset(hero: OwHeroMeta): HeroSkillPreset {
       if (gv.type === "attack") return { name, ...gv };
       if (gv.type === "heal") return { name, ...gv };
       if (gv.type === "buff") return { name, ...gv };
-      return { name, ...gv }; // debuff
+      if (gv.type === "debuff") return { name, ...gv };
+      // SkillGameValues에 새 타입이 추가되면 컴파일 에러 발생
+      const _exhaustive: never = gv;
+      return _exhaustive;
     }),
   };
 }
