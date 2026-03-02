@@ -3,7 +3,8 @@ import { SkillCard } from "@/components/setting/skill-card";
 import { SkillCreator } from "@/components/setting/skill-creator";
 import { GameButton } from "@/components/ui/game-button";
 import { MAX_CUSTOM_SKILLS } from "@/constants/skills";
-import { SKEW, SKEW_TEXT } from "@/constants/theme";
+import { SKEW, SKEW_TEXT, slideInClass, staggerDelay } from "@/constants/theme";
+import type { Direction } from "@/types/game";
 import type { Skill } from "@/types/skill";
 
 interface SkillFormProps {
@@ -12,6 +13,7 @@ interface SkillFormProps {
   onRemoveSkill: (index: number) => void;
   onPrev: () => void;
   onNext: () => void;
+  enterDirection: Direction;
 }
 
 export function SkillForm({
@@ -20,6 +22,7 @@ export function SkillForm({
   onRemoveSkill,
   onPrev,
   onNext,
+  enterDirection,
 }: SkillFormProps) {
   const [isCreating, setIsCreating] = useState(false);
   const customSkillCount = skills.filter((s) => !s.isDefault).length;
@@ -30,9 +33,15 @@ export function SkillForm({
     setIsCreating(false);
   };
 
+  const slideIn = slideInClass(enterDirection);
+
   return (
     <div className="space-y-6">
-      <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+      <section
+        className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
+        data-animate
+        style={staggerDelay(2)}
+      >
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-bold tracking-wider text-accent-orange uppercase">
             보유 스킬
@@ -79,7 +88,11 @@ export function SkillForm({
         <SkillCreator onAdd={handleAdd} onCancel={() => setIsCreating(false)} />
       )}
 
-      <div className="flex gap-2">
+      <div
+        className={`${slideIn} flex gap-2`}
+        data-animate
+        style={staggerDelay(3)}
+      >
         <GameButton
           type="button"
           variant="blue"

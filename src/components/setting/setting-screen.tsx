@@ -162,15 +162,14 @@ export function SettingScreen() {
         )}
 
         {step === 2 && (
-          <div className={slideIn} data-animate style={staggerDelay(2)}>
-            <SkillForm
-              skills={skills}
-              onAddSkill={addSkill}
-              onRemoveSkill={removeSkill}
-              onPrev={() => withExit("backward", () => setStep(1))}
-              onNext={() => withExit("forward", () => setStep(3))}
-            />
-          </div>
+          <SkillForm
+            skills={skills}
+            onAddSkill={addSkill}
+            onRemoveSkill={removeSkill}
+            onPrev={() => withExit("backward", () => setStep(1))}
+            onNext={() => withExit("forward", () => setStep(3))}
+            enterDirection={enterDirection}
+          />
         )}
 
         {step === 3 && (
