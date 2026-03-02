@@ -33,7 +33,7 @@ export function ActionPanel({ player, onAction }: ActionPanelProps) {
             className="h-auto flex-col gap-0.5 py-2"
             onClick={() => onAction(index)}
           >
-            <span className="flex items-center gap-1.5 font-semibold">
+            <span className="flex items-center justify-center gap-1.5 font-semibold">
               {skill.name}
               <span
                 className={`inline-flex items-center justify-center rounded p-0.5 ${SKILL_ICON_STYLE[skill.type]}`}
