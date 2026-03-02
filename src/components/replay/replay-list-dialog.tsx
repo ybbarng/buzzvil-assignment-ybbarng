@@ -85,34 +85,39 @@ export function ReplayListDialog({
             {replays.map((replay) => (
               <li
                 key={replay.id}
-                className={`${SKEW} flex items-center gap-3 bg-bg-tertiary px-4 py-3`}
+                className={`${SKEW} bg-bg-tertiary px-4 py-3`}
               >
-                <div className={`${SKEW_TEXT} flex w-full items-center gap-3`}>
-                  <span className="shrink-0 text-xs text-text-muted">
+                <div
+                  className={`${SKEW_TEXT} grid items-center gap-x-3`}
+                  style={{
+                    gridTemplateColumns: "auto 1fr auto auto auto auto",
+                  }}
+                >
+                  <span className="text-xs text-text-muted">
                     {formatDate(replay.timestamp)}
                   </span>
-                  <span className="shrink-0 text-sm">
+                  <span className="truncate text-sm">
                     <span className="text-accent-blue">
                       {replay.playerName}
                     </span>
                     <span className="text-text-muted"> vs </span>
                     <span className="text-damage">{replay.enemyName}</span>
                   </span>
-                  <span className="shrink-0 text-xs text-text-secondary">
+                  <span className="text-xs text-text-secondary">
                     {DIFFICULTY_LABELS[replay.difficulty]}
                   </span>
                   <span
                     className={cn(
-                      "shrink-0 text-xs font-bold",
+                      "text-xs font-bold",
                       OUTCOME_COLORS[replay.outcome],
                     )}
                   >
                     {OUTCOME_LABELS[replay.outcome]}
                   </span>
-                  <span className="shrink-0 text-xs text-text-muted">
+                  <span className="text-xs text-text-muted">
                     {replay.totalTurns}턴
                   </span>
-                  <div className="ml-auto flex shrink-0 gap-1">
+                  <div className="flex gap-1">
                     <GameButton
                       type="button"
                       size="sm"
