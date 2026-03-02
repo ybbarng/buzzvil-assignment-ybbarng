@@ -19,6 +19,7 @@ export const INTRO_FADE_IN_WAIT_MS = 1500;
 export const INTRO_SETTLE_FALLBACK_MS = 800;
 /** CSS @keyframes 이름. onAnimationEnd에서 버블링 필터링에 사용 */
 const INTRO_SETTLE_ANIMATION = "intro-settle";
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 const INTRO_PHASE_CLASS: Record<IntroPhase, string> = {
   center: "animate-intro-fade-in",
@@ -61,9 +62,7 @@ function animateExitThenDo(
     : [];
   const items = [...extraElements, ...containerItems];
 
-  const prefersReduced = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
+  const prefersReduced = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
   if (items.length === 0 || !items[0].animate || prefersReduced) {
     callback();
@@ -112,9 +111,7 @@ export function SettingScreen() {
   const [enterDirection, setEnterDirection] = useState<Direction>("forward");
   const [indicatorStep, setIndicatorStep] = useState<SettingStep>(step);
   const [introPhase, setIntroPhase] = useState<IntroPhase>(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const prefersReduced = window.matchMedia(REDUCED_MOTION_QUERY).matches;
     return prefersReduced ? "done" : "center";
   });
 
