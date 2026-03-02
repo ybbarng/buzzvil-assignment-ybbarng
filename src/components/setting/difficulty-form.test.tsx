@@ -58,8 +58,8 @@ describe("DifficultyForm", () => {
 
   it("적 이름이 난이도별로 표시된다", () => {
     render(<DifficultyForm {...defaultProps} />);
-    expect(screen.getByText("훈련 로봇과 대전합니다")).toBeInTheDocument();
-    expect(screen.getByText("전투 드론과 대전합니다")).toBeInTheDocument();
-    expect(screen.getByText("타론 요원과 대전합니다")).toBeInTheDocument();
+    expect(screen.getByText("훈련 로봇과 대전합니다.")).toBeInTheDocument();
+    expect(screen.getByText("전투 드론과 대전합니다.")).toBeInTheDocument();
+    expect(screen.getByText("타론 요원과 대전합니다.")).toBeInTheDocument();
   });
 });
