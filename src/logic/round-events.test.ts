@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { BattleCharacter } from "@/types/battle";
+import type { SkillEffectEvent, SkillUseEvent } from "@/types/battle-event";
 import type { Skill } from "@/types/skill";
 import { eventsToLegacyLogs } from "./battle-log";
 import { generateRoundEvents } from "./round-events";
@@ -236,21 +237,19 @@ describe("generateRoundEvents", () => {
 
     // player가 선공 (spd 99 > 7)
     const skillUse = result.events.find(
-      (e) => e.type === "skill-use" && e.actorName === "테스터",
+      (e): e is SkillUseEvent =>
+        e.type === "skill-use" && e.actorName === "테스터",
     );
     expect(skillUse).toBeDefined();
-    if (skillUse?.type === "skill-use") {
-      expect(skillUse.playerSnapshot.currentMp).toBe(40); // 50 - 10
-    }
+    expect(skillUse?.playerSnapshot.currentMp).toBe(40); // 50 - 10
 
     const skillEffect = result.events.find(
-      (e) => e.type === "skill-effect" && e.actorName === "테스터",
+      (e): e is SkillEffectEvent =>
+        e.type === "skill-effect" && e.actorName === "테스터",
     );
     expect(skillEffect).toBeDefined();
-    if (skillEffect?.type === "skill-effect") {
-      // 적의 HP가 감소했어야 함
-      expect(skillEffect.enemySnapshot.currentHp).toBeLessThan(80);
-    }
+    // 적의 HP가 감소했어야 함
+    expect(skillEffect?.enemySnapshot.currentHp).toBeLessThan(80);
 
     vi.restoreAllMocks();
   });
@@ -274,12 +273,11 @@ describe("generateRoundEvents", () => {
     const result = generateRoundEvents(player, enemy, 1, attackSkill, "easy");
 
     const enemyEffect = result.events.find(
-      (e) => e.type === "skill-effect" && e.actor === "enemy",
+      (e): e is SkillEffectEvent =>
+        e.type === "skill-effect" && e.actor === "enemy",
     );
     expect(enemyEffect).toBeDefined();
-    if (enemyEffect?.type === "skill-effect") {
-      expect(enemyEffect.value).toBeGreaterThan(0);
-    }
+    expect(enemyEffect?.value).toBeGreaterThan(0);
 
     vi.restoreAllMocks();
   });
