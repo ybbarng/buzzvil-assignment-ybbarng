@@ -6,9 +6,10 @@ import type {
 import type { HeroSkillPreset, SkillPresetEntry } from "@/types/skill-preset";
 
 /**
- * 카테고리별 게임 스킬 변환 규칙.
- * docs/skill-conversion-guide.md의 변환표를 코드로 구조화.
- * 규칙을 추가/수정하면 프리셋을 재생성할 수 있다.
+ * 카테고리별 게임 스킬 변환 규칙 (참조용).
+ * docs/skill-conversion-guide.md의 변환표를 코드로 구조화한 것으로,
+ * 프리셋 생성에 직접 사용되지 않는다 (실제 수치는 OW_HERO_META의 gameValues에 직접 정의).
+ * 새 영웅 추가 시 gameValues 설정의 가이드라인으로 활용한다.
  */
 export const CONVERSION_RULES: Record<OwSkillCategory, ConversionRule> = {
   ultimate_damage: {
