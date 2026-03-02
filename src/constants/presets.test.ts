@@ -3,43 +3,14 @@ import {
   getPresetsByRole,
   getPresetsBySubRole,
   HERO_PRESETS,
-  ROLE_SUB_ROLES,
 } from "@/constants/presets";
-import { STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
 import { nameStatSchema } from "@/schemas/name-stat.schema";
-import type { StatKey } from "@/types/character";
+
+// 스탯 총합, 범위, ID 고유, 서브역할군 유효성은
+// ow-hero-meta.test.ts + generateHeroPreset() 런타임 assertion에서 검증.
+// 이 파일은 presets.ts 고유의 함수와 통합 검증만 담당한다.
 
 describe("HERO_PRESETS", () => {
-  it("모든 영웅의 스탯 총합이 200이어야 한다", () => {
-    for (const hero of HERO_PRESETS) {
-      const total = Object.values(hero.stats).reduce((a, b) => a + b, 0);
-      expect(total, `${hero.name}(${hero.id})의 총합이 ${total}`).toBe(
-        TOTAL_POINTS,
-      );
-    }
-  });
-
-  it("모든 스탯이 허용 범위 내에 있어야 한다", () => {
-    for (const hero of HERO_PRESETS) {
-      for (const [key, value] of Object.entries(hero.stats)) {
-        const range = STAT_RANGES[key as StatKey];
-        expect(
-          value,
-          `${hero.name}의 ${key}=${value}이 범위 [${range.min}, ${range.max}] 밖`,
-        ).toBeGreaterThanOrEqual(range.min);
-        expect(
-          value,
-          `${hero.name}의 ${key}=${value}이 범위 [${range.min}, ${range.max}] 밖`,
-        ).toBeLessThanOrEqual(range.max);
-      }
-    }
-  });
-
-  it("모든 영웅의 id가 고유해야 한다", () => {
-    const ids = HERO_PRESETS.map((h) => h.id);
-    expect(new Set(ids).size).toBe(ids.length);
-  });
-
   it("역할군별 인원 수가 올바르다", () => {
     const tanks = getPresetsByRole("tank");
     const damage = getPresetsByRole("damage");
@@ -62,16 +33,6 @@ describe("HERO_PRESETS", () => {
 
     const support = getPresetsByRole("support");
     expect(support.every((h) => h.role === "support")).toBe(true);
-  });
-
-  it("모든 영웅이 올바른 서브역할군을 가져야 한다", () => {
-    for (const hero of HERO_PRESETS) {
-      const validSubRoles = ROLE_SUB_ROLES[hero.role];
-      expect(
-        validSubRoles,
-        `${hero.name}의 subRole '${hero.subRole}'이 역할군 '${hero.role}'에 유효하지 않음`,
-      ).toContain(hero.subRole);
-    }
   });
 
   it("getPresetsBySubRole이 해당 서브역할만 반환한다", () => {
