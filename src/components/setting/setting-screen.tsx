@@ -103,7 +103,9 @@ function animateBattleExitThenDo(
   callback: () => void,
 ) {
   const headerEl = document.querySelector<HTMLElement>("[data-header]");
-  const allEls = [headerEl, ...settingEls].filter(Boolean) as HTMLElement[];
+  const allEls = [headerEl, ...settingEls].filter(
+    (el): el is HTMLElement => el != null,
+  );
 
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
@@ -332,7 +334,7 @@ export function SettingScreen() {
                     const settingEls = [
                       indicatorRef.current,
                       contentRef.current,
-                    ].filter(Boolean) as HTMLElement[];
+                    ].filter((el): el is HTMLDivElement => el != null);
                     animateBattleExitThenDo(settingEls, () => {
                       isExiting.current = false;
                       startBattle();
