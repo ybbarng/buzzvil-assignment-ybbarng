@@ -1,5 +1,5 @@
 import type React from "react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DifficultyForm } from "@/components/setting/difficulty-form";
 import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
@@ -96,6 +96,11 @@ export function SettingScreen() {
   const isExiting = useRef(false);
   const [enterDirection, setEnterDirection] = useState<Direction>("forward");
   const [indicatorStep, setIndicatorStep] = useState<SettingStep>(step);
+
+  // 외부에서 step이 변경될 경우에도 indicatorStep을 동기화
+  useEffect(() => {
+    setIndicatorStep(step);
+  }, [step]);
 
   const withExit = (
     direction: Direction,
