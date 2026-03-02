@@ -96,11 +96,9 @@ export function SettingScreen() {
   const indicatorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isExiting = useRef(false);
-  const introCompleted = useRef(false);
   const [enterDirection, setEnterDirection] = useState<Direction>("forward");
   const [indicatorStep, setIndicatorStep] = useState<SettingStep>(step);
   const [introPhase, setIntroPhase] = useState<IntroPhase>(() => {
-    if (introCompleted.current) return "done";
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -121,7 +119,6 @@ export function SettingScreen() {
 
     // intro-settle 애니메이션 종료 후 done으로 전환 (fallback 800ms)
     const fallback = setTimeout(() => {
-      introCompleted.current = true;
       setIntroPhase("done");
     }, 800);
 
@@ -178,12 +175,7 @@ export function SettingScreen() {
               : ""
         }`}
         onAnimationEnd={
-          introPhase === "moving"
-            ? () => {
-                introCompleted.current = true;
-                setIntroPhase("done");
-              }
-            : undefined
+          introPhase === "moving" ? () => setIntroPhase("done") : undefined
         }
       >
         <h1 className="animate-title-blaze text-6xl font-bold tracking-wide text-accent-orange uppercase">
