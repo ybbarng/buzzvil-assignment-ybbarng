@@ -275,6 +275,7 @@ export function SettingScreen() {
                     type="button"
                     variant="blue"
                     size="sm"
+                    skew
                     onClick={() => setReplayOpen(true)}
                   >
                     다시보기
