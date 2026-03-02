@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { GameButton } from "@/components/ui/game-button";
+import { cn } from "@/lib/utils";
 import { useBattleStore } from "@/stores/battle-store";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -8,6 +9,12 @@ const OUTCOME_LABELS: Record<BattleOutcome, string> = {
   win: "승리",
   lose: "패배",
   draw: "무승부",
+};
+
+const OUTCOME_COLORS: Record<BattleOutcome, string> = {
+  win: "text-accent-blue",
+  lose: "text-damage",
+  draw: "text-accent-orange",
 };
 
 export function ResultScreen() {
@@ -22,10 +29,13 @@ export function ResultScreen() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 py-8">
+    <div className="animate-slide-in-bottom flex flex-col items-center gap-6 py-8">
       <h2
         data-testid="result-title"
-        className="text-4xl font-bold text-accent-orange"
+        className={cn(
+          "text-4xl font-bold",
+          outcome ? OUTCOME_COLORS[outcome] : "text-accent-orange",
+        )}
       >
         {outcome ? OUTCOME_LABELS[outcome] : ""}
       </h2>
@@ -34,14 +44,17 @@ export function ResultScreen() {
         {totalTurns}턴 만에 전투 종료
       </p>
 
-      <Button
+      <GameButton
         type="button"
         data-testid="restart-button"
-        className="mt-4 bg-accent-orange px-8 py-3 text-lg font-bold text-bg-primary hover:bg-accent-orange-hover"
+        variant="orange"
+        active
+        skew
+        className="mt-4 px-10 py-3 text-lg"
         onClick={handleRestart}
       >
         다시 시작
-      </Button>
+      </GameButton>
     </div>
   );
 }

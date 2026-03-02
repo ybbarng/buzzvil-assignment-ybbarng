@@ -1,4 +1,21 @@
+import type { RoundEvent } from "@/types/battle-event";
+
 export const MAX_ROUNDS = 20;
 export const MIN_DAMAGE = 1;
 export const DEFEND_MULTIPLIER = 0.5;
 export const DEF_REDUCTION_RATE = 0.5;
+
+/** 이벤트 타입별 표시 지연시간 (ms) */
+export const EVENT_DELAYS: Record<RoundEvent["type"], number> = {
+  "round-start": 1000,
+  defend: 1200,
+  "speed-compare": 1200,
+  "skill-use": 1200,
+  "skill-effect": 1400,
+  "skip-turn": 1000,
+  "buff-expire": 1000,
+  "battle-end": 800,
+};
+
+/** 시전자가 바뀔 때 추가 여백 (ms) */
+export const ACTOR_CHANGE_DELAY = 500;

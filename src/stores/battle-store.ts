@@ -1,24 +1,30 @@
 import { create } from "zustand";
 import { ENEMIES } from "@/constants/enemies";
-import { createLogEntry } from "@/logic/battle-log";
-import { checkBattleEnd } from "@/logic/battle-result";
-import { tickBuffs } from "@/logic/buff";
-import { decideEnemyAction } from "@/logic/enemy-ai";
-import { resolveSkillEffect } from "@/logic/skill-effect";
-import { determineFirstMover } from "@/logic/turn";
+import { generateRoundEvents } from "@/logic/round-events";
+import { toSnapshot } from "@/logic/snapshot";
 import { useGameStore } from "@/stores/game-store";
-import type { BattleCharacter, BattleLogEntry } from "@/types/battle";
+import type { BattleCharacter, CharacterSnapshot } from "@/types/battle";
+import type { RoundEvent } from "@/types/battle-event";
 import type { Stats } from "@/types/character";
 import type { BattleOutcome, Difficulty } from "@/types/game";
 import type { Skill } from "@/types/skill";
 
 interface BattleState {
+  // 로직용 최종 상태
   player: BattleCharacter | null;
   enemy: BattleCharacter | null;
   difficulty: Difficulty;
   round: number;
   outcome: BattleOutcome | null;
-  logs: BattleLogEntry[];
+
+  // 이벤트 시스템
+  events: RoundEvent[];
+  pendingEvents: RoundEvent[];
+  displayPlayer: CharacterSnapshot | null;
+  displayEnemy: CharacterSnapshot | null;
+  isAnimating: boolean;
+  animationEnabled: boolean;
+  activeActor: "player" | "enemy" | null;
 
   initBattle: (
     name: string,
@@ -27,6 +33,9 @@ interface BattleState {
     difficulty: Difficulty,
   ) => void;
   executePlayerAction: (skillIndex: number) => void;
+  advanceEvent: () => void;
+  flushEvents: () => void;
+  setAnimationEnabled: (enabled: boolean) => void;
   reset: () => void;
 }
 
@@ -52,125 +61,166 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   difficulty: "normal" as Difficulty,
   round: 1,
   outcome: null,
-  logs: [],
+
+  events: [],
+  pendingEvents: [],
+  displayPlayer: null,
+  displayEnemy: null,
+  isAnimating: false,
+  animationEnabled: true,
+  activeActor: null,
 
   initBattle: (name, stats, skills, difficulty) => {
     const enemyConfig = ENEMIES[difficulty];
+    const player = createCharacter(name, stats, skills);
+    const enemy = createCharacter(
+      enemyConfig.name,
+      enemyConfig.stats,
+      enemyConfig.skills,
+    );
+    const playerSnapshot = toSnapshot(player);
+    const enemySnapshot = toSnapshot(enemy);
     set({
-      player: createCharacter(name, stats, skills),
-      enemy: createCharacter(
-        enemyConfig.name,
-        enemyConfig.stats,
-        enemyConfig.skills,
-      ),
+      player,
+      enemy,
       difficulty,
       round: 1,
       outcome: null,
-      logs: [],
+      events: [
+        {
+          type: "round-start",
+          round: 1,
+          playerSnapshot,
+          enemySnapshot,
+        },
+      ],
+      pendingEvents: [],
+      displayPlayer: playerSnapshot,
+      displayEnemy: enemySnapshot,
+      isAnimating: false,
+      activeActor: null,
     });
   },
 
   executePlayerAction: (skillIndex) => {
     const state = get();
-    if (!state.player || !state.enemy || state.outcome) return;
+    if (!state.player || !state.enemy || state.outcome || state.isAnimating)
+      return;
 
     const playerSkill = state.player.skills[skillIndex];
     if (!playerSkill) return;
+    // 플레이어 MP 부족은 여기서 사전 차단한다.
+    // 적의 MP 부족은 generateRoundEvents 내에서 skip-turn 이벤트로 처리된다.
     if (playerSkill.mpCost > state.player.currentMp) return;
 
-    const round = state.round;
+    const result = generateRoundEvents(
+      state.player,
+      state.enemy,
+      state.round,
+      playerSkill,
+      state.difficulty,
+    );
 
-    // 적 AI로 스킬 결정
-    const enemySkillIndex = decideEnemyAction(state.enemy, state.difficulty);
-    const enemySkill = state.enemy.skills[enemySkillIndex];
-    if (!enemySkill) return;
+    set({
+      player: result.finalPlayer,
+      enemy: result.finalEnemy,
+      round: result.nextRound,
+      outcome: result.outcome,
+      pendingEvents: [...result.events],
+      isAnimating: true,
+    });
 
-    // 방어 상태 초기화 후, 이번 라운드 방어 선적용
-    let player: BattleCharacter = {
-      ...state.player,
-      isDefending: playerSkill.type === "defend",
-    };
-    let enemy: BattleCharacter = {
-      ...state.enemy,
-      isDefending: enemySkill.type === "defend",
-    };
-
-    const firstMover = determineFirstMover(player, enemy);
-    const roundLogs: BattleLogEntry[] = [];
-
-    function applyAction(
-      actor: BattleCharacter,
-      target: BattleCharacter,
-      skill: Skill,
-    ) {
-      const result = resolveSkillEffect(actor, target, skill);
-      roundLogs.push(
-        createLogEntry(round, actor, target, skill, result.user, result.target),
-      );
-      return result;
+    // 애니메이션 비활성화 시 즉시 모든 이벤트 처리
+    if (!get().animationEnabled) {
+      get().flushEvents();
     }
+  },
 
-    const finishBattle = (outcome: BattleOutcome) => {
-      set({
-        player,
-        enemy,
-        round: round + 1,
-        outcome,
-        logs: [...state.logs, ...roundLogs],
-      });
-      useGameStore.getState().showResult(outcome, round);
+  advanceEvent: () => {
+    const state = get();
+    if (state.pendingEvents.length === 0) return;
+
+    const [event, ...remaining] = state.pendingEvents;
+    const newEvents = [...state.events, event];
+
+    const updates: Partial<BattleState> = {
+      events: newEvents,
+      pendingEvents: remaining,
+      displayPlayer: event.playerSnapshot,
+      displayEnemy: event.enemySnapshot,
+      activeActor:
+        event.type === "skill-use" || event.type === "skill-effect"
+          ? event.actor
+          : null,
     };
 
-    const turnOrder =
-      firstMover === "player"
-        ? [
-            { role: "player" as const, skill: playerSkill },
-            { role: "enemy" as const, skill: enemySkill },
-          ]
-        : [
-            { role: "enemy" as const, skill: enemySkill },
-            { role: "player" as const, skill: playerSkill },
-          ];
-
-    for (const [i, turn] of turnOrder.entries()) {
-      const isPlayerTurn = turn.role === "player";
-      const result = applyAction(
-        isPlayerTurn ? player : enemy,
-        isPlayerTurn ? enemy : player,
-        turn.skill,
-      );
-      player = isPlayerTurn ? result.user : result.target;
-      enemy = isPlayerTurn ? result.target : result.user;
-
-      // 선공 행동 후 전투 종료 판정
-      if (i === 0) {
-        const midCheck = checkBattleEnd(player, enemy, round);
-        if (midCheck) {
-          finishBattle(midCheck);
-          return;
-        }
+    if (remaining.length === 0) {
+      // 마지막 이벤트 처리 완료 — 다음 round-start 추가 또는 애니메이션 종료
+      if (event.type !== "round-start" && !state.outcome) {
+        // 전투 계속: 다음 round-start를 pendingEvents에 추가
+        updates.pendingEvents = [
+          {
+            type: "round-start",
+            round: state.round,
+            playerSnapshot: event.playerSnapshot,
+            enemySnapshot: event.enemySnapshot,
+          },
+        ];
+      } else {
+        // round-start 표시 완료 또는 전투 종료: 액션 버튼 활성화
+        updates.isAnimating = false;
+        updates.activeActor = null;
       }
     }
 
-    // 라운드 종료 시 버프 틱
-    player = tickBuffs(player);
-    enemy = tickBuffs(enemy);
+    set(updates);
 
-    const endCheck = checkBattleEnd(player, enemy, round + 1);
+    // battle-end 이벤트 처리: 결과 화면 전환
+    if (event.type === "battle-end") {
+      const { outcome, round } = get();
+      if (outcome) {
+        useGameStore.getState().showResult(outcome, round - 1);
+      }
+    }
+  },
 
-    if (endCheck) {
-      finishBattle(endCheck);
-      return;
+  flushEvents: () => {
+    const state = get();
+    if (state.pendingEvents.length === 0) return;
+
+    const allEvents = [...state.events, ...state.pendingEvents];
+    const lastEvent = state.pendingEvents[state.pendingEvents.length - 1];
+
+    // 전투 종료가 아니면 다음 round-start도 추가
+    if (!state.outcome) {
+      allEvents.push({
+        type: "round-start",
+        round: state.round,
+        playerSnapshot: lastEvent.playerSnapshot,
+        enemySnapshot: lastEvent.enemySnapshot,
+      });
     }
 
     set({
-      player,
-      enemy,
-      round: round + 1,
-      outcome: null,
-      logs: [...state.logs, ...roundLogs],
+      events: allEvents,
+      pendingEvents: [],
+      displayPlayer: lastEvent.playerSnapshot,
+      displayEnemy: lastEvent.enemySnapshot,
+      isAnimating: false,
+      activeActor: null,
     });
+
+    // battle-end 이벤트가 포함되어 있으면 결과 화면 전환
+    const battleEnd = state.pendingEvents.find((e) => e.type === "battle-end");
+    if (battleEnd) {
+      const { outcome, round } = get();
+      if (outcome) {
+        useGameStore.getState().showResult(outcome, round - 1);
+      }
+    }
   },
+
+  setAnimationEnabled: (enabled) => set({ animationEnabled: enabled }),
 
   reset: () =>
     set({
@@ -179,6 +229,11 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       difficulty: "normal" as Difficulty,
       round: 1,
       outcome: null,
-      logs: [],
+      events: [],
+      pendingEvents: [],
+      displayPlayer: null,
+      displayEnemy: null,
+      isAnimating: false,
+      activeActor: null,
     }),
 }));

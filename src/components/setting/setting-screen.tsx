@@ -5,7 +5,7 @@ import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
 import { slideInClass, staggerDelay } from "@/constants/theme";
-import { cn, josa } from "@/lib/utils";
+import { josa } from "@/lib/utils";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -17,15 +17,7 @@ type IntroPhase = "center" | "moving" | "done";
 export const INTRO_FADE_IN_WAIT_MS = 1500;
 /** intro-settle(700ms) + 여유. onAnimationEnd가 동작하지 않을 때의 fallback */
 export const INTRO_SETTLE_FALLBACK_MS = 800;
-/** CSS @keyframes 이름. onAnimationEnd에서 버블링 필터링에 사용 */
-const INTRO_SETTLE_ANIMATION = "intro-settle";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-
-const INTRO_PHASE_CLASS: Record<IntroPhase, string> = {
-  center: "animate-intro-fade-in",
-  moving: "animate-intro-settle",
-  done: "",
-};
 
 function getStepGuide(step: SettingStep, name: string): React.ReactNode {
   if (step === 2 && name) {
@@ -85,6 +77,59 @@ function animateExitThenDo(
       },
     ),
   );
+
+  Promise.all(animations.map((a) => a.finished))
+    .then(callback)
+    .catch(callback);
+}
+
+/**
+ * 전투 시작 퇴장 애니메이션.
+ * 헤더([data-header])는 위로, 설정 구성요소들은 아래로 동시 퇴장시킨 뒤 callback을 호출한다.
+ */
+function animateBattleExitThenDo(
+  settingEls: HTMLElement[],
+  callback: () => void,
+) {
+  const headerEl = document.querySelector<HTMLElement>("[data-header]");
+  const allEls = [headerEl, ...settingEls].filter(Boolean) as HTMLElement[];
+
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (allEls.length === 0 || !allEls[0].animate || prefersReduced) {
+    callback();
+    return;
+  }
+
+  const animations: Animation[] = [];
+
+  if (headerEl?.animate) {
+    animations.push(
+      headerEl.animate(
+        [
+          { transform: "translateY(0)", opacity: "1" },
+          { transform: "translateY(-100vh)", opacity: "0" },
+        ],
+        { duration: 400, fill: "forwards", easing: "ease-in" },
+      ),
+    );
+  }
+
+  for (const el of settingEls) {
+    if (el.animate) {
+      animations.push(
+        el.animate(
+          [
+            { transform: "translateY(0)", opacity: "1" },
+            { transform: "translateY(100vh)", opacity: "0" },
+          ],
+          { duration: 400, fill: "forwards", easing: "ease-in" },
+        ),
+      );
+    }
+  }
 
   Promise.all(animations.map((a) => a.finished))
     .then(callback)
@@ -181,25 +226,6 @@ export function SettingScreen() {
 
   return (
     <div>
-      <div
-        className={cn("mb-8 text-center", INTRO_PHASE_CLASS[introPhase])}
-        onAnimationEnd={
-          introPhase === "moving"
-            ? (e) => {
-                if (e.animationName !== INTRO_SETTLE_ANIMATION) return;
-                setIntroPhase("done");
-              }
-            : undefined
-        }
-      >
-        <h1 className="animate-title-blaze text-6xl font-bold tracking-wide text-accent-orange uppercase">
-          BUZZ ARENA
-        </h1>
-        <p className="mt-2 text-base tracking-wide text-text-secondary">
-          자신만의 강력한 영웅을 구성하고 치열한 전투에 참가해보세요!
-        </p>
-      </div>
-
       {introPhase === "done" && (
         <>
           <div ref={indicatorRef} className="animate-slide-in-right">
@@ -254,9 +280,18 @@ export function SettingScreen() {
                   onPrev={() =>
                     withExit("backward", () => setStep(2), { targetStep: 2 })
                   }
-                  onStartBattle={() =>
-                    withExit("forward", startBattle, { includeIndicator: true })
-                  }
+                  onStartBattle={() => {
+                    if (isExiting.current) return;
+                    isExiting.current = true;
+                    const settingEls = [
+                      indicatorRef.current,
+                      contentRef.current,
+                    ].filter(Boolean) as HTMLElement[];
+                    animateBattleExitThenDo(settingEls, () => {
+                      isExiting.current = false;
+                      startBattle();
+                    });
+                  }}
                   enterDirection={enterDirection}
                 />
               </div>
