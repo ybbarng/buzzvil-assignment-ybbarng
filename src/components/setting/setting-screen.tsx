@@ -96,13 +96,13 @@ function animateExitThenDo(
 
 /**
  * 전투 시작 퇴장 애니메이션.
- * 헤더([data-header])는 위로, 설정 구성요소들은 아래로 동시 퇴장시킨 뒤 callback을 호출한다.
+ * 헤더(<header>)는 위로, 설정 구성요소들은 아래로 동시 퇴장시킨 뒤 callback을 호출한다.
  */
 function animateBattleExitThenDo(
   settingEls: HTMLElement[],
   callback: () => void,
 ) {
-  const headerEl = document.querySelector<HTMLElement>("[data-header]");
+  const headerEl = document.querySelector<HTMLElement>("header");
   const allEls = [headerEl, ...settingEls].filter(
     (el): el is HTMLElement => el != null,
   );
@@ -241,8 +241,7 @@ export function SettingScreen() {
 
   return (
     <div>
-      <div
-        data-header
+      <header
         className={cn("mb-8 text-center", INTRO_PHASE_CLASS[introPhase])}
         onAnimationEnd={
           introPhase === "moving"
@@ -259,7 +258,7 @@ export function SettingScreen() {
         <p className="mt-2 text-base tracking-wide text-text-secondary">
           자신만의 강력한 영웅을 구성하고 치열한 전투에 참가해보세요!
         </p>
-      </div>
+      </header>
 
       {introPhase === "done" && (
         <>
