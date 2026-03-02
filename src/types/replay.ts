@@ -22,19 +22,19 @@ const VALID_OUTCOMES = new Set<string>(["win", "lose", "draw"]);
 /** localStorage에서 읽은 데이터가 유효한 ReplayData인지 검증 */
 export function isValidReplay(data: unknown): data is ReplayData {
   if (typeof data !== "object" || data === null) return false;
-  const r = data as Record<string, unknown>;
+  const record = data as Record<string, unknown>;
   return (
-    r.version === REPLAY_VERSION &&
-    typeof r.id === "string" &&
-    typeof r.timestamp === "number" &&
-    typeof r.playerName === "string" &&
-    typeof r.enemyName === "string" &&
-    typeof r.totalTurns === "number" &&
-    typeof r.difficulty === "string" &&
-    VALID_DIFFICULTIES.has(r.difficulty) &&
-    typeof r.outcome === "string" &&
-    VALID_OUTCOMES.has(r.outcome) &&
-    Array.isArray(r.events) &&
-    r.events.length > 0
+    record.version === REPLAY_VERSION &&
+    typeof record.id === "string" &&
+    typeof record.timestamp === "number" &&
+    typeof record.playerName === "string" &&
+    typeof record.enemyName === "string" &&
+    typeof record.totalTurns === "number" &&
+    typeof record.difficulty === "string" &&
+    VALID_DIFFICULTIES.has(record.difficulty) &&
+    typeof record.outcome === "string" &&
+    VALID_OUTCOMES.has(record.outcome) &&
+    Array.isArray(record.events) &&
+    record.events.length > 0
   );
 }

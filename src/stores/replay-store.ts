@@ -48,7 +48,7 @@ export const useReplayStore = create<ReplayState>((set, get) => ({
   },
 
   remove: (id) => {
-    const updated = get().replays.filter((r) => r.id !== id);
+    const updated = get().replays.filter((replay) => replay.id !== id);
     writeToStorage(updated);
     set({ replays: updated });
   },
