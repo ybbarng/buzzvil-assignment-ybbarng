@@ -41,7 +41,7 @@ export function StepIndicator({
               `${SKEW} px-6 py-2 transition-all duration-300`,
               isCurrent && "animate-pulse-glow bg-accent-orange",
               isCompleted &&
-                "cursor-pointer bg-accent-blue hover:scale-105 hover:brightness-125",
+                "cursor-pointer bg-accent-blue hover:scale-105 hover:brightness-110",
               isFuture && "bg-bg-tertiary disabled:cursor-not-allowed",
             )}
           >
