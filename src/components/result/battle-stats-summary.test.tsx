@@ -67,7 +67,7 @@ describe("BattleStatsSummary", () => {
       "남은 체력",
       "남은 마나",
       "가한 데미지",
-      "경감 데미지",
+      "방어 시 피해",
       "회복량",
       "스킬 사용",
     ];
@@ -121,14 +121,16 @@ describe("BattleStatsSummary", () => {
     render(
       <BattleStatsSummary
         player={makeCharacter({ currentHp: -5 })}
-        enemy={makeCharacter({ name: "적", currentHp: 30 })}
+        enemy={makeCharacter({ name: "적", currentHp: 77 })}
         playerStats={ZERO_STATS}
         enemyStats={ZERO_STATS}
         baseDelay={0}
       />,
     );
-    // Math.max(0, -5) = 0, Math.round(progress * 0) = 0
-    const zeros = screen.getAllByText("0");
-    expect(zeros.length).toBeGreaterThanOrEqual(1);
+    // "남은 체력" 행: grid [playerValue] [label] [enemyValue] 구조
+    // player HP = Math.max(0, -5) = 0
+    const hpLabel = screen.getByText("남은 체력");
+    expect(hpLabel.previousElementSibling).toHaveTextContent("0");
+    expect(hpLabel.nextElementSibling).toHaveTextContent("77");
   });
 });

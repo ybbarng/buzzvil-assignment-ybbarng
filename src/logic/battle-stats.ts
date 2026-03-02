@@ -2,7 +2,7 @@ import type { RoundEvent, SkillEffectEvent } from "@/types/battle-event";
 
 export interface BattleStats {
   damageDealt: number;
-  /** 방어 자세로 경감한 데미지 (방어 중 받은 공격의 value ≈ 경감량) */
+  /** 방어 중 받은 피해 (방어 자세 적용 후 실제 피해량) */
   damageMitigated: number;
   healingDone: number;
   skillsUsed: number;
@@ -39,7 +39,7 @@ export function computeBattleStats(
         healingDone += effect.value;
       }
     } else {
-      // 방어 중 받은 공격: 데미지가 절반으로 줄어 value ≈ 경감량
+      // 방어 중 받은 공격: value는 방어 적용 후 실제 피해량
       if (effect.skillType === "attack" && defendedRounds.has(effect.round)) {
         damageMitigated += effect.value;
       }

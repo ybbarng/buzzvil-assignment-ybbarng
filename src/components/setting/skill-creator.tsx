@@ -129,7 +129,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
 
   // discriminated union의 variant-specific 필드에 setValue 호출 시
   // react-hook-form 타입이 공통 필드만 허용하므로 래퍼 사용
-  const setField = setValue as (name: string, value: unknown) => void;
+  type VariantField =
+    | "multiplier"
+    | "healAmount"
+    | "target"
+    | "value"
+    | "duration";
+  const setField = setValue as (
+    name: VariantField,
+    value: number | string,
+  ) => void;
 
   const handleTypeChange = (value: string) => {
     // Select 옵션이 SKILL_TYPE_OPTIONS로 제한되므로 항상 유효한 타입

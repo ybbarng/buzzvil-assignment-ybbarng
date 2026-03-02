@@ -89,9 +89,11 @@ describe("CharacterPanel", () => {
         side="player"
       />,
     );
-    expect(screen.getByText("20")).toBeInTheDocument(); // ATK
-    expect(screen.getByText("10")).toBeInTheDocument(); // DEF
-    expect(screen.getByText("15")).toBeInTheDocument(); // SPD
+    // StatLabel은 <span>LABEL <span>{value}</span></span> 구조.
+    // 라벨 요소의 textContent로 값을 함께 검증하여 false positive 방지
+    expect(screen.getByText(/ATK/)).toHaveTextContent("20");
+    expect(screen.getByText(/DEF/)).toHaveTextContent("10");
+    expect(screen.getByText(/SPD/)).toHaveTextContent("15");
   });
 
   it("버프가 있으면 표시한다", () => {

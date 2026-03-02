@@ -60,7 +60,7 @@ function buildRows(
       barColor: "bg-damage",
     },
     {
-      label: "경감 데미지",
+      label: "방어 시 피해",
       playerValue: playerStats.damageMitigated,
       enemyValue: enemyStats.damageMitigated,
       playerPct: relativePct(

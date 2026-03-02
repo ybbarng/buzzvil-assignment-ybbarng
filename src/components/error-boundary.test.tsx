@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ErrorBoundary } from "./error-boundary";
 
 function ThrowingComponent(): never {
@@ -7,6 +7,10 @@ function ThrowingComponent(): never {
 }
 
 describe("ErrorBoundary", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("자식 컴포넌트가 정상이면 그대로 렌더링한다", () => {
     render(
       <ErrorBoundary>
