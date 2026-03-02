@@ -42,6 +42,7 @@ describe("SUB_ROLE_BASE_STATS", () => {
 });
 
 describe("OW_HERO_STAT_META", () => {
+  // OW2 시즌 14 기준 50명. 영웅 추가/제거 시 이 값도 함께 업데이트할 것.
   it("50명 영웅이 모두 포함되어 있다", () => {
     expect(OW_HERO_STAT_META.length).toBe(50);
   });
