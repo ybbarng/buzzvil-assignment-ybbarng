@@ -21,7 +21,7 @@ describe("SkillForm", () => {
   it("기본 스킬 2개의 효과가 표시된다", () => {
     render(<SkillForm {...defaultProps} />);
     expect(screen.getByText("대미지: 공격력(ATK) × 1")).toBeInTheDocument();
-    expect(screen.getByText("피해 50% 감소")).toBeInTheDocument();
+    expect(screen.getByText("받는 피해 50% 감소")).toBeInTheDocument();
   });
 
   it("이전/다음 버튼이 표시된다", () => {

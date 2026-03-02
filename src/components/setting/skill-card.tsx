@@ -14,7 +14,7 @@ function getSkillDescription(skill: Skill): string {
     case "attack":
       return `대미지: 공격력(ATK) × ${skill.multiplier}`;
     case "defend":
-      return "피해 50% 감소";
+      return "받는 피해 50% 감소";
     case "heal":
       return `HP ${skill.healAmount} 회복`;
     case "buff":
