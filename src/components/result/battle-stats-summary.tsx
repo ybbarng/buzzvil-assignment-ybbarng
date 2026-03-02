@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { STAGGER_MS } from "@/constants/theme";
 import { useCountUpProgress } from "@/hooks/use-count-up";
 import { cn } from "@/lib/utils";
@@ -98,7 +99,10 @@ export function BattleStatsSummary({
   enemyStats,
   baseDelay,
 }: BattleStatsSummaryProps) {
-  const rows = buildRows(player, enemy, playerStats, enemyStats);
+  const rows = useMemo(
+    () => buildRows(player, enemy, playerStats, enemyStats),
+    [player, enemy, playerStats, enemyStats],
+  );
 
   return (
     <div className="w-full max-w-lg space-y-3">
