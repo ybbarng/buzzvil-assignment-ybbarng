@@ -17,6 +17,137 @@ export interface RoundResult {
   outcome: BattleOutcome | null;
 }
 
+interface TurnResult {
+  events: RoundEvent[];
+  updatedPlayer: BattleCharacter;
+  updatedEnemy: BattleCharacter;
+}
+
+/**
+ * 한 캐릭터의 턴을 처리한다.
+ * skip-turn, skill-use, skill-effect 이벤트를 생성하고 갱신된 상태를 반환한다.
+ */
+function processTurn(
+  currentPlayer: BattleCharacter,
+  currentEnemy: BattleCharacter,
+  role: "player" | "enemy",
+  skill: Skill,
+  round: number,
+): TurnResult {
+  const events: RoundEvent[] = [];
+  const isPlayerTurn = role === "player";
+  const actor = isPlayerTurn ? currentPlayer : currentEnemy;
+  const target = isPlayerTurn ? currentEnemy : currentPlayer;
+
+  // 행동 전 검증: 쓰러졌으면 스킵
+  if (actor.currentHp <= 0) {
+    events.push({
+      type: "skip-turn",
+      round,
+      actor: role,
+      actorName: actor.name,
+      reason: "defeated",
+      playerSnapshot: toSnapshot(currentPlayer),
+      enemySnapshot: toSnapshot(currentEnemy),
+    });
+    return { events, updatedPlayer: currentPlayer, updatedEnemy: currentEnemy };
+  }
+
+  // 행동 전 검증: MP 부족이면 스킵
+  if (skill.mpCost > actor.currentMp) {
+    events.push({
+      type: "skip-turn",
+      round,
+      actor: role,
+      actorName: actor.name,
+      reason: "no-mp",
+      skillName: skill.name,
+      playerSnapshot: toSnapshot(currentPlayer),
+      enemySnapshot: toSnapshot(currentEnemy),
+    });
+    return { events, updatedPlayer: currentPlayer, updatedEnemy: currentEnemy };
+  }
+
+  // skill-use: MP만 차감한 중간 상태
+  let updatedPlayer = currentPlayer;
+  let updatedEnemy = currentEnemy;
+  const mpCost = skill.mpCost;
+
+  if (isPlayerTurn) {
+    updatedPlayer = {
+      ...updatedPlayer,
+      currentMp: updatedPlayer.currentMp - mpCost,
+    };
+  } else {
+    updatedEnemy = {
+      ...updatedEnemy,
+      currentMp: updatedEnemy.currentMp - mpCost,
+    };
+  }
+
+  events.push({
+    type: "skill-use",
+    round,
+    actor: role,
+    actorName: actor.name,
+    targetName: target.name,
+    skillName: skill.name,
+    skillType: skill.type,
+    mpCost,
+    playerSnapshot: toSnapshot(updatedPlayer),
+    enemySnapshot: toSnapshot(updatedEnemy),
+  });
+
+  // skill-effect: 실제 효과 적용 (MP 소비는 이미 반영했으므로 mpCost=0 으로 호출)
+  const skillForEffect = { ...skill, mpCost: 0 };
+  const result = resolveSkillEffect(
+    isPlayerTurn ? updatedPlayer : updatedEnemy,
+    isPlayerTurn ? updatedEnemy : updatedPlayer,
+    skillForEffect,
+  );
+
+  const actorAfter = result.user;
+  const targetAfter = result.target;
+
+  // value 계산
+  let value = 0;
+  switch (skill.type) {
+    case "attack":
+      value = target.currentHp - targetAfter.currentHp;
+      break;
+    case "heal":
+      value = actorAfter.currentHp - actor.currentHp;
+      break;
+    case "buff":
+    case "debuff":
+      value = skill.value;
+      break;
+  }
+
+  if (isPlayerTurn) {
+    updatedPlayer = actorAfter;
+    updatedEnemy = targetAfter;
+  } else {
+    updatedPlayer = targetAfter;
+    updatedEnemy = actorAfter;
+  }
+
+  events.push({
+    type: "skill-effect",
+    round,
+    actor: role,
+    actorName: actor.name,
+    targetName: target.name,
+    skillName: skill.name,
+    skillType: skill.type,
+    value,
+    playerSnapshot: toSnapshot(updatedPlayer),
+    enemySnapshot: toSnapshot(updatedEnemy),
+  });
+
+  return { events, updatedPlayer, updatedEnemy };
+}
+
 export function generateRoundEvents(
   player: BattleCharacter,
   enemy: BattleCharacter,
@@ -38,11 +169,11 @@ export function generateRoundEvents(
   }
 
   // 방어 상태 초기화 후, 이번 라운드 방어 선적용
-  let p: BattleCharacter = {
+  let currentPlayer: BattleCharacter = {
     ...player,
     isDefending: playerSkill.type === "defend",
   };
-  let e: BattleCharacter = {
+  let currentEnemy: BattleCharacter = {
     ...enemy,
     isDefending: enemySkill.type === "defend",
   };
@@ -53,9 +184,9 @@ export function generateRoundEvents(
       type: "defend",
       round,
       actor: "player",
-      actorName: p.name,
-      playerSnapshot: toSnapshot(p),
-      enemySnapshot: toSnapshot(e),
+      actorName: currentPlayer.name,
+      playerSnapshot: toSnapshot(currentPlayer),
+      enemySnapshot: toSnapshot(currentEnemy),
     });
   }
   if (enemySkill.type === "defend") {
@@ -63,191 +194,103 @@ export function generateRoundEvents(
       type: "defend",
       round,
       actor: "enemy",
-      actorName: e.name,
-      playerSnapshot: toSnapshot(p),
-      enemySnapshot: toSnapshot(e),
+      actorName: currentEnemy.name,
+      playerSnapshot: toSnapshot(currentPlayer),
+      enemySnapshot: toSnapshot(currentEnemy),
     });
   }
 
   // 2. speed-compare
-  const firstMover = determineFirstMover(p, e);
-  const [firstName, firstSpd, secondName, secondSpd] =
-    firstMover === "player"
-      ? [p.name, p.baseStats.spd, e.name, e.baseStats.spd]
-      : [e.name, e.baseStats.spd, p.name, p.baseStats.spd];
+  const firstMover = determineFirstMover(currentPlayer, currentEnemy);
+  const isPlayerFirst = firstMover === "player";
+  const first = isPlayerFirst ? currentPlayer : currentEnemy;
+  const second = isPlayerFirst ? currentEnemy : currentPlayer;
 
   events.push({
     type: "speed-compare",
     round,
-    firstName,
-    firstSpd,
-    secondName,
-    secondSpd,
-    playerSnapshot: toSnapshot(p),
-    enemySnapshot: toSnapshot(e),
+    firstName: first.name,
+    firstSpd: first.baseStats.spd,
+    secondName: second.name,
+    secondSpd: second.baseStats.spd,
+    playerSnapshot: toSnapshot(currentPlayer),
+    enemySnapshot: toSnapshot(currentEnemy),
   });
 
   // 3. action turns
-  const turnOrder =
-    firstMover === "player"
-      ? [
-          { role: "player" as const, skill: playerSkill },
-          { role: "enemy" as const, skill: enemySkill },
-        ]
-      : [
-          { role: "enemy" as const, skill: enemySkill },
-          { role: "player" as const, skill: playerSkill },
-        ];
+  const turnOrder = isPlayerFirst
+    ? [
+        { role: "player" as const, skill: playerSkill },
+        { role: "enemy" as const, skill: enemySkill },
+      ]
+    : [
+        { role: "enemy" as const, skill: enemySkill },
+        { role: "player" as const, skill: playerSkill },
+      ];
 
   for (const turn of turnOrder) {
-    // defend 선택자는 skill 이벤트 스킵
     if (turn.skill.type === "defend") continue;
 
-    const isPlayerTurn = turn.role === "player";
-    const actor = isPlayerTurn ? p : e;
-    const target = isPlayerTurn ? e : p;
-
-    // 행동 전 검증: 쓰러졌거나 MP 부족이면 스킵
-    if (actor.currentHp <= 0) {
-      events.push({
-        type: "skip-turn",
-        round,
-        actor: turn.role,
-        actorName: actor.name,
-        reason: "defeated",
-        playerSnapshot: toSnapshot(p),
-        enemySnapshot: toSnapshot(e),
-      });
-      continue;
-    }
-    if (turn.skill.mpCost > actor.currentMp) {
-      events.push({
-        type: "skip-turn",
-        round,
-        actor: turn.role,
-        actorName: actor.name,
-        reason: "no-mp",
-        skillName: turn.skill.name,
-        playerSnapshot: toSnapshot(p),
-        enemySnapshot: toSnapshot(e),
-      });
-      continue;
-    }
-
-    // skill-use: MP만 차감한 중간 스냅샷
-    const mpCost = turn.skill.mpCost;
-    if (isPlayerTurn) {
-      p = { ...p, currentMp: p.currentMp - mpCost };
-    } else {
-      e = { ...e, currentMp: e.currentMp - mpCost };
-    }
-
-    events.push({
-      type: "skill-use",
+    const turnResult = processTurn(
+      currentPlayer,
+      currentEnemy,
+      turn.role,
+      turn.skill,
       round,
-      actor: turn.role,
-      actorName: actor.name,
-      targetName: target.name,
-      skillName: turn.skill.name,
-      skillType: turn.skill.type,
-      mpCost,
-      playerSnapshot: toSnapshot(p),
-      enemySnapshot: toSnapshot(e),
-    });
-
-    // skill-effect: 실제 효과 적용 (MP 소비는 이미 반영했으므로 mpCost=0 으로 호출)
-    const skillForEffect = { ...turn.skill, mpCost: 0 };
-    const result = resolveSkillEffect(
-      isPlayerTurn ? p : e,
-      isPlayerTurn ? e : p,
-      skillForEffect,
     );
-
-    // resolveSkillEffect(actor, target)이므로 result.user=actor, result.target=target
-    const actorAfter = result.user;
-    const targetAfter = result.target;
-
-    // value 계산
-    let value = 0;
-    switch (turn.skill.type) {
-      case "attack":
-        value = target.currentHp - targetAfter.currentHp;
-        break;
-      case "heal":
-        value = actorAfter.currentHp - actor.currentHp;
-        break;
-      case "buff":
-      case "debuff":
-        value = turn.skill.value;
-        break;
-    }
-
-    if (isPlayerTurn) {
-      p = actorAfter;
-      e = targetAfter;
-    } else {
-      p = targetAfter;
-      e = actorAfter;
-    }
-
-    events.push({
-      type: "skill-effect",
-      round,
-      actor: turn.role,
-      actorName: actor.name,
-      targetName: target.name,
-      skillName: turn.skill.name,
-      skillType: turn.skill.type,
-      value,
-      playerSnapshot: toSnapshot(p),
-      enemySnapshot: toSnapshot(e),
-    });
+    events.push(...turnResult.events);
+    currentPlayer = turnResult.updatedPlayer;
+    currentEnemy = turnResult.updatedEnemy;
   }
 
   // 4. buff-expire: tickBuffs 전에 만료 예정 버프 기록
-  const expiringPlayerBuffs = p.buffs.filter((b) => b.remainingTurns <= 1);
-  const expiringEnemyBuffs = e.buffs.filter((b) => b.remainingTurns <= 1);
+  const expiringPlayerBuffs = currentPlayer.buffs.filter(
+    (b) => b.remainingTurns <= 1,
+  );
+  const expiringEnemyBuffs = currentEnemy.buffs.filter(
+    (b) => b.remainingTurns <= 1,
+  );
 
-  p = tickBuffs(p);
-  e = tickBuffs(e);
+  currentPlayer = tickBuffs(currentPlayer);
+  currentEnemy = tickBuffs(currentEnemy);
 
   for (const buff of expiringPlayerBuffs) {
     events.push({
       type: "buff-expire",
       round,
-      targetName: p.name,
+      targetName: currentPlayer.name,
       buffTarget: buff.target,
       wasBuff: buff.value > 0,
-      playerSnapshot: toSnapshot(p),
-      enemySnapshot: toSnapshot(e),
+      playerSnapshot: toSnapshot(currentPlayer),
+      enemySnapshot: toSnapshot(currentEnemy),
     });
   }
   for (const buff of expiringEnemyBuffs) {
     events.push({
       type: "buff-expire",
       round,
-      targetName: e.name,
+      targetName: currentEnemy.name,
       buffTarget: buff.target,
       wasBuff: buff.value > 0,
-      playerSnapshot: toSnapshot(p),
-      enemySnapshot: toSnapshot(e),
+      playerSnapshot: toSnapshot(currentPlayer),
+      enemySnapshot: toSnapshot(currentEnemy),
     });
   }
 
   // 5. 라운드 종료 후 전투 종료 판정
-  const endCheck = checkBattleEnd(p, e, round + 1);
+  const endCheck = checkBattleEnd(currentPlayer, currentEnemy, round + 1);
   if (endCheck) {
     events.push({
       type: "battle-end",
       round,
       outcome: endCheck,
-      playerSnapshot: toSnapshot(p),
-      enemySnapshot: toSnapshot(e),
+      playerSnapshot: toSnapshot(currentPlayer),
+      enemySnapshot: toSnapshot(currentEnemy),
     });
     return {
       events,
-      finalPlayer: p,
-      finalEnemy: e,
+      finalPlayer: currentPlayer,
+      finalEnemy: currentEnemy,
       nextRound: round + 1,
       outcome: endCheck,
     };
@@ -255,8 +298,8 @@ export function generateRoundEvents(
 
   return {
     events,
-    finalPlayer: p,
-    finalEnemy: e,
+    finalPlayer: currentPlayer,
+    finalEnemy: currentEnemy,
     nextRound: round + 1,
     outcome: null,
   };
