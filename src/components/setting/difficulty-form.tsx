@@ -73,6 +73,7 @@ export function DifficultyForm({
                   ? `${opt.selectedColor} text-text-primary`
                   : "border-border/50 bg-bg-tertiary text-text-secondary hover:border-text-muted hover:bg-bg-tertiary/80",
               )}
+              aria-pressed={difficulty === opt.value}
               onClick={() => onSelect(opt.value)}
             >
               <div className={`${SKEW_TEXT} font-semibold`}>{opt.label}</div>
