@@ -3,13 +3,13 @@ import { SKILL_TYPE_ICONS } from "@/constants/skills";
 import type { BattleCharacter } from "@/types/battle";
 import type { SkillType } from "@/types/skill";
 
-/** 아이콘 배지에 사용할 배경 + 아이콘 색상 */
-const SKILL_ICON_STYLE: Record<SkillType, string> = {
-  attack: "bg-damage/20 text-damage",
-  defend: "bg-accent-blue/20 text-accent-blue",
-  heal: "bg-heal/20 text-heal",
-  buff: "bg-buff/20 text-buff",
-  debuff: "bg-debuff/20 text-debuff",
+/** 아이콘 색상 (배경은 공통 흰색 원) */
+const SKILL_ICON_COLOR: Record<SkillType, string> = {
+  attack: "text-damage",
+  defend: "text-accent-blue",
+  heal: "text-heal",
+  buff: "text-buff",
+  debuff: "text-debuff",
 };
 
 interface ActionPanelProps {
@@ -36,7 +36,7 @@ export function ActionPanel({ player, onAction }: ActionPanelProps) {
             <span className="flex items-center justify-center gap-1.5 font-semibold">
               {skill.name}
               <span
-                className={`inline-flex items-center justify-center rounded p-0.5 ${SKILL_ICON_STYLE[skill.type]}`}
+                className={`inline-flex items-center justify-center rounded-full bg-white p-0.5 ${SKILL_ICON_COLOR[skill.type]}`}
               >
                 <Icon className="size-3.5" />
               </span>
