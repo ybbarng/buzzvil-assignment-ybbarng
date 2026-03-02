@@ -66,20 +66,32 @@ describe("SettingScreen", () => {
       vi.useRealTimers();
     });
 
-    it("인트로 중에는 폼이 렌더링되지 않는다", () => {
+    it("인트로 중에는 폼이 렌더링되지 않고 헤더에 fade-in 애니메이션이 적용된다", () => {
       render(<App />);
 
       expect(screen.queryByTestId("name-input")).not.toBeInTheDocument();
-      expect(screen.getByText("BUZZ ARENA")).toBeInTheDocument();
+      const heading = screen.getByText("BUZZ ARENA");
+      expect(heading).toBeInTheDocument();
+      // 헤더의 부모 컨테이너에 인트로 fade-in 클래스가 적용되어야 한다
+      expect(heading.closest("[data-header]")).toHaveClass(
+        "animate-intro-fade-in",
+      );
     });
 
-    it("인트로 완료 후 폼이 렌더링된다", () => {
+    it("인트로 완료 후 폼이 렌더링되고 헤더 애니메이션 클래스가 제거된다", () => {
       render(<App />);
 
       act(() => vi.advanceTimersByTime(INTRO_FADE_IN_WAIT_MS));
       act(() => vi.advanceTimersByTime(INTRO_SETTLE_FALLBACK_MS));
 
       expect(screen.getByTestId("name-input")).toBeInTheDocument();
+      const heading = screen.getByText("BUZZ ARENA");
+      expect(heading.closest("[data-header]")).not.toHaveClass(
+        "animate-intro-fade-in",
+      );
+      expect(heading.closest("[data-header]")).not.toHaveClass(
+        "animate-intro-settle",
+      );
     });
 
     it("fade-in 대기 시간이 지나기 전에는 폼이 보이지 않는다", () => {
