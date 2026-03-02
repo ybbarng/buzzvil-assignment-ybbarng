@@ -27,7 +27,7 @@ function getSkillDescription(skill: Skill): string {
 export function SkillCard({ skill, onRemove }: SkillCardProps) {
   return (
     <div
-      className={`${SKEW} flex items-center justify-between border-l-2 ${SKILL_TYPE_COLORS[skill.type].border} bg-bg-tertiary px-4 py-3`}
+      className={`${SKEW} flex items-center justify-between border-l-2 ${SKILL_TYPE_COLORS[skill.type].border} bg-bg-tertiary px-4 py-3 animate-fade-in`}
     >
       <div className={`${SKEW_TEXT} space-y-0.5`}>
         <div className="flex items-center gap-2">
