@@ -110,7 +110,7 @@ function handleBattleEnd(get: () => BattleState) {
 export const useBattleStore = create<BattleState>((set, get) => ({
   player: null,
   enemy: null,
-  difficulty: "normal" as Difficulty,
+  difficulty: "normal",
   round: 1,
   outcome: null,
   isReplaying: false,
@@ -329,7 +329,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     set({
       player: null,
       enemy: null,
-      difficulty: "normal" as Difficulty,
+      difficulty: "normal",
       round: 1,
       outcome: null,
       isReplaying: false,

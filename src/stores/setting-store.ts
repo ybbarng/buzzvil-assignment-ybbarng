@@ -24,13 +24,16 @@ interface SettingState {
   reset: () => void;
 }
 
-const INITIAL_STATE = {
-  step: 1 as SettingStep,
+const INITIAL_STATE: Pick<
+  SettingState,
+  "step" | "name" | "stats" | "skills" | "difficulty" | "presetId"
+> = {
+  step: 1,
   name: "",
   stats: { ...DEFAULT_STATS },
   skills: [...DEFAULT_SKILLS],
-  difficulty: "normal" as Difficulty,
-  presetId: null as string | null,
+  difficulty: "normal",
+  presetId: null,
 };
 
 export const useSettingStore = create<SettingState>((set) => ({
