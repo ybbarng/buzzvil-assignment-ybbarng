@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SKILL_TYPE_COLORS, SKILL_TYPE_ICONS } from "@/constants/skills";
+import { STAT_LABELS } from "@/constants/stats";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import type { Skill } from "@/types/skill";
 
@@ -16,11 +17,15 @@ function getSkillDescription(skill: Skill): string {
     case "defend":
       return "받는 피해 50% 감소";
     case "heal":
-      return `HP ${skill.healAmount} 회복`;
-    case "buff":
-      return `${skill.target.toUpperCase()} +${skill.value} (${skill.duration}턴)`;
-    case "debuff":
-      return `${skill.target.toUpperCase()} -${skill.value} (${skill.duration}턴)`;
+      return `체력(HP) ${skill.healAmount} 회복`;
+    case "buff": {
+      const { ko, en } = STAT_LABELS[skill.target];
+      return `${skill.duration}턴 동안 ${ko}(${en}) +${skill.value}`;
+    }
+    case "debuff": {
+      const { ko, en } = STAT_LABELS[skill.target];
+      return `${skill.duration}턴 동안 ${ko}(${en}) -${skill.value}`;
+    }
   }
 }
 
@@ -41,7 +46,9 @@ export function SkillCard({ skill, onRemove }: SkillCardProps) {
             );
           })()}
           {skill.mpCost > 0 && (
-            <span className="text-xs text-mp">MP {skill.mpCost}</span>
+            <span className="text-xs text-mp">
+              마나(MP) {skill.mpCost} 소모
+            </span>
           )}
         </div>
         <p className="text-sm text-text-secondary">
