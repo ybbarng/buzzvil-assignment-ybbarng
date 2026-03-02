@@ -1,7 +1,8 @@
 import { z } from "zod/v4";
 
-/** 스킬 필드별 min/max 범위 — 스키마 검증과 슬라이더 UI에서 공유 */
-export const SKILL_RANGES = {
+/** 스킬 필드별 제약 조건 — 스키마 검증과 UI에서 공유 */
+export const SKILL_CONSTRAINTS = {
+  name: { min: 1, max: 8 },
   mpCost: { min: 1, max: 30 },
   multiplier: { min: 1.0, max: 3.0, step: 0.1 },
   healAmount: { min: 10, max: 50 },
@@ -12,13 +13,16 @@ export const SKILL_RANGES = {
 const baseFields = {
   name: z
     .string()
-    .min(1, "스킬 이름을 입력해주세요")
-    .max(8, "스킬 이름은 8자 이하로 입력해주세요"),
+    .min(SKILL_CONSTRAINTS.name.min, "스킬 이름을 입력해주세요")
+    .max(
+      SKILL_CONSTRAINTS.name.max,
+      `스킬 이름은 ${SKILL_CONSTRAINTS.name.max}자 이하로 입력해주세요`,
+    ),
   mpCost: z
     .number()
     .int()
-    .min(SKILL_RANGES.mpCost.min, `최소 ${SKILL_RANGES.mpCost.min}`)
-    .max(SKILL_RANGES.mpCost.max, `최대 ${SKILL_RANGES.mpCost.max}`),
+    .min(SKILL_CONSTRAINTS.mpCost.min, `최소 ${SKILL_CONSTRAINTS.mpCost.min}`)
+    .max(SKILL_CONSTRAINTS.mpCost.max, `최대 ${SKILL_CONSTRAINTS.mpCost.max}`),
 };
 
 const attackSchema = z.object({
@@ -26,8 +30,8 @@ const attackSchema = z.object({
   type: z.literal("attack"),
   multiplier: z
     .number()
-    .min(SKILL_RANGES.multiplier.min)
-    .max(SKILL_RANGES.multiplier.max),
+    .min(SKILL_CONSTRAINTS.multiplier.min)
+    .max(SKILL_CONSTRAINTS.multiplier.max),
 });
 
 const healSchema = z.object({
@@ -36,8 +40,14 @@ const healSchema = z.object({
   healAmount: z
     .number()
     .int()
-    .min(SKILL_RANGES.healAmount.min, `최소 ${SKILL_RANGES.healAmount.min}`)
-    .max(SKILL_RANGES.healAmount.max, `최대 ${SKILL_RANGES.healAmount.max}`),
+    .min(
+      SKILL_CONSTRAINTS.healAmount.min,
+      `최소 ${SKILL_CONSTRAINTS.healAmount.min}`,
+    )
+    .max(
+      SKILL_CONSTRAINTS.healAmount.max,
+      `최대 ${SKILL_CONSTRAINTS.healAmount.max}`,
+    ),
 });
 
 const buffSchema = z.object({
@@ -47,13 +57,19 @@ const buffSchema = z.object({
   value: z
     .number()
     .int()
-    .min(SKILL_RANGES.value.min, `최소 ${SKILL_RANGES.value.min}`)
-    .max(SKILL_RANGES.value.max, `최대 ${SKILL_RANGES.value.max}`),
+    .min(SKILL_CONSTRAINTS.value.min, `최소 ${SKILL_CONSTRAINTS.value.min}`)
+    .max(SKILL_CONSTRAINTS.value.max, `최대 ${SKILL_CONSTRAINTS.value.max}`),
   duration: z
     .number()
     .int()
-    .min(SKILL_RANGES.duration.min, `최소 ${SKILL_RANGES.duration.min}턴`)
-    .max(SKILL_RANGES.duration.max, `최대 ${SKILL_RANGES.duration.max}턴`),
+    .min(
+      SKILL_CONSTRAINTS.duration.min,
+      `최소 ${SKILL_CONSTRAINTS.duration.min}턴`,
+    )
+    .max(
+      SKILL_CONSTRAINTS.duration.max,
+      `최대 ${SKILL_CONSTRAINTS.duration.max}턴`,
+    ),
 });
 
 const debuffSchema = z.object({
@@ -63,13 +79,19 @@ const debuffSchema = z.object({
   value: z
     .number()
     .int()
-    .min(SKILL_RANGES.value.min, `최소 ${SKILL_RANGES.value.min}`)
-    .max(SKILL_RANGES.value.max, `최대 ${SKILL_RANGES.value.max}`),
+    .min(SKILL_CONSTRAINTS.value.min, `최소 ${SKILL_CONSTRAINTS.value.min}`)
+    .max(SKILL_CONSTRAINTS.value.max, `최대 ${SKILL_CONSTRAINTS.value.max}`),
   duration: z
     .number()
     .int()
-    .min(SKILL_RANGES.duration.min, `최소 ${SKILL_RANGES.duration.min}턴`)
-    .max(SKILL_RANGES.duration.max, `최대 ${SKILL_RANGES.duration.max}턴`),
+    .min(
+      SKILL_CONSTRAINTS.duration.min,
+      `최소 ${SKILL_CONSTRAINTS.duration.min}턴`,
+    )
+    .max(
+      SKILL_CONSTRAINTS.duration.max,
+      `최대 ${SKILL_CONSTRAINTS.duration.max}턴`,
+    ),
 });
 
 export const customSkillSchema = z.discriminatedUnion("type", [

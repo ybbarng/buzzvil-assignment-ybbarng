@@ -16,7 +16,7 @@ import { SKEW } from "@/constants/theme";
 import {
   type CustomSkillFormData,
   customSkillSchema,
-  SKILL_RANGES,
+  SKILL_CONSTRAINTS,
 } from "@/schemas/skill.schema";
 import type { Skill, SkillType } from "@/types/skill";
 
@@ -116,8 +116,8 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
           <div className={`${SKEW} bg-bg-tertiary px-4 py-2`}>
             <Input
               data-testid="skill-name-input"
-              placeholder="스킬 이름 (최대 8자)"
-              maxLength={8}
+              placeholder={`스킬 이름 (최대 ${SKILL_CONSTRAINTS.name.max}자)`}
+              maxLength={SKILL_CONSTRAINTS.name.max}
               className="border-none bg-transparent text-text-primary shadow-none placeholder:text-text-muted"
               {...register("name")}
             />
@@ -154,16 +154,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             </span>
           </div>
           <Slider
-            min={SKILL_RANGES.mpCost.min}
-            max={SKILL_RANGES.mpCost.max}
+            min={SKILL_CONSTRAINTS.mpCost.min}
+            max={SKILL_CONSTRAINTS.mpCost.max}
             step={1}
             value={[mpCost]}
             onValueChange={([v]) => setValue("mpCost", v)}
             className={SLIDER_COLOR}
           />
           <div className="flex justify-between text-xs text-text-muted">
-            <span>{SKILL_RANGES.mpCost.min}</span>
-            <span>{SKILL_RANGES.mpCost.max}</span>
+            <span>{SKILL_CONSTRAINTS.mpCost.min}</span>
+            <span>{SKILL_CONSTRAINTS.mpCost.max}</span>
           </div>
           {errors.mpCost && (
             <p className="text-xs text-damage">{errors.mpCost.message}</p>
@@ -179,9 +179,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               </span>
             </div>
             <Slider
-              min={SKILL_RANGES.multiplier.min}
-              max={SKILL_RANGES.multiplier.max}
-              step={SKILL_RANGES.multiplier.step}
+              min={SKILL_CONSTRAINTS.multiplier.min}
+              max={SKILL_CONSTRAINTS.multiplier.max}
+              step={SKILL_CONSTRAINTS.multiplier.step}
               value={[multiplier as number]}
               onValueChange={([v]) =>
                 setValue("multiplier" as "multiplier", Math.round(v * 10) / 10)
@@ -189,8 +189,8 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               className={SLIDER_COLOR}
             />
             <div className="flex justify-between text-xs text-text-muted">
-              <span>{SKILL_RANGES.multiplier.min.toFixed(1)}</span>
-              <span>{SKILL_RANGES.multiplier.max.toFixed(1)}</span>
+              <span>{SKILL_CONSTRAINTS.multiplier.min.toFixed(1)}</span>
+              <span>{SKILL_CONSTRAINTS.multiplier.max.toFixed(1)}</span>
             </div>
             {"multiplier" in errors && errors.multiplier && (
               <p className="text-xs text-damage">{errors.multiplier.message}</p>
@@ -207,16 +207,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               </span>
             </div>
             <Slider
-              min={SKILL_RANGES.healAmount.min}
-              max={SKILL_RANGES.healAmount.max}
+              min={SKILL_CONSTRAINTS.healAmount.min}
+              max={SKILL_CONSTRAINTS.healAmount.max}
               step={1}
               value={[healAmount as number]}
               onValueChange={([v]) => setValue("healAmount" as "healAmount", v)}
               className={SLIDER_COLOR}
             />
             <div className="flex justify-between text-xs text-text-muted">
-              <span>{SKILL_RANGES.healAmount.min}</span>
-              <span>{SKILL_RANGES.healAmount.max}</span>
+              <span>{SKILL_CONSTRAINTS.healAmount.min}</span>
+              <span>{SKILL_CONSTRAINTS.healAmount.max}</span>
             </div>
             {"healAmount" in errors && errors.healAmount && (
               <p className="text-xs text-damage">{errors.healAmount.message}</p>
@@ -251,16 +251,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 </span>
               </div>
               <Slider
-                min={SKILL_RANGES.value.min}
-                max={SKILL_RANGES.value.max}
+                min={SKILL_CONSTRAINTS.value.min}
+                max={SKILL_CONSTRAINTS.value.max}
                 step={1}
                 value={[buffValue as number]}
                 onValueChange={([v]) => setValue("value" as "value", v)}
                 className={SLIDER_COLOR}
               />
               <div className="flex justify-between text-xs text-text-muted">
-                <span>{SKILL_RANGES.value.min}</span>
-                <span>{SKILL_RANGES.value.max}</span>
+                <span>{SKILL_CONSTRAINTS.value.min}</span>
+                <span>{SKILL_CONSTRAINTS.value.max}</span>
               </div>
               {"value" in errors && errors.value && (
                 <p className="text-xs text-damage">{errors.value.message}</p>
@@ -274,16 +274,16 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 </span>
               </div>
               <Slider
-                min={SKILL_RANGES.duration.min}
-                max={SKILL_RANGES.duration.max}
+                min={SKILL_CONSTRAINTS.duration.min}
+                max={SKILL_CONSTRAINTS.duration.max}
                 step={1}
                 value={[duration as number]}
                 onValueChange={([v]) => setValue("duration" as "duration", v)}
                 className={SLIDER_COLOR}
               />
               <div className="flex justify-between text-xs text-text-muted">
-                <span>{SKILL_RANGES.duration.min}</span>
-                <span>{SKILL_RANGES.duration.max}</span>
+                <span>{SKILL_CONSTRAINTS.duration.min}</span>
+                <span>{SKILL_CONSTRAINTS.duration.max}</span>
               </div>
               {"duration" in errors && errors.duration && (
                 <p className="text-xs text-damage">{errors.duration.message}</p>
