@@ -14,9 +14,9 @@ import type { Direction, SettingStep } from "@/types/game";
 type IntroPhase = "center" | "moving" | "done";
 
 /** fade-in(800ms) 완료 후 여유 시간을 포함한 대기 시간 */
-const INTRO_FADE_IN_WAIT_MS = 1500;
+export const INTRO_FADE_IN_WAIT_MS = 1500;
 /** intro-settle(700ms) + 여유. onAnimationEnd가 동작하지 않을 때의 fallback */
-const INTRO_SETTLE_FALLBACK_MS = 800;
+export const INTRO_SETTLE_FALLBACK_MS = 800;
 /** CSS @keyframes 이름. onAnimationEnd에서 버블링 필터링에 사용 */
 const INTRO_SETTLE_ANIMATION = "intro-settle";
 

@@ -2,6 +2,10 @@ import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
+import {
+  INTRO_FADE_IN_WAIT_MS,
+  INTRO_SETTLE_FALLBACK_MS,
+} from "@/components/setting/setting-screen";
 import { allocateStats, resetStores } from "@/test/helpers";
 
 /** matchMedia를 모션 비활성화 상태로 override */
@@ -72,10 +76,8 @@ describe("SettingScreen", () => {
     it("인트로 완료 후 폼이 렌더링된다", () => {
       render(<App />);
 
-      // center → moving (1500ms)
-      act(() => vi.advanceTimersByTime(1500));
-      // moving → done (fallback 800ms)
-      act(() => vi.advanceTimersByTime(800));
+      act(() => vi.advanceTimersByTime(INTRO_FADE_IN_WAIT_MS));
+      act(() => vi.advanceTimersByTime(INTRO_SETTLE_FALLBACK_MS));
 
       expect(screen.getByTestId("name-input")).toBeInTheDocument();
     });
@@ -83,7 +85,7 @@ describe("SettingScreen", () => {
     it("1500ms 이전에는 여전히 center 상태로 폼이 보이지 않는다", () => {
       render(<App />);
 
-      act(() => vi.advanceTimersByTime(1499));
+      act(() => vi.advanceTimersByTime(INTRO_FADE_IN_WAIT_MS - 1));
 
       expect(screen.queryByTestId("name-input")).not.toBeInTheDocument();
     });
@@ -91,11 +93,8 @@ describe("SettingScreen", () => {
     it("moving 상태에서 fallback 완료 전에는 폼이 보이지 않는다", () => {
       render(<App />);
 
-      // center → moving (1500ms)
-      act(() => vi.advanceTimersByTime(1500));
-
-      // fallback 799ms — 아직 done이 아님
-      act(() => vi.advanceTimersByTime(799));
+      act(() => vi.advanceTimersByTime(INTRO_FADE_IN_WAIT_MS));
+      act(() => vi.advanceTimersByTime(INTRO_SETTLE_FALLBACK_MS - 1));
 
       expect(screen.queryByTestId("name-input")).not.toBeInTheDocument();
     });
