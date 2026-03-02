@@ -48,10 +48,6 @@ export function SkillForm({
     setIsCreating(false);
   };
 
-  const handlePresetAdd = (skill: Skill) => {
-    onAddSkill(skill);
-  };
-
   const slideIn = slideInClass(enterDirection);
 
   return (
@@ -118,7 +114,7 @@ export function SkillForm({
         onOpenChange={setIsPresetOpen}
         presetId={presetId}
         equippedSkillKeys={equippedSkillKeys}
-        onSelect={handlePresetAdd}
+        onSelect={onAddSkill}
       />
 
       <Dialog open={isCreating} onOpenChange={setIsCreating}>
