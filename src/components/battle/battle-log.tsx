@@ -11,9 +11,9 @@ import {
   Sword,
   Zap,
 } from "lucide-react";
-import type React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { SKILL_TYPE_COLORS } from "@/constants/skills";
+import { colorizeNames, createHighlightPatterns } from "@/lib/colorize-names";
 import { formatEvent } from "@/logic/event-formatter";
 import type { RoundEvent } from "@/types/battle-event";
 
@@ -63,81 +63,6 @@ function getIconColor(event: RoundEvent): string {
   return colorMap[event.type];
 }
 
-/**
- * 문자열 내 플레이어/적 이름을 팀 색상 볼드로, 숫자를 녹색 볼드로 교체한 React 노드를 반환한다.
- * 이름이 겹치지 않는다고 가정한다.
- */
-function colorizeNames(
-  text: string,
-  playerName: string,
-  enemyName: string,
-): React.ReactNode {
-  const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const patterns: { regex: RegExp; className: string }[] = [
-    {
-      regex: new RegExp(escapeRe(playerName), "g"),
-      className: "font-bold text-accent-blue",
-    },
-    {
-      regex: new RegExp(escapeRe(enemyName), "g"),
-      className: "font-bold text-damage",
-    },
-    { regex: /\d+/g, className: "font-bold text-hp" },
-  ];
-
-  const segments: React.ReactNode[] = [];
-  let key = 0;
-
-  // 모든 매치를 찾아 위치순으로 정렬
-  const matches: {
-    start: number;
-    end: number;
-    text: string;
-    className: string;
-  }[] = [];
-  for (const { regex, className } of patterns) {
-    let m: RegExpExecArray | null = null;
-    // biome-ignore lint/suspicious/noAssignInExpressions: regex exec loop
-    while ((m = regex.exec(text)) !== null) {
-      matches.push({
-        start: m.index,
-        end: m.index + m[0].length,
-        text: m[0],
-        className,
-      });
-    }
-  }
-  matches.sort((a, b) => a.start - b.start);
-
-  // 겹치는 매치 제거 (먼저 나온 것 우선)
-  const filtered: typeof matches = [];
-  let lastEnd = 0;
-  for (const match of matches) {
-    if (match.start >= lastEnd) {
-      filtered.push(match);
-      lastEnd = match.end;
-    }
-  }
-
-  let cursor = 0;
-  for (const match of filtered) {
-    if (match.start > cursor) {
-      segments.push(text.slice(cursor, match.start));
-    }
-    segments.push(
-      <span key={key++} className={match.className}>
-        {match.text}
-      </span>,
-    );
-    cursor = match.end;
-  }
-  if (cursor < text.length) {
-    segments.push(text.slice(cursor));
-  }
-
-  return segments;
-}
-
 interface BattleLogProps {
   events: RoundEvent[];
   playerName: string;
@@ -146,6 +71,10 @@ interface BattleLogProps {
 
 export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const patterns = useMemo(
+    () => createHighlightPatterns(playerName, enemyName),
+    [playerName, enemyName],
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: events.length 변화 시 스크롤 필요
   useEffect(() => {
@@ -204,9 +133,7 @@ export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
                 className="flex items-center gap-1 text-sm text-white"
               >
                 <Icon className={`size-3 shrink-0 ${iconColor}`} />
-                <span>
-                  {colorizeNames(formatEvent(event), playerName, enemyName)}
-                </span>
+                <span>{colorizeNames(formatEvent(event), patterns)}</span>
               </li>
             );
           })}
