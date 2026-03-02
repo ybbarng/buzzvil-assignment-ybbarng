@@ -60,8 +60,7 @@ export function ReplayListDialog({
     useGameStore.getState().startReplay();
   };
 
-  const handleRemove = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleRemove = (id: string) => {
     remove(id);
   };
 
@@ -84,49 +83,51 @@ export function ReplayListDialog({
         ) : (
           <ul className="space-y-2">
             {replays.map((replay) => (
-              <li key={replay.id}>
-                <button
-                  type="button"
-                  onClick={() => handlePlay(replay)}
-                  className={cn(
-                    `${SKEW} flex w-full items-center gap-3 bg-bg-tertiary px-4 py-3`,
-                    "transition-all hover:scale-[1.02] hover:brightness-110",
-                  )}
-                >
-                  <div
-                    className={`${SKEW_TEXT} flex w-full items-center gap-3`}
+              <li
+                key={replay.id}
+                className={`${SKEW} flex items-center gap-3 bg-bg-tertiary px-4 py-3`}
+              >
+                <div className={`${SKEW_TEXT} flex w-full items-center gap-3`}>
+                  <span className="shrink-0 text-xs text-text-muted">
+                    {formatDate(replay.timestamp)}
+                  </span>
+                  <span className="min-w-0 truncate text-sm text-text-primary">
+                    {replay.playerName} vs {replay.enemyName}
+                  </span>
+                  <span className="shrink-0 text-xs text-text-secondary">
+                    {DIFFICULTY_LABELS[replay.difficulty]}
+                  </span>
+                  <span
+                    className={cn(
+                      "shrink-0 text-xs font-bold",
+                      OUTCOME_COLORS[replay.outcome],
+                    )}
                   >
-                    <span className="shrink-0 text-xs text-text-muted">
-                      {formatDate(replay.timestamp)}
-                    </span>
-                    <span className="min-w-0 truncate text-sm text-text-primary">
-                      {replay.playerName} vs {replay.enemyName}
-                    </span>
-                    <span className="shrink-0 text-xs text-text-secondary">
-                      {DIFFICULTY_LABELS[replay.difficulty]}
-                    </span>
-                    <span
-                      className={cn(
-                        "shrink-0 text-xs font-bold",
-                        OUTCOME_COLORS[replay.outcome],
-                      )}
+                    {OUTCOME_LABELS[replay.outcome]}
+                  </span>
+                  <span className="shrink-0 text-xs text-text-muted">
+                    {replay.totalTurns}턴
+                  </span>
+                  <div className="ml-auto flex shrink-0 gap-1">
+                    <GameButton
+                      type="button"
+                      size="sm"
+                      skew
+                      onClick={() => handlePlay(replay)}
                     >
-                      {OUTCOME_LABELS[replay.outcome]}
-                    </span>
-                    <span className="shrink-0 text-xs text-text-muted">
-                      {replay.totalTurns}턴
-                    </span>
+                      보기
+                    </GameButton>
                     <GameButton
                       type="button"
                       variant="blue"
                       size="sm"
-                      className="ml-auto shrink-0"
-                      onClick={(e) => handleRemove(replay.id, e)}
+                      skew
+                      onClick={() => handleRemove(replay.id)}
                     >
                       삭제
                     </GameButton>
                   </div>
-                </button>
+                </div>
               </li>
             ))}
           </ul>
