@@ -82,7 +82,7 @@ describe("SettingScreen", () => {
       expect(screen.getByTestId("name-input")).toBeInTheDocument();
     });
 
-    it("1500ms 이전에는 여전히 center 상태로 폼이 보이지 않는다", () => {
+    it("fade-in 대기 시간이 지나기 전에는 폼이 보이지 않는다", () => {
       render(<App />);
 
       act(() => vi.advanceTimersByTime(INTRO_FADE_IN_WAIT_MS - 1));
