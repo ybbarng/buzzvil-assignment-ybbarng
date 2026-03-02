@@ -23,7 +23,7 @@ export function SkillForm({
 }: SkillFormProps) {
   const [isCreating, setIsCreating] = useState(false);
   const customSkillCount = skills.filter((s) => !s.isDefault).length;
-  const canAddMore = customSkillCount < MAX_CUSTOM_SKILLS;
+  const emptySlotCount = MAX_CUSTOM_SKILLS - customSkillCount;
 
   const handleAdd = (skill: Skill) => {
     onAddSkill(skill);
@@ -55,7 +55,7 @@ export function SkillForm({
             />
           ))}
 
-          {!isCreating && canAddMore && (
+          {!isCreating && emptySlotCount > 0 && (
             <button
               type="button"
               data-testid="add-skill-button"
@@ -64,6 +64,13 @@ export function SkillForm({
             >
               <span className={`${SKEW_TEXT} block`}>+ 스킬 추가</span>
             </button>
+          )}
+          {!isCreating && emptySlotCount > 1 && (
+            <div
+              className={`${SKEW} w-full border-2 border-dashed border-border/50 px-4 py-2.5 text-center text-sm text-text-muted`}
+            >
+              <span className={`${SKEW_TEXT} block`}>빈 슬롯</span>
+            </div>
           )}
         </div>
       </section>
