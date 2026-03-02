@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import type { BattleCharacter } from "@/types/battle";
 import type { SkillEffectEvent, SkillUseEvent } from "@/types/battle-event";
 import type { Skill } from "@/types/skill";
-import { eventsToLegacyLogs } from "./battle-log";
 import { generateRoundEvents } from "./round-events";
 
 function makeCharacter(
@@ -118,30 +117,6 @@ describe("generateRoundEvents", () => {
     expect(result.outcome).toBe("win");
     const battleEnd = result.events.find((e) => e.type === "battle-end");
     expect(battleEnd).toBeDefined();
-
-    vi.restoreAllMocks();
-  });
-
-  it("eventsToLegacyLogs가 ActionEvent만 변환한다", () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.9);
-
-    const player = makeCharacter();
-    const enemy = makeCharacter({
-      name: "훈련 로봇",
-      baseStats: { hp: 80, mp: 30, atk: 10, def: 8, spd: 7 },
-      currentHp: 80,
-      currentMp: 30,
-      skills: ENEMY_SKILLS,
-    });
-
-    const attackSkill = player.skills[0];
-    const result = generateRoundEvents(player, enemy, 1, attackSkill, "easy");
-
-    const legacyLogs = eventsToLegacyLogs(result.events);
-    expect(legacyLogs).toHaveLength(2);
-    expect(legacyLogs[0].actor).toBe("테스터");
-    expect(legacyLogs[0].skillType).toBe("attack");
-    expect(legacyLogs[1].actor).toBe("훈련 로봇");
 
     vi.restoreAllMocks();
   });

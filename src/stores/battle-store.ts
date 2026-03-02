@@ -1,14 +1,9 @@
 import { create } from "zustand";
 import { ENEMIES } from "@/constants/enemies";
-import { eventsToLegacyLogs } from "@/logic/battle-log";
 import { generateRoundEvents } from "@/logic/round-events";
 import { toSnapshot } from "@/logic/snapshot";
 import { useGameStore } from "@/stores/game-store";
-import type {
-  BattleCharacter,
-  BattleLogEntry,
-  CharacterSnapshot,
-} from "@/types/battle";
+import type { BattleCharacter, CharacterSnapshot } from "@/types/battle";
 import type { RoundEvent } from "@/types/battle-event";
 import type { Stats } from "@/types/character";
 import type { BattleOutcome, Difficulty } from "@/types/game";
@@ -21,9 +16,6 @@ interface BattleState {
   difficulty: Difficulty;
   round: number;
   outcome: BattleOutcome | null;
-
-  // 레거시 호환
-  logs: BattleLogEntry[];
 
   // 이벤트 시스템
   events: RoundEvent[];
@@ -69,7 +61,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   difficulty: "normal" as Difficulty,
   round: 1,
   outcome: null,
-  logs: [],
 
   events: [],
   pendingEvents: [],
@@ -95,7 +86,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       difficulty,
       round: 1,
       outcome: null,
-      logs: [],
       events: [
         {
           type: "round-start",
@@ -130,15 +120,11 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       state.difficulty,
     );
 
-    // 레거시 로그 변환
-    const newLegacyLogs = eventsToLegacyLogs(result.events);
-
     set({
       player: result.finalPlayer,
       enemy: result.finalEnemy,
       round: result.nextRound,
       outcome: result.outcome,
-      logs: [...state.logs, ...newLegacyLogs],
       pendingEvents: [...result.events],
       isAnimating: true,
     });
@@ -242,7 +228,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       difficulty: "normal" as Difficulty,
       round: 1,
       outcome: null,
-      logs: [],
       events: [],
       pendingEvents: [],
       displayPlayer: null,
