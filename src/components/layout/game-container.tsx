@@ -22,11 +22,11 @@ export function GameContainer({
         align === "start" ? "items-start" : "items-center",
       )}
     >
-      <div
+      <main
         className={cn("w-full max-w-2xl", stretch && "flex h-full flex-col")}
       >
         {children}
-      </div>
+      </main>
     </div>
   );
 }

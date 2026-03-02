@@ -32,11 +32,11 @@ function App() {
     <TooltipProvider>
       <GameContainer align={isResult ? "center" : "start"} stretch={isBattle}>
         {isBattle && (
-          <div data-header className="mb-8 animate-slide-in-top text-center">
+          <header className="mb-8 animate-slide-in-top text-center">
             <h1 className="animate-title-blaze text-6xl font-bold tracking-wide text-accent-orange uppercase">
               BUZZ ARENA
             </h1>
-          </div>
+          </header>
         )}
         <Suspense
           fallback={
