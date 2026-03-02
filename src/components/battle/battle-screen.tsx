@@ -20,6 +20,7 @@ export function BattleScreen() {
   const isAnimating = useBattleStore((s) => s.isAnimating);
   const pendingEvents = useBattleStore((s) => s.pendingEvents);
   const advanceEvent = useBattleStore((s) => s.advanceEvent);
+  const activeActor = useBattleStore((s) => s.activeActor);
 
   const initialized = useRef(false);
 
@@ -78,6 +79,7 @@ export function BattleScreen() {
             testId="player-panel"
             nameTestId="player-name"
             side="player"
+            isActive={activeActor === "player"}
           />
         </div>
         <span className="animate-slide-in-top text-2xl font-bold text-text-muted">
@@ -93,6 +95,7 @@ export function BattleScreen() {
             testId="enemy-panel"
             nameTestId="enemy-name"
             side="enemy"
+            isActive={activeActor === "enemy"}
           />
         </div>
       </div>

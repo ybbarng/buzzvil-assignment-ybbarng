@@ -32,6 +32,7 @@ interface BattleState {
   displayEnemy: CharacterSnapshot | null;
   isAnimating: boolean;
   animationEnabled: boolean;
+  activeActor: "player" | "enemy" | null;
 
   initBattle: (
     name: string,
@@ -76,6 +77,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   displayEnemy: null,
   isAnimating: false,
   animationEnabled: true,
+  activeActor: null,
 
   initBattle: (name, stats, skills, difficulty) => {
     const enemyConfig = ENEMIES[difficulty];
@@ -106,6 +108,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       displayPlayer: playerSnapshot,
       displayEnemy: enemySnapshot,
       isAnimating: false,
+      activeActor: null,
     });
   },
 
@@ -156,6 +159,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       pendingEvents: remaining,
       displayPlayer: event.playerSnapshot,
       displayEnemy: event.enemySnapshot,
+      activeActor:
+        event.type === "skill-use" || event.type === "skill-effect"
+          ? event.actor
+          : null,
     };
 
     if (remaining.length === 0) {
@@ -173,6 +180,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       } else {
         // round-start 표시 완료 또는 전투 종료: 액션 버튼 활성화
         updates.isAnimating = false;
+        updates.activeActor = null;
       }
     }
 
@@ -210,6 +218,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       displayPlayer: lastEvent.playerSnapshot,
       displayEnemy: lastEvent.enemySnapshot,
       isAnimating: false,
+      activeActor: null,
     });
 
     // battle-end 이벤트가 포함되어 있으면 결과 화면 전환
@@ -237,5 +246,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       displayPlayer: null,
       displayEnemy: null,
       isAnimating: false,
+      activeActor: null,
     }),
 }));

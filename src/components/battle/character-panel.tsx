@@ -12,6 +12,7 @@ interface CharacterPanelProps {
   testId: string;
   nameTestId: string;
   side: "player" | "enemy";
+  isActive?: boolean;
 }
 
 function BuffIndicator({ buff }: { buff: ActiveBuff }) {
@@ -39,6 +40,7 @@ export function CharacterPanel({
   testId,
   nameTestId,
   side,
+  isActive = false,
 }: CharacterPanelProps) {
   const isPlayer = side === "player";
 
@@ -51,8 +53,10 @@ export function CharacterPanel({
     <div
       data-testid={testId}
       className={cn(
-        "border-l-2 bg-bg-secondary p-4",
+        "border-l-2 bg-bg-secondary p-4 transition-shadow duration-300",
         isPlayer ? "border-accent-blue" : "border-damage",
+        isActive &&
+          (isPlayer ? "animate-active-glow-blue" : "animate-active-glow-red"),
       )}
     >
       <h3
