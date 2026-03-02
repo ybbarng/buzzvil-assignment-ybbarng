@@ -3,7 +3,7 @@ import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
 import { EVENT_DELAYS } from "@/constants/battle";
-import { SKEW, SKEW_TEXT, staggerDelay } from "@/constants/theme";
+import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { josa } from "@/lib/utils";
 import { useBattleStore } from "@/stores/battle-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -49,11 +49,8 @@ export function BattleScreen() {
 
   return (
     <div className="space-y-4">
-      {/* 라운드 배지 + 캐릭터 패널: 위에서 슬라이드 */}
-      <div
-        className="animate-slide-in-top flex items-center justify-center gap-2"
-        style={staggerDelay(0)}
-      >
+      {/* 라운드 배지: 위에서 슬라이드 */}
+      <div className="animate-slide-in-top flex items-center justify-center gap-2">
         <span
           data-testid="round-display"
           className={`inline-block bg-accent-orange px-4 py-1 text-lg font-bold text-bg-primary ${SKEW}`}
@@ -62,32 +59,42 @@ export function BattleScreen() {
         </span>
       </div>
 
-      <div
-        className="animate-slide-in-top grid grid-cols-[1fr_auto_1fr] items-center gap-4"
-        style={staggerDelay(1)}
-      >
-        <CharacterPanel
-          character={player}
-          snapshot={displayPlayer}
-          testId="player-panel"
-          nameTestId="player-name"
-          side="player"
-        />
-        <span className="text-2xl font-bold text-text-muted">VS</span>
-        <CharacterPanel
-          character={enemy}
-          snapshot={displayEnemy}
-          testId="enemy-panel"
-          nameTestId="enemy-name"
-          side="enemy"
-        />
+      {/* 캐릭터 패널: 플레이어 왼쪽에서, VS 위에서, 적 오른쪽에서 */}
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div
+          className="animate-slide-in-left"
+          style={{ animationDelay: "700ms" }}
+        >
+          <CharacterPanel
+            character={player}
+            snapshot={displayPlayer}
+            testId="player-panel"
+            nameTestId="player-name"
+            side="player"
+          />
+        </div>
+        <span className="animate-slide-in-top text-2xl font-bold text-text-muted">
+          VS
+        </span>
+        <div
+          className="animate-slide-in-right"
+          style={{ animationDelay: "700ms" }}
+        >
+          <CharacterPanel
+            character={enemy}
+            snapshot={displayEnemy}
+            testId="enemy-panel"
+            nameTestId="enemy-name"
+            side="enemy"
+          />
+        </div>
       </div>
 
-      {/* 액션 패널 + 로그: 아래에서 슬라이드 */}
+      {/* 안내 문구 + 액션 패널: 아래에서 슬라이드 */}
       {!outcome && (
         <div
           className="animate-slide-in-bottom space-y-2"
-          style={staggerDelay(2)}
+          style={{ animationDelay: "1400ms" }}
         >
           {!isAnimating && (
             <p className="text-sm text-text-secondary">
@@ -109,7 +116,11 @@ export function BattleScreen() {
         </div>
       )}
 
-      <div className="animate-slide-in-bottom" style={staggerDelay(3)}>
+      {/* 전투 로그: 아래에서 슬라이드 */}
+      <div
+        className="animate-slide-in-bottom"
+        style={{ animationDelay: "1800ms" }}
+      >
         <BattleLog events={events} />
       </div>
     </div>

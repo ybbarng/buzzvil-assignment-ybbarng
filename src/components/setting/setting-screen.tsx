@@ -91,6 +91,59 @@ function animateExitThenDo(
     .catch(callback);
 }
 
+/**
+ * 전투 시작 퇴장 애니메이션.
+ * 헤더([data-header])는 위로, 설정 구성요소들은 아래로 동시 퇴장시킨 뒤 callback을 호출한다.
+ */
+function animateBattleExitThenDo(
+  settingEls: HTMLElement[],
+  callback: () => void,
+) {
+  const headerEl = document.querySelector<HTMLElement>("[data-header]");
+  const allEls = [headerEl, ...settingEls].filter(Boolean) as HTMLElement[];
+
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (allEls.length === 0 || !allEls[0].animate || prefersReduced) {
+    callback();
+    return;
+  }
+
+  const animations: Animation[] = [];
+
+  if (headerEl?.animate) {
+    animations.push(
+      headerEl.animate(
+        [
+          { transform: "translateY(0)", opacity: "1" },
+          { transform: "translateY(-100vh)", opacity: "0" },
+        ],
+        { duration: 400, fill: "forwards", easing: "ease-in" },
+      ),
+    );
+  }
+
+  for (const el of settingEls) {
+    if (el.animate) {
+      animations.push(
+        el.animate(
+          [
+            { transform: "translateY(0)", opacity: "1" },
+            { transform: "translateY(100vh)", opacity: "0" },
+          ],
+          { duration: 400, fill: "forwards", easing: "ease-in" },
+        ),
+      );
+    }
+  }
+
+  Promise.all(animations.map((a) => a.finished))
+    .then(callback)
+    .catch(callback);
+}
+
 export function SettingScreen() {
   const step = useSettingStore((s) => s.step);
   const name = useSettingStore((s) => s.name);
@@ -226,9 +279,18 @@ export function SettingScreen() {
                 onPrev={() =>
                   withExit("backward", () => setStep(2), { targetStep: 2 })
                 }
-                onStartBattle={() =>
-                  withExit("forward", startBattle, { includeIndicator: true })
-                }
+                onStartBattle={() => {
+                  if (isExiting.current) return;
+                  isExiting.current = true;
+                  const settingEls = [
+                    indicatorRef.current,
+                    contentRef.current,
+                  ].filter(Boolean) as HTMLElement[];
+                  animateBattleExitThenDo(settingEls, () => {
+                    isExiting.current = false;
+                    startBattle();
+                  });
+                }}
                 enterDirection={enterDirection}
               />
             )}
