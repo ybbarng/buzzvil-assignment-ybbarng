@@ -144,7 +144,7 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label className="text-text-secondary">MP 소모량</Label>
+          <Label className="text-text-secondary">마나(MP) 소모량</Label>
           <span className="text-sm font-bold tabular-nums text-accent-orange">
             {mpCost}
           </span>
