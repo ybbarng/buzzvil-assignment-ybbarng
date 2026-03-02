@@ -137,6 +137,12 @@ function StatBar({
   const displayedPlayer = useCountUp(playerValue, delay);
   const displayedEnemy = useCountUp(enemyValue, delay);
 
+  // 카운트업 진행률에 맞춰 바도 함께 채워짐
+  const playerBarPct =
+    playerValue === 0 ? 0 : (displayedPlayer / playerValue) * playerPct;
+  const enemyBarPct =
+    enemyValue === 0 ? 0 : (displayedEnemy / enemyValue) * enemyPct;
+
   return (
     <div className="space-y-1">
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
@@ -153,19 +159,16 @@ function StatBar({
         <div className="flex justify-end">
           <div className="h-2 w-full overflow-hidden rounded-l bg-bg-tertiary">
             <div
-              className={cn(
-                "ml-auto h-full rounded-l transition-all",
-                barColor,
-              )}
-              style={{ width: `${playerPct}%` }}
+              className={cn("ml-auto h-full rounded-l", barColor)}
+              style={{ width: `${playerBarPct}%` }}
             />
           </div>
         </div>
         {/* 적 바: 왼쪽에서 오른쪽으로 채워짐 */}
         <div className="h-2 w-full overflow-hidden rounded-r bg-bg-tertiary">
           <div
-            className={cn("h-full rounded-r transition-all", barColor)}
-            style={{ width: `${enemyPct}%` }}
+            className={cn("h-full rounded-r", barColor)}
+            style={{ width: `${enemyBarPct}%` }}
           />
         </div>
       </div>

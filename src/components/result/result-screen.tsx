@@ -121,7 +121,10 @@ export function ResultScreen() {
       {/* 전투 분석 모달 */}
       {hasBattleData && playerStats && enemyStats && (
         <Dialog open={statsOpen} onOpenChange={setStatsOpen}>
-          <DialogContent className="border-border bg-bg-secondary">
+          <DialogContent
+            className="border-border bg-bg-secondary"
+            onOpenAutoFocus={(e) => e.preventDefault()}
+          >
             <DialogHeader>
               <DialogTitle className="text-center text-text-primary">
                 전투 분석
