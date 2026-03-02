@@ -55,8 +55,8 @@ export interface OwHeroMeta {
 
 /** 카테고리별 게임 스킬 변환 규칙 */
 export interface ConversionRule {
-  /** 변환 대상 게임 스킬 타입 */
-  gameType: "attack" | "defend" | "heal" | "buff" | "debuff";
+  /** 변환 대상 게임 스킬 타입 (defend는 기본 스킬 전용이므로 변환 대상에서 제외) */
+  gameType: "attack" | "heal" | "buff" | "debuff";
   /** buff/debuff 대상 (atk/def) */
   target?: "atk" | "def";
   /** MP 비용 범위 */
