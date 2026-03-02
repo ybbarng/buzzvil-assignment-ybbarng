@@ -16,10 +16,9 @@ describe("SKILL_PRESETS", () => {
     }
   });
 
-  it("각 프리셋은 3~5개의 스킬을 가진다", () => {
+  it("각 프리셋은 정확히 4개의 스킬을 가진다", () => {
     for (const preset of SKILL_PRESETS) {
-      expect(preset.skills.length).toBeGreaterThanOrEqual(3);
-      expect(preset.skills.length).toBeLessThanOrEqual(5);
+      expect(preset.skills.length).toBe(4);
     }
   });
 

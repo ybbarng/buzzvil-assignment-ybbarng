@@ -10,6 +10,6 @@ export type SkillPresetEntry = DistributiveOmit<Skill, "isDefault">;
 export interface HeroSkillPreset {
   /** HERO_PRESETS의 id와 매칭 */
   heroId: string;
-  /** 3~5개 스킬 옵션 */
+  /** 영웅당 4개 스킬 */
   skills: SkillPresetEntry[];
 }
