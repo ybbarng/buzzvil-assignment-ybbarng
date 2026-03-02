@@ -13,7 +13,7 @@ interface SkillCardProps {
 function getSkillDescription(skill: Skill): string {
   switch (skill.type) {
     case "attack":
-      return `대미지: 공격력(ATK) × ${skill.multiplier}`;
+      return `대미지: ${STAT_LABELS.atk.ko}(${STAT_LABELS.atk.en}) × ${skill.multiplier}`;
     case "defend":
       return "받는 피해 50% 감소";
     case "heal":
