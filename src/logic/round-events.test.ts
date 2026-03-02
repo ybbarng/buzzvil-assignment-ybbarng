@@ -162,12 +162,10 @@ describe("generateRoundEvents", () => {
 
     const skipEvents = result.events.filter((e) => e.type === "skip-turn");
     expect(skipEvents).toHaveLength(1);
-    expect(skipEvents[0].type === "skip-turn" && skipEvents[0].reason).toBe(
-      "defeated",
-    );
-    expect(skipEvents[0].type === "skip-turn" && skipEvents[0].actorName).toBe(
-      "훈련 로봇",
-    );
+    expect(skipEvents[0]).toMatchObject({
+      reason: "defeated",
+      actorName: "훈련 로봇",
+    });
 
     vi.restoreAllMocks();
   });
@@ -201,12 +199,10 @@ describe("generateRoundEvents", () => {
 
     const skipEvents = result.events.filter((e) => e.type === "skip-turn");
     expect(skipEvents).toHaveLength(1);
-    expect(skipEvents[0].type === "skip-turn" && skipEvents[0].reason).toBe(
-      "no-mp",
-    );
-    expect(skipEvents[0].type === "skip-turn" && skipEvents[0].skillName).toBe(
-      "강타",
-    );
+    expect(skipEvents[0]).toMatchObject({
+      reason: "no-mp",
+      skillName: "강타",
+    });
 
     vi.restoreAllMocks();
   });
