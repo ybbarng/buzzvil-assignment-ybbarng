@@ -190,18 +190,17 @@ export function SettingScreen() {
         )}
 
         {step === 3 && (
-          <div className={slideIn} data-animate style={staggerDelay(2)}>
-            <DifficultyForm
-              difficulty={difficulty}
-              onSelect={setDifficulty}
-              onPrev={() =>
-                withExit("backward", () => setStep(2), { targetStep: 2 })
-              }
-              onStartBattle={() =>
-                withExit("forward", startBattle, { includeIndicator: true })
-              }
-            />
-          </div>
+          <DifficultyForm
+            difficulty={difficulty}
+            onSelect={setDifficulty}
+            onPrev={() =>
+              withExit("backward", () => setStep(2), { targetStep: 2 })
+            }
+            onStartBattle={() =>
+              withExit("forward", startBattle, { includeIndicator: true })
+            }
+            enterDirection={enterDirection}
+          />
         )}
       </div>
     </div>

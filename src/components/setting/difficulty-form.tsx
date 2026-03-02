@@ -1,13 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GameButton } from "@/components/ui/game-button";
+import { SKEW, SKEW_TEXT, slideInClass, staggerDelay } from "@/constants/theme";
 import { cn } from "@/lib/utils";
-import type { Difficulty } from "@/types/game";
+import type { Difficulty, Direction } from "@/types/game";
 
 interface DifficultyFormProps {
   difficulty: Difficulty;
   onSelect: (difficulty: Difficulty) => void;
   onPrev: () => void;
   onStartBattle: () => void;
+  enterDirection: Direction;
 }
 
 const DIFFICULTY_OPTIONS: {
@@ -15,24 +16,28 @@ const DIFFICULTY_OPTIONS: {
   label: string;
   description: string;
   testId: string;
+  selectedColor: string;
 }[] = [
   {
     value: "easy",
     label: "쉬움",
-    description: "훈련 로봇과 대전합니다",
+    description: "훈련 로봇과 대전합니다.",
     testId: "difficulty-easy",
+    selectedColor: "border-heal bg-heal/10",
   },
   {
     value: "normal",
     label: "보통",
-    description: "전투 드론과 대전합니다",
+    description: "탈론 돌격병과 대전합니다.",
     testId: "difficulty-normal",
+    selectedColor: "border-buff bg-buff/10",
   },
   {
     value: "hard",
     label: "어려움",
-    description: "타론 요원과 대전합니다",
+    description: "탈론 정예 요원과 대전합니다.",
     testId: "difficulty-hard",
+    selectedColor: "border-damage bg-damage/10",
   },
 ];
 
@@ -41,52 +46,67 @@ export function DifficultyForm({
   onSelect,
   onPrev,
   onStartBattle,
+  enterDirection,
 }: DifficultyFormProps) {
+  const slideIn = slideInClass(enterDirection);
+
   return (
     <div className="space-y-6">
-      <Card className="border-border bg-bg-secondary">
-        <CardHeader>
-          <CardTitle className="text-accent-orange">난이도 선택</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+      <section
+        className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
+        data-animate
+        style={staggerDelay(2)}
+      >
+        <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
+          난이도 선택
+        </h2>
+        <div className="space-y-3">
           {DIFFICULTY_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               type="button"
               data-testid={opt.testId}
               className={cn(
-                "w-full rounded-lg border px-4 py-3 text-left transition-colors",
+                SKEW,
+                "w-full cursor-pointer border-2 px-4 py-3 text-left transition-all",
                 difficulty === opt.value
-                  ? "border-accent-orange bg-accent-orange/10 text-text-primary"
-                  : "border-border bg-bg-tertiary text-text-secondary hover:border-text-muted",
+                  ? `${opt.selectedColor} text-text-primary`
+                  : "border-border/50 bg-bg-tertiary text-text-secondary hover:border-text-muted hover:bg-bg-tertiary/80",
               )}
               onClick={() => onSelect(opt.value)}
             >
-              <div className="font-semibold">{opt.label}</div>
-              <div className="text-sm text-text-muted">{opt.description}</div>
+              <div className={`${SKEW_TEXT} font-semibold`}>{opt.label}</div>
+              <div className={`${SKEW_TEXT} text-sm text-text-muted`}>
+                {opt.description}
+              </div>
             </button>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      <div className="flex gap-2">
-        <Button
+      <div
+        className={`${slideIn} flex gap-2`}
+        data-animate
+        style={staggerDelay(3)}
+      >
+        <GameButton
           type="button"
-          variant="outline"
+          variant="blue"
           data-testid="prev-button"
           className="flex-1"
           onClick={onPrev}
         >
           이전
-        </Button>
-        <Button
+        </GameButton>
+        <GameButton
           type="button"
+          active
           data-testid="start-battle-button"
-          className="flex-1 bg-accent-orange font-bold text-bg-primary hover:bg-accent-orange-hover"
+          className="flex-1"
           onClick={onStartBattle}
         >
           전투 시작
-        </Button>
+        </GameButton>
       </div>
     </div>
   );
