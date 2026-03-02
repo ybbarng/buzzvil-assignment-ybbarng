@@ -15,13 +15,14 @@ const SKILL_ICON_COLOR: Record<SkillType, string> = {
 interface ActionPanelProps {
   player: BattleCharacter;
   onAction: (skillIndex: number) => void;
+  disabled?: boolean;
 }
 
-export function ActionPanel({ player, onAction }: ActionPanelProps) {
+export function ActionPanel({ player, onAction, disabled }: ActionPanelProps) {
   return (
     <div className="grid grid-cols-2 gap-2">
       {player.skills.map((skill, index) => {
-        const canUse = skill.mpCost <= player.currentMp;
+        const canUse = !disabled && skill.mpCost <= player.currentMp;
         const Icon = SKILL_TYPE_ICONS[skill.type];
         return (
           <GameButton

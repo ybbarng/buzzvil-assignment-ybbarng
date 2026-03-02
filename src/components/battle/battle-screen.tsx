@@ -84,22 +84,28 @@ export function BattleScreen() {
       </div>
 
       {/* 액션 패널 + 로그: 아래에서 슬라이드 */}
-      {!outcome && !isAnimating && (
+      {!outcome && (
         <div
           className="animate-slide-in-bottom space-y-2"
           style={staggerDelay(2)}
         >
-          <p className="text-sm text-text-secondary">
-            {round === 1
-              ? "전투가 시작되었습니다. "
-              : `${round} 라운드입니다. `}
-            <span className="text-white">{player.name}</span>
-            {josa(player.name, "은", "는")}{" "}
-            {round === 1
-              ? "첫 라운드에서 무엇을 하시겠습니까?"
-              : "무엇을 하시겠습니까?"}
-          </p>
-          <ActionPanel player={player} onAction={executePlayerAction} />
+          {!isAnimating && (
+            <p className="text-sm text-text-secondary">
+              {round === 1
+                ? "전투가 시작되었습니다. "
+                : `${round} 라운드입니다. `}
+              <span className="text-white">{player.name}</span>
+              {josa(player.name, "은", "는")}{" "}
+              {round === 1
+                ? "첫 라운드에서 무엇을 하시겠습니까?"
+                : "무엇을 하시겠습니까?"}
+            </p>
+          )}
+          <ActionPanel
+            player={player}
+            onAction={executePlayerAction}
+            disabled={isAnimating}
+          />
         </div>
       )}
 
