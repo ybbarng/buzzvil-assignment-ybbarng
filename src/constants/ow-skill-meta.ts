@@ -2263,7 +2263,12 @@ export function generateSkillPreset(hero: OwHeroMeta): HeroSkillPreset {
     heroId: hero.heroId,
     skills: hero.skills.map((skill): SkillPresetEntry => {
       const name = SKILL_NAME_MAP[skill.name] ?? skill.name;
-      return { name, ...skill.gameValues } as SkillPresetEntry;
+      const gv = skill.gameValues;
+      // 각 분기에서 gv가 narrowing되어 spread 결과가 SkillPresetEntry에 정확히 매칭
+      if (gv.type === "attack") return { name, ...gv };
+      if (gv.type === "heal") return { name, ...gv };
+      if (gv.type === "buff") return { name, ...gv };
+      return { name, ...gv }; // debuff
     }),
   };
 }
