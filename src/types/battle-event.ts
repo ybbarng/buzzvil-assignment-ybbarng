@@ -46,13 +46,22 @@ export interface SkillEffectEvent extends EventBase {
   value: number;
 }
 
-export interface SkipTurnEvent extends EventBase {
+interface SkipTurnDefeatedEvent extends EventBase {
   type: "skip-turn";
   actor: "player" | "enemy";
   actorName: string;
-  reason: "defeated" | "no-mp";
-  skillName?: string;
+  reason: "defeated";
 }
+
+interface SkipTurnNoMpEvent extends EventBase {
+  type: "skip-turn";
+  actor: "player" | "enemy";
+  actorName: string;
+  reason: "no-mp";
+  skillName: string;
+}
+
+export type SkipTurnEvent = SkipTurnDefeatedEvent | SkipTurnNoMpEvent;
 
 export interface BuffExpireEvent extends EventBase {
   type: "buff-expire";
