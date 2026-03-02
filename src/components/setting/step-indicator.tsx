@@ -17,11 +17,13 @@ const STEPS: { step: SettingStep; label: string }[] = [
 interface StepIndicatorProps {
   currentStep: SettingStep;
   onStepClick?: (step: SettingStep) => void;
+  trailing?: React.ReactNode;
 }
 
 export function StepIndicator({
   currentStep,
   onStepClick,
+  trailing,
 }: StepIndicatorProps) {
   const currentLabel = STEPS[currentStep - 1].label;
 
@@ -71,6 +73,7 @@ export function StepIndicator({
 
         return <Fragment key={step}>{button}</Fragment>;
       })}
+      {trailing && <div className="ml-auto">{trailing}</div>}
     </div>
   );
 }

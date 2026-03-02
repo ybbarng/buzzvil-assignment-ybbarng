@@ -1,13 +1,16 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { ReplayListDialog } from "@/components/replay/replay-list-dialog";
 import { DifficultyForm } from "@/components/setting/difficulty-form";
 import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
+import { GameButton } from "@/components/ui/game-button";
 import { slideInClass, staggerDelay } from "@/constants/theme";
 import { cn, josa } from "@/lib/utils";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
+import { useReplayStore } from "@/stores/replay-store";
 import { useSettingStore } from "@/stores/setting-store";
 import type { Direction, SettingStep } from "@/types/game";
 
@@ -159,6 +162,8 @@ export function SettingScreen() {
   const setDifficulty = useSettingStore((s) => s.setDifficulty);
   const setPresetId = useSettingStore((s) => s.setPresetId);
   const startBattle = useGameStore((s) => s.startBattle);
+  const replays = useReplayStore((s) => s.replays);
+  const [replayOpen, setReplayOpen] = useState(false);
 
   const indicatorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -264,6 +269,18 @@ export function SettingScreen() {
                   targetStep: s,
                 })
               }
+              trailing={
+                replays.length > 0 && (
+                  <GameButton
+                    type="button"
+                    variant="blue"
+                    size="sm"
+                    onClick={() => setReplayOpen(true)}
+                  >
+                    다시보기
+                  </GameButton>
+                )
+              }
             />
           </div>
 
@@ -327,6 +344,8 @@ export function SettingScreen() {
           </div>
         </>
       )}
+
+      <ReplayListDialog open={replayOpen} onOpenChange={setReplayOpen} />
     </div>
   );
 }
