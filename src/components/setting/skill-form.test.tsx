@@ -12,6 +12,7 @@ describe("SkillForm", () => {
     onRemoveSkill: vi.fn(),
     onPrev: vi.fn(),
     onNext: vi.fn(),
+    enterDirection: "forward" as const,
   };
 
   afterEach(() => {
