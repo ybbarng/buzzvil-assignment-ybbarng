@@ -39,9 +39,9 @@ export function SkillForm({
   const customSkillCount = skills.filter((s) => !s.isDefault).length;
   const canAddMore = customSkillCount < MAX_CUSTOM_SKILLS;
   const emptySlotCount = MAX_CUSTOM_SKILLS - customSkillCount;
-  const equippedSkillNames = skills
+  const equippedSkillKeys = skills
     .filter((s) => !s.isDefault)
-    .map((s) => s.name);
+    .map((s) => `${s.name}:${s.type}`);
 
   const handleAdd = (skill: Skill) => {
     onAddSkill(skill);
@@ -117,7 +117,7 @@ export function SkillForm({
         open={isPresetOpen}
         onOpenChange={setIsPresetOpen}
         presetId={presetId}
-        equippedSkillNames={equippedSkillNames}
+        equippedSkillKeys={equippedSkillKeys}
         onSelect={handlePresetAdd}
       />
 

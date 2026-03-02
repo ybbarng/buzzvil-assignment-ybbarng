@@ -38,8 +38,8 @@ interface SkillPresetDialogProps {
   onOpenChange: (open: boolean) => void;
   /** null이면 전체 영웅 탐색 모드, 값이 있으면 해당 영웅 스킬만 표시 */
   presetId: string | null;
-  /** 이미 장착된 커스텀 스킬 이름 목록 (중복 방지용) */
-  equippedSkillNames: string[];
+  /** 이미 장착된 커스텀 스킬의 "name:type" 키 목록 (중복 방지용) */
+  equippedSkillKeys: string[];
   onSelect: (skill: Skill) => void;
 }
 
@@ -176,7 +176,7 @@ export function SkillPresetDialog({
   open,
   onOpenChange,
   presetId,
-  equippedSkillNames,
+  equippedSkillKeys,
   onSelect,
 }: SkillPresetDialogProps) {
   const [browseHeroId, setBrowseHeroId] = useState<string | null>(null);
@@ -230,7 +230,9 @@ export function SkillPresetDialog({
               </h3>
             )}
             {preset.skills.map((skill) => {
-              const isEquipped = equippedSkillNames.includes(skill.name);
+              const isEquipped = equippedSkillKeys.includes(
+                `${skill.name}:${skill.type}`,
+              );
               return (
                 <SkillPresetItem
                   key={skill.name}
