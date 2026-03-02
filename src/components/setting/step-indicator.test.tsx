@@ -21,7 +21,8 @@ describe("StepIndicator", () => {
 
   it("현재 스텝에 aria-current='step'이 설정된다", () => {
     render(<StepIndicator currentStep={2} />, { wrapper: Wrapper });
-    const currentButton = screen.getByText("스킬 장착").closest("button")!;
+    const currentButton = screen.getByText("스킬 장착").closest("button");
+    expect(currentButton).not.toBeNull();
     expect(currentButton).toHaveAttribute("aria-current", "step");
   });
 
