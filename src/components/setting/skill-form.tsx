@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SkillCard } from "@/components/setting/skill-card";
 import { SkillCreator } from "@/components/setting/skill-creator";
+import { SkillPresetDialog } from "@/components/setting/skill-preset-dialog";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +17,7 @@ import type { Skill } from "@/types/skill";
 
 interface SkillFormProps {
   skills: Skill[];
+  presetId: string | null;
   onAddSkill: (skill: Skill) => void;
   onRemoveSkill: (index: number) => void;
   onPrev: () => void;
@@ -25,6 +27,7 @@ interface SkillFormProps {
 
 export function SkillForm({
   skills,
+  presetId,
   onAddSkill,
   onRemoveSkill,
   onPrev,
@@ -32,8 +35,13 @@ export function SkillForm({
   enterDirection,
 }: SkillFormProps) {
   const [isCreating, setIsCreating] = useState(false);
+  const [isPresetOpen, setIsPresetOpen] = useState(false);
   const customSkillCount = skills.filter((s) => !s.isDefault).length;
+  const canAddMore = customSkillCount < MAX_CUSTOM_SKILLS;
   const emptySlotCount = MAX_CUSTOM_SKILLS - customSkillCount;
+  const equippedSkillKeys = skills
+    .filter((s) => !s.isDefault)
+    .map((s) => `${s.name}:${s.type}`);
 
   const handleAdd = (skill: Skill) => {
     onAddSkill(skill);
@@ -71,15 +79,25 @@ export function SkillForm({
             />
           ))}
 
-          {emptySlotCount > 0 && (
-            <button
-              type="button"
-              data-testid="add-skill-button"
-              className={`${SKEW} w-full cursor-pointer border-2 border-dashed border-accent-orange/50 px-4 py-2.5 text-sm font-bold tracking-wider text-accent-orange uppercase transition-all hover:border-accent-orange hover:bg-accent-orange/10`}
-              onClick={() => setIsCreating(true)}
-            >
-              <span className={`${SKEW_TEXT} block`}>+ 스킬 추가</span>
-            </button>
+          {canAddMore && (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                data-testid="preset-skill-button"
+                className={`${SKEW} flex-1 cursor-pointer border-2 border-dashed border-accent-orange/50 px-4 py-2.5 text-sm font-bold tracking-wider text-accent-orange uppercase transition-all hover:border-accent-orange hover:bg-accent-orange/10`}
+                onClick={() => setIsPresetOpen(true)}
+              >
+                <span className={`${SKEW_TEXT} block`}>+ 프리셋 스킬</span>
+              </button>
+              <button
+                type="button"
+                data-testid="add-skill-button"
+                className={`${SKEW} flex-1 cursor-pointer border-2 border-dashed border-accent-blue/50 px-4 py-2.5 text-sm font-bold tracking-wider text-accent-blue uppercase transition-all hover:border-accent-blue hover:bg-accent-blue/10`}
+                onClick={() => setIsCreating(true)}
+              >
+                <span className={`${SKEW_TEXT} block`}>+ 직접 만들기</span>
+              </button>
+            </div>
           )}
           {emptySlotCount > 1 && (
             <div
@@ -90,6 +108,14 @@ export function SkillForm({
           )}
         </div>
       </section>
+
+      <SkillPresetDialog
+        open={isPresetOpen}
+        onOpenChange={setIsPresetOpen}
+        presetId={presetId}
+        equippedSkillKeys={equippedSkillKeys}
+        onSelect={onAddSkill}
+      />
 
       <Dialog open={isCreating} onOpenChange={setIsCreating}>
         <DialogContent className="border-accent-orange/30 bg-bg-secondary">

@@ -11,6 +11,8 @@ interface SettingState {
   stats: Stats;
   skills: Skill[];
   difficulty: Difficulty;
+  /** 프리셋 영웅 선택 시 해당 heroId, 직접 입력 시 null */
+  presetId: string | null;
 
   setStep: (step: SettingStep) => void;
   setName: (name: string) => void;
@@ -18,6 +20,7 @@ interface SettingState {
   addSkill: (skill: Skill) => void;
   removeSkill: (index: number) => void;
   setDifficulty: (difficulty: Difficulty) => void;
+  setPresetId: (presetId: string | null) => void;
   reset: () => void;
 }
 
@@ -27,6 +30,7 @@ const INITIAL_STATE = {
   stats: { ...DEFAULT_STATS },
   skills: [...DEFAULT_SKILLS],
   difficulty: "normal" as Difficulty,
+  presetId: null as string | null,
 };
 
 export const useSettingStore = create<SettingState>((set) => ({
@@ -41,6 +45,7 @@ export const useSettingStore = create<SettingState>((set) => ({
       skills: state.skills.filter((_, i) => i !== index),
     })),
   setDifficulty: (difficulty) => set({ difficulty }),
+  setPresetId: (presetId) => set({ presetId }),
   reset: () =>
     set({
       ...INITIAL_STATE,
