@@ -35,38 +35,55 @@ const SKILL_TYPE_OPTIONS: Exclude<SkillType, "defend">[] = [
 
 const SLIDER_COLOR = "[&_[data-slot=slider-range]]:bg-accent-orange";
 
+/** SKILL_CONSTRAINTS의 min과 max의 중간값을 반환 (정수 필드는 반올림) */
+function mid(field: { min: number; max: number; step?: number }) {
+  const raw = (field.min + field.max) / 2;
+  return "step" in field ? Math.round(raw * 10) / 10 : Math.round(raw);
+}
+
 const DEFAULT_VALUES: CustomSkillFormData = {
   name: "",
   type: "attack",
-  mpCost: 5,
-  multiplier: 1.5,
+  mpCost: mid(SKILL_CONSTRAINTS.mpCost),
+  multiplier: mid(SKILL_CONSTRAINTS.multiplier),
 };
 
 function getDefaultForType(
   type: CustomSkillFormData["type"],
 ): CustomSkillFormData {
+  const mpCost = mid(SKILL_CONSTRAINTS.mpCost);
   switch (type) {
     case "attack":
-      return { name: "", type: "attack", mpCost: 5, multiplier: 1.5 };
+      return {
+        name: "",
+        type: "attack",
+        mpCost,
+        multiplier: mid(SKILL_CONSTRAINTS.multiplier),
+      };
     case "heal":
-      return { name: "", type: "heal", mpCost: 10, healAmount: 30 };
+      return {
+        name: "",
+        type: "heal",
+        mpCost,
+        healAmount: mid(SKILL_CONSTRAINTS.healAmount),
+      };
     case "buff":
       return {
         name: "",
         type: "buff",
-        mpCost: 8,
+        mpCost,
         target: "atk",
-        value: 5,
-        duration: 3,
+        value: mid(SKILL_CONSTRAINTS.value),
+        duration: mid(SKILL_CONSTRAINTS.duration),
       };
     case "debuff":
       return {
         name: "",
         type: "debuff",
-        mpCost: 8,
+        mpCost,
         target: "def",
-        value: 5,
-        duration: 3,
+        value: mid(SKILL_CONSTRAINTS.value),
+        duration: mid(SKILL_CONSTRAINTS.duration),
       };
   }
 }
