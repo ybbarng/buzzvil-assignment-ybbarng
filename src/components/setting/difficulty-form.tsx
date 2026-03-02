@@ -1,13 +1,14 @@
 import { GameButton } from "@/components/ui/game-button";
-import { SKEW, SKEW_TEXT } from "@/constants/theme";
+import { SKEW, SKEW_TEXT, slideInClass, staggerDelay } from "@/constants/theme";
 import { cn } from "@/lib/utils";
-import type { Difficulty } from "@/types/game";
+import type { Difficulty, Direction } from "@/types/game";
 
 interface DifficultyFormProps {
   difficulty: Difficulty;
   onSelect: (difficulty: Difficulty) => void;
   onPrev: () => void;
   onStartBattle: () => void;
+  enterDirection: Direction;
 }
 
 const DIFFICULTY_OPTIONS: {
@@ -45,10 +46,17 @@ export function DifficultyForm({
   onSelect,
   onPrev,
   onStartBattle,
+  enterDirection,
 }: DifficultyFormProps) {
+  const slideIn = slideInClass(enterDirection);
+
   return (
     <div className="space-y-6">
-      <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+      <section
+        className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
+        data-animate
+        style={staggerDelay(2)}
+      >
         <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
           난이도 선택
         </h2>
@@ -76,7 +84,11 @@ export function DifficultyForm({
         </div>
       </section>
 
-      <div className="flex gap-2">
+      <div
+        className={`${slideIn} flex gap-2`}
+        data-animate
+        style={staggerDelay(3)}
+      >
         <GameButton
           type="button"
           variant="blue"

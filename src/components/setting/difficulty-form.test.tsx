@@ -9,6 +9,7 @@ describe("DifficultyForm", () => {
     onSelect: vi.fn(),
     onPrev: vi.fn(),
     onStartBattle: vi.fn(),
+    enterDirection: "forward" as const,
   };
 
   afterEach(() => {
