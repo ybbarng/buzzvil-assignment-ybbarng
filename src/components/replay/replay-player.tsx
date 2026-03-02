@@ -54,6 +54,21 @@ export function ReplayPlayer() {
     dragging.current = false;
   }, []);
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (total === 0) return;
+      const currentIndex = current - 1;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        seekReplay(Math.min(currentIndex + 1, total - 1));
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        seekReplay(Math.max(currentIndex - 1, 0));
+      }
+    },
+    [current, total, seekReplay],
+  );
+
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-3">
@@ -89,6 +104,7 @@ export function ReplayPlayer() {
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
+          onKeyDown={handleKeyDown}
         >
           <div
             className="absolute inset-y-0 left-0 bg-accent-orange transition-[width] duration-100"

@@ -60,10 +60,6 @@ export function ReplayListDialog({
     useGameStore.getState().startReplay();
   };
 
-  const handleRemove = (id: string) => {
-    remove(id);
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -128,7 +124,7 @@ export function ReplayListDialog({
                       variant="blue"
                       size="sm"
                       skew
-                      onClick={() => handleRemove(replay.id)}
+                      onClick={() => remove(replay.id)}
                     >
                       삭제
                     </GameButton>
