@@ -19,18 +19,18 @@
 | 궁극기 (강화) | buff | value 8~10, dur 3~5 | 18~25 |
 | 일반 공격 능력 | attack | 배율 1.3~2.0 | 8~15 |
 | 이동기/회피기 | buff DEF | value 3~6, dur 1~2 | 5~10 |
-| 방벽/보호막 | buff DEF | value 7~10, dur 2~4 | 10~18 |
+| 방벽/보호막 | buff DEF | value 5~10, dur 1~4 | 7~18 |
 | 힐링 능력 | heal | amount 15~35 | 8~18 |
 | 자가 치유/무적 | heal | amount 15~30 | 8~15 |
 | 공격 강화 | buff ATK | value 3~8, dur 2~4 | 8~15 |
-| CC (해킹/수면 등) | debuff | value 3~8, dur 2~4 | 8~15 |
+| CC (해킹/수면 등) | debuff | value 3~8, dur 2~4 | 7~15 |
 
 ## 역할군별 가이드
 
 ### 돌격 (Tank)
 
 - **주요 스킬 구성**: 방어 버프 1~2개 + 공격/CC 1~2개 + 궁극기 1개
-- 방벽/보호막 능력 → `buff DEF` (value 7~10, duration 2~4)
+- 방벽/보호막 능력 → `buff DEF` (value 5~10, duration 1~4)
 - 돌진/이동기 → `buff DEF` (value 3~6, duration 1~2) 또는 `attack` (multiplier 1.3~1.8)
 - 궁극기 → 역할에 따라 `attack`(고배율) 또는 `debuff`(범위 CC)
 

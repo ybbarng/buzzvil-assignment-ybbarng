@@ -89,6 +89,35 @@ describe("OW_HERO_META", () => {
       }
     }
   });
+
+  it("gameValues가 해당 카테고리의 CONVERSION_RULES 범위에 부합한다", () => {
+    for (const hero of OW_HERO_META) {
+      for (const skill of hero.skills) {
+        const rule = CONVERSION_RULES[skill.category];
+        const gv = skill.gameValues;
+
+        expect(gv.mpCost).toBeGreaterThanOrEqual(rule.mpCost.min);
+        expect(gv.mpCost).toBeLessThanOrEqual(rule.mpCost.max);
+
+        if (rule.multiplier && gv.type === "attack") {
+          expect(gv.multiplier).toBeGreaterThanOrEqual(rule.multiplier.min);
+          expect(gv.multiplier).toBeLessThanOrEqual(rule.multiplier.max);
+        }
+        if (rule.healAmount && gv.type === "heal") {
+          expect(gv.healAmount).toBeGreaterThanOrEqual(rule.healAmount.min);
+          expect(gv.healAmount).toBeLessThanOrEqual(rule.healAmount.max);
+        }
+        if (rule.value && (gv.type === "buff" || gv.type === "debuff")) {
+          expect(gv.value).toBeGreaterThanOrEqual(rule.value.min);
+          expect(gv.value).toBeLessThanOrEqual(rule.value.max);
+        }
+        if (rule.duration && (gv.type === "buff" || gv.type === "debuff")) {
+          expect(gv.duration).toBeGreaterThanOrEqual(rule.duration.min);
+          expect(gv.duration).toBeLessThanOrEqual(rule.duration.max);
+        }
+      }
+    }
+  });
 });
 
 describe("SKILL_NAME_MAP", () => {

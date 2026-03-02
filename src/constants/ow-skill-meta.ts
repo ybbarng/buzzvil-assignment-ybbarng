@@ -51,9 +51,9 @@ export const CONVERSION_RULES: Record<OwSkillCategory, ConversionRule> = {
   barrier: {
     gameType: "buff",
     target: "def",
-    mpCost: { min: 10, max: 18 },
-    value: { min: 7, max: 10 },
-    duration: { min: 2, max: 4 },
+    mpCost: { min: 7, max: 18 },
+    value: { min: 5, max: 10 },
+    duration: { min: 1, max: 4 },
   },
   healing: {
     gameType: "heal",
@@ -75,7 +75,7 @@ export const CONVERSION_RULES: Record<OwSkillCategory, ConversionRule> = {
   cc: {
     gameType: "debuff",
     target: "def",
-    mpCost: { min: 8, max: 15 },
+    mpCost: { min: 7, max: 15 },
     value: { min: 3, max: 8 },
     duration: { min: 2, max: 4 },
   },
