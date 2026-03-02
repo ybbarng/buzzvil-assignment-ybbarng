@@ -28,7 +28,7 @@ export function StepIndicator({
   const currentLabel = STEPS[currentStep - 1].label;
 
   return (
-    <div className="mb-6 flex items-center justify-center gap-1">
+    <div className="relative mb-6 flex items-center justify-center gap-1">
       {STEPS.map(({ step, label }) => {
         const isCurrent = step === currentStep;
         const isCompleted = step < currentStep;
@@ -73,7 +73,11 @@ export function StepIndicator({
 
         return <Fragment key={step}>{button}</Fragment>;
       })}
-      {trailing && <div className="ml-auto">{trailing}</div>}
+      {trailing && (
+        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          {trailing}
+        </div>
+      )}
     </div>
   );
 }
