@@ -31,8 +31,14 @@ export function ActionPanel({ player, onAction, disabled }: ActionPanelProps) {
   return (
     <div className="grid grid-cols-2 gap-2">
       {player.skills.map((skill, index) => {
-        const canUse = !disabled && skill.mpCost <= player.currentMp;
+        const mpEnough = skill.mpCost <= player.currentMp;
+        const canUse = !disabled && mpEnough;
         const Icon = SKILL_TYPE_ICONS[skill.type];
+        const ariaLabel = !mpEnough
+          ? `${skill.name} (마나 부족)`
+          : skill.mpCost > 0
+            ? `${skill.name} (MP ${skill.mpCost})`
+            : skill.name;
         return (
           <GameButton
             key={skill.name}
@@ -40,6 +46,7 @@ export function ActionPanel({ player, onAction, disabled }: ActionPanelProps) {
             data-testid={`skill-button-${index}`}
             disabled={!canUse}
             variant="blue"
+            aria-label={ariaLabel}
             className={`h-auto py-2 ${SKILL_BUTTON_STYLE[skill.type]}`}
             onClick={() => onAction(index)}
           >
