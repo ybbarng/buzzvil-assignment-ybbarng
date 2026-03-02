@@ -5,7 +5,7 @@ import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
 import { slideInClass, staggerDelay } from "@/constants/theme";
-import { cn, josa } from "@/lib/utils";
+import { josa } from "@/lib/utils";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -17,15 +17,7 @@ type IntroPhase = "center" | "moving" | "done";
 export const INTRO_FADE_IN_WAIT_MS = 1500;
 /** intro-settle(700ms) + 여유. onAnimationEnd가 동작하지 않을 때의 fallback */
 export const INTRO_SETTLE_FALLBACK_MS = 800;
-/** CSS @keyframes 이름. onAnimationEnd에서 버블링 필터링에 사용 */
-const INTRO_SETTLE_ANIMATION = "intro-settle";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-
-const INTRO_PHASE_CLASS: Record<IntroPhase, string> = {
-  center: "animate-intro-fade-in",
-  moving: "animate-intro-settle",
-  done: "",
-};
 
 function getStepGuide(step: SettingStep, name: string): React.ReactNode {
   if (step === 2 && name) {
