@@ -233,6 +233,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     set(updates);
 
     if (event.type === "battle-end") {
+      // 리플레이에서는 outcome이 state에 없으므로 이벤트에서 추출하여 설정
+      if (!get().outcome) {
+        set({ outcome: event.outcome });
+      }
       handleBattleEnd(get);
     }
   },
@@ -263,10 +267,13 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       activeActor: null,
     });
 
-    const hasBattleEnd = state.pendingEvents.some(
+    const battleEndEvent = state.pendingEvents.find(
       (e) => e.type === "battle-end",
     );
-    if (hasBattleEnd) {
+    if (battleEndEvent) {
+      if (!get().outcome && battleEndEvent.type === "battle-end") {
+        set({ outcome: battleEndEvent.outcome });
+      }
       handleBattleEnd(get);
     }
   },
