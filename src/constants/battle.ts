@@ -8,7 +8,8 @@ export const EVENT_DELAYS: Record<string, number> = {
   "round-start": 600,
   defend: 800,
   "speed-compare": 800,
-  action: 1000,
+  "skill-use": 600,
+  "skill-effect": 700,
   "buff-expire": 600,
   "battle-end": 400,
 };

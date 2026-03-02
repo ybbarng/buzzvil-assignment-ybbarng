@@ -38,7 +38,7 @@ export function createLogEntry(
 export function eventsToLegacyLogs(events: RoundEvent[]): BattleLogEntry[] {
   const result: BattleLogEntry[] = [];
   for (const e of events) {
-    if (e.type === "action") {
+    if (e.type === "skill-effect") {
       result.push({
         round: e.round,
         actor: e.actorName,

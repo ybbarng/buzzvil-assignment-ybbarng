@@ -100,18 +100,46 @@ export function generateRoundEvents(
         ];
 
   for (const [i, turn] of turnOrder.entries()) {
-    // defend 선택자는 action 이벤트 스킵
+    // defend 선택자는 skill 이벤트 스킵
     if (turn.skill.type === "defend") continue;
 
     const isPlayerTurn = turn.role === "player";
     const actor = isPlayerTurn ? p : e;
     const target = isPlayerTurn ? e : p;
-    const result = resolveSkillEffect(actor, target, turn.skill);
+
+    // skill-use: MP만 차감한 중간 스냅샷
+    const mpCost = turn.skill.mpCost;
+    if (isPlayerTurn) {
+      p = { ...p, currentMp: p.currentMp - mpCost };
+    } else {
+      e = { ...e, currentMp: e.currentMp - mpCost };
+    }
+
+    events.push({
+      type: "skill-use",
+      round,
+      actor: turn.role,
+      actorName: actor.name,
+      targetName: target.name,
+      skillName: turn.skill.name,
+      skillType: turn.skill.type,
+      mpCost,
+      playerSnapshot: toSnapshot(p),
+      enemySnapshot: toSnapshot(e),
+    });
+
+    // skill-effect: 실제 효과 적용 (MP 소비는 이미 반영했으므로 mpCost=0 으로 호출)
+    const skillForEffect = { ...turn.skill, mpCost: 0 };
+    const result = resolveSkillEffect(
+      isPlayerTurn ? p : e,
+      isPlayerTurn ? e : p,
+      skillForEffect,
+    );
 
     const actorAfter = isPlayerTurn ? result.user : result.target;
     const targetAfter = isPlayerTurn ? result.target : result.user;
 
-    // value 계산 (기존 createLogEntry 로직과 동일)
+    // value 계산 (기존 로직과 동일)
     let value = 0;
     switch (turn.skill.type) {
       case "attack":
@@ -130,7 +158,7 @@ export function generateRoundEvents(
     e = isPlayerTurn ? result.target : result.user;
 
     events.push({
-      type: "action",
+      type: "skill-effect",
       round,
       actor: turn.role,
       actorName: actor.name,

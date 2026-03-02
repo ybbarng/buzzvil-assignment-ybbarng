@@ -20,13 +20,17 @@ const EVENT_ICON: Record<RoundEvent["type"], LucideIcon> = {
   "round-start": Flag,
   defend: Shield,
   "speed-compare": Zap,
-  action: Sword,
+  "skill-use": Zap,
+  "skill-effect": Sword,
   "buff-expire": Clock,
   "battle-end": AlertTriangle,
 };
 
 function getEventIcon(event: RoundEvent): LucideIcon {
-  if (event.type === "action") {
+  if (event.type === "skill-use") {
+    return Zap;
+  }
+  if (event.type === "skill-effect") {
     const iconMap: Record<string, LucideIcon> = {
       attack: Sword,
       defend: Shield,
@@ -40,7 +44,7 @@ function getEventIcon(event: RoundEvent): LucideIcon {
 }
 
 function getIconColor(event: RoundEvent): string {
-  if (event.type === "action") {
+  if (event.type === "skill-use" || event.type === "skill-effect") {
     return SKILL_TYPE_COLORS[event.skillType]?.text ?? "text-text-secondary";
   }
 
@@ -48,7 +52,8 @@ function getIconColor(event: RoundEvent): string {
     "round-start": "text-accent-orange",
     defend: "text-accent-blue",
     "speed-compare": "text-text-muted",
-    action: "text-text-secondary",
+    "skill-use": "text-text-secondary",
+    "skill-effect": "text-text-secondary",
     "buff-expire": "text-text-muted",
     "battle-end": "text-accent-orange",
   };

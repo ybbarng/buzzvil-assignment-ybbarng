@@ -26,8 +26,18 @@ export interface SpeedCompareEvent extends EventBase {
   secondSpd: number;
 }
 
-export interface ActionEvent extends EventBase {
-  type: "action";
+export interface SkillUseEvent extends EventBase {
+  type: "skill-use";
+  actor: "player" | "enemy";
+  actorName: string;
+  targetName: string;
+  skillName: string;
+  skillType: SkillType;
+  mpCost: number;
+}
+
+export interface SkillEffectEvent extends EventBase {
+  type: "skill-effect";
   actor: "player" | "enemy";
   actorName: string;
   targetName: string;
@@ -52,6 +62,7 @@ export type RoundEvent =
   | RoundStartEvent
   | DefendEvent
   | SpeedCompareEvent
-  | ActionEvent
+  | SkillUseEvent
+  | SkillEffectEvent
   | BuffExpireEvent
   | BattleEndEvent;

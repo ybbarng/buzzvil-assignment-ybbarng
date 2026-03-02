@@ -15,7 +15,12 @@ export function formatEvent(event: RoundEvent): string {
       }
       return `${event.firstName}의 속도(${event.firstSpd}) > ${event.secondName}의 속도(${event.secondSpd}), ${event.firstName}${josa(event.firstName, "이", "가")} 먼저 행동합니다.`;
 
-    case "action":
+    case "skill-use": {
+      const mpSuffix = event.mpCost > 0 ? ` (MP -${event.mpCost})` : "";
+      return `${event.actorName}${josa(event.actorName, "이", "가")} ${event.skillName}${josa(event.skillName, "을", "를")} 시전!${mpSuffix}`;
+    }
+
+    case "skill-effect":
       switch (event.skillType) {
         case "attack":
           return `${event.actorName}의 ${event.skillName}! ${event.targetName}에게 ${event.value} 데미지!`;

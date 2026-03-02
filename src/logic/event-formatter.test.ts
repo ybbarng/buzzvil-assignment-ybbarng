@@ -81,9 +81,41 @@ describe("formatEvent", () => {
     expect(formatEvent(event)).toBe("테스터가 먼저 행동합니다.");
   });
 
-  it("action(attack) 이벤트를 포맷한다", () => {
+  it("skill-use 이벤트를 포맷한다 (MP 소비 있음)", () => {
     const event: RoundEvent = {
-      type: "action",
+      type: "skill-use",
+      round: 1,
+      actor: "player",
+      actorName: "테스터",
+      targetName: "훈련 로봇",
+      skillName: "강타",
+      skillType: "attack",
+      mpCost: 10,
+      playerSnapshot: snap,
+      enemySnapshot: snap,
+    };
+    expect(formatEvent(event)).toBe("테스터가 강타를 시전! (MP -10)");
+  });
+
+  it("skill-use 이벤트를 포맷한다 (MP 소비 없음)", () => {
+    const event: RoundEvent = {
+      type: "skill-use",
+      round: 1,
+      actor: "player",
+      actorName: "테스터",
+      targetName: "훈련 로봇",
+      skillName: "공격",
+      skillType: "attack",
+      mpCost: 0,
+      playerSnapshot: snap,
+      enemySnapshot: snap,
+    };
+    expect(formatEvent(event)).toBe("테스터가 공격을 시전!");
+  });
+
+  it("skill-effect(attack) 이벤트를 포맷한다", () => {
+    const event: RoundEvent = {
+      type: "skill-effect",
       round: 1,
       actor: "player",
       actorName: "테스터",
@@ -97,9 +129,9 @@ describe("formatEvent", () => {
     expect(formatEvent(event)).toBe("테스터의 강타! 훈련 로봇에게 25 데미지!");
   });
 
-  it("action(heal) 이벤트를 포맷한다", () => {
+  it("skill-effect(heal) 이벤트를 포맷한다", () => {
     const event: RoundEvent = {
-      type: "action",
+      type: "skill-effect",
       round: 2,
       actor: "enemy",
       actorName: "적",
@@ -113,9 +145,9 @@ describe("formatEvent", () => {
     expect(formatEvent(event)).toBe("적의 회복! HP 20 회복!");
   });
 
-  it("action(buff) 이벤트를 포맷한다", () => {
+  it("skill-effect(buff) 이벤트를 포맷한다", () => {
     const event: RoundEvent = {
-      type: "action",
+      type: "skill-effect",
       round: 1,
       actor: "player",
       actorName: "테스터",
@@ -129,9 +161,9 @@ describe("formatEvent", () => {
     expect(formatEvent(event)).toBe("테스터의 강화! 능력치가 강화되었습니다.");
   });
 
-  it("action(debuff) 이벤트를 포맷한다", () => {
+  it("skill-effect(debuff) 이벤트를 포맷한다", () => {
     const event: RoundEvent = {
-      type: "action",
+      type: "skill-effect",
       round: 1,
       actor: "enemy",
       actorName: "적",

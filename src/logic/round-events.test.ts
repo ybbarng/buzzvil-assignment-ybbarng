@@ -56,13 +56,15 @@ describe("generateRoundEvents", () => {
     const attackSkill = player.skills[0];
     const result = generateRoundEvents(player, enemy, 1, attackSkill, "easy");
 
-    // speed-compare, action(선공), action(후공) — round-start는 스토어에서 별도 관리
+    // speed-compare, skill-use/effect(선공), skill-use/effect(후공) — round-start는 스토어에서 별도 관리
     const types = result.events.map((e) => e.type);
     expect(types).not.toContain("round-start");
     expect(types[0]).toBe("speed-compare");
 
-    const actions = result.events.filter((e) => e.type === "action");
-    expect(actions).toHaveLength(2);
+    const skillUses = result.events.filter((e) => e.type === "skill-use");
+    expect(skillUses).toHaveLength(2);
+    const skillEffects = result.events.filter((e) => e.type === "skill-effect");
+    expect(skillEffects).toHaveLength(2);
 
     expect(result.outcome).toBeNull();
     expect(result.nextRound).toBe(2);
@@ -88,9 +90,9 @@ describe("generateRoundEvents", () => {
     const types = result.events.map((e) => e.type);
     expect(types).toContain("defend");
 
-    const actions = result.events.filter((e) => e.type === "action");
-    expect(actions).toHaveLength(1);
-    expect(actions[0].actorName).toBe("훈련 로봇");
+    const skillEffects = result.events.filter((e) => e.type === "skill-effect");
+    expect(skillEffects).toHaveLength(1);
+    expect(skillEffects[0].actorName).toBe("훈련 로봇");
 
     vi.restoreAllMocks();
   });
