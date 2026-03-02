@@ -1,3 +1,5 @@
+import type { BuffTarget } from "@/types/skill";
+
 /**
  * 오버워치 스킬의 원본 분류.
  * docs/skill-conversion-guide.md의 변환표 행과 대응하며,
@@ -16,6 +18,30 @@ export type OwSkillCategory =
   | "attack_buff" // 공격 강화
   | "cc"; // CC (스턴/둔화/해킹 등)
 
+/**
+ * 스킬별 게임 수치.
+ * CONVERSION_RULES의 범위를 참고하되, 영웅 특성에 맞게 조정한 실제 값.
+ * OW 카테고리의 기본 gameType/target을 대부분 따르지만,
+ * 일부 스킬(예: 소리 방벽→buff/def)은 게임성에 맞게 변환.
+ */
+export type SkillGameValues =
+  | { type: "attack"; mpCost: number; multiplier: number }
+  | { type: "heal"; mpCost: number; healAmount: number }
+  | {
+      type: "buff";
+      target: BuffTarget;
+      mpCost: number;
+      value: number;
+      duration: number;
+    }
+  | {
+      type: "debuff";
+      target: BuffTarget;
+      mpCost: number;
+      value: number;
+      duration: number;
+    };
+
 /** 오버워치 스킬 메타데이터 */
 export interface OwSkillMeta {
   /** 오버워치 공식 한국어 이름 (축약 전 원본) */
@@ -24,6 +50,8 @@ export interface OwSkillMeta {
   category: OwSkillCategory;
   /** 오버워치에서의 동작 요약 */
   description: string;
+  /** 게임 내 스킬 수치 (변환 결과) */
+  gameValues: SkillGameValues;
 }
 
 /** 오버워치 영웅 메타데이터 */
