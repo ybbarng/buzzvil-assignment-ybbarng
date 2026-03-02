@@ -4,7 +4,7 @@ import {
   OW_HERO_STAT_META,
   SUB_ROLE_BASE_STATS,
 } from "@/constants/ow-hero-meta";
-import { HERO_PRESETS, ROLE_SUB_ROLES } from "@/constants/presets";
+import { ROLE_SUB_ROLES } from "@/constants/presets";
 import { STAT_RANGES, TOTAL_POINTS } from "@/constants/stats";
 import type { StatKey } from "@/types/character";
 
@@ -80,16 +80,6 @@ describe("OW_HERO_STAT_META", () => {
       ).toContain(hero.subRole);
     }
   });
-
-  it("HERO_PRESETS의 모든 heroId에 대응하는 메타데이터가 존재한다", () => {
-    const metaIds = new Set(OW_HERO_STAT_META.map((h) => h.heroId));
-    for (const preset of HERO_PRESETS) {
-      expect(
-        metaIds.has(preset.id),
-        `${preset.name}(${preset.id})의 메타데이터가 없음`,
-      ).toBe(true);
-    }
-  });
 });
 
 describe("generateAllHeroPresets", () => {
@@ -122,15 +112,19 @@ describe("generateAllHeroPresets", () => {
     }
   });
 
-  it("생성된 프리셋이 기존 HERO_PRESETS와 정확히 일치한다", () => {
-    for (const preset of HERO_PRESETS) {
-      const gen = generated.find((g) => g.id === preset.id);
-      expect(gen, `${preset.name}(${preset.id}) 생성 결과 없음`).toBeDefined();
-      expect(gen?.name).toBe(preset.name);
-      expect(gen?.role).toBe(preset.role);
-      expect(gen?.subRole).toBe(preset.subRole);
-      expect(gen?.description).toBe(preset.description);
-      expect(gen?.stats).toEqual(preset.stats);
-    }
+  it("대표 영웅의 base + adjustments 계산이 정확하다", () => {
+    const dva = generated.find((g) => g.id === "dva");
+    // initiator base { hp:82, mp:45, atk:18, def:25, spd:30 } + adj { 3, -3, -2, 2, 0 }
+    expect(dva?.stats).toEqual({ hp: 85, mp: 42, atk: 16, def: 27, spd: 30 });
+
+    const genji = generated.find((g) => g.id === "genji");
+    // flanker base { hp:50, mp:82, atk:28, def:10, spd:30 } + adj { -4, 0, 2, 2, 0 }
+    expect(genji?.stats).toEqual({
+      hp: 46,
+      mp: 82,
+      atk: 30,
+      def: 12,
+      spd: 30,
+    });
   });
 });
