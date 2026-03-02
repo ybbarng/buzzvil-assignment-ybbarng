@@ -99,13 +99,17 @@ export function generateRoundEvents(
           { role: "player" as const, skill: playerSkill },
         ];
 
-  for (const [i, turn] of turnOrder.entries()) {
+  for (const turn of turnOrder) {
     // defend 선택자는 skill 이벤트 스킵
     if (turn.skill.type === "defend") continue;
 
     const isPlayerTurn = turn.role === "player";
     const actor = isPlayerTurn ? p : e;
     const target = isPlayerTurn ? e : p;
+
+    // 행동 전 검증: 쓰러졌거나 MP 부족이면 스킵
+    if (actor.currentHp <= 0) continue;
+    if (turn.skill.mpCost > actor.currentMp) continue;
 
     // skill-use: MP만 차감한 중간 스냅샷
     const mpCost = turn.skill.mpCost;
@@ -169,11 +173,6 @@ export function generateRoundEvents(
       playerSnapshot: toSnapshot(p),
       enemySnapshot: toSnapshot(e),
     });
-
-    // 선공 행동 후 상대가 쓰러지면 후공 행동 스킵
-    if (i === 0 && (p.currentHp <= 0 || e.currentHp <= 0)) {
-      break;
-    }
   }
 
   // 7. buff-expire: tickBuffs 전에 만료 예정 버프 기록
