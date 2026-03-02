@@ -19,5 +19,12 @@ export function getSkillPresetByHeroId(
 
 /** SkillPresetEntry를 Skill로 변환한다 (isDefault: false 추가) */
 export function presetEntryToSkill(entry: SkillPresetEntry): Skill {
-  return { ...entry, isDefault: false } as Skill;
+  const isDefault = false;
+  if (entry.type === "attack") return { ...entry, isDefault };
+  if (entry.type === "defend") return { ...entry, isDefault };
+  if (entry.type === "heal") return { ...entry, isDefault };
+  if (entry.type === "buff") return { ...entry, isDefault };
+  if (entry.type === "debuff") return { ...entry, isDefault };
+  const _exhaustive: never = entry;
+  return _exhaustive;
 }
