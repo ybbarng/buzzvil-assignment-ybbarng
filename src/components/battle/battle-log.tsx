@@ -26,6 +26,14 @@ const SKILL_TYPE_COLORS: Record<SkillType, string> = {
   debuff: "text-text-muted",
 };
 
+const SKILL_TYPE_PREFIX: Record<SkillType, string> = {
+  attack: "⚔",
+  defend: "🛡",
+  heal: "💚",
+  buff: "⬆",
+  debuff: "⬇",
+};
+
 interface BattleLogProps {
   logs: BattleLogEntry[];
 }
@@ -44,7 +52,7 @@ export function BattleLog({ logs }: BattleLogProps) {
     <div
       data-testid="battle-log"
       ref={scrollRef}
-      className="h-40 overflow-y-auto rounded-lg border border-border bg-bg-secondary p-3"
+      className="h-40 overflow-y-auto border-l-2 border-accent-orange bg-bg-secondary p-3"
     >
       {logs.length === 0 ? (
         <p className="text-center text-sm text-text-muted">
@@ -60,6 +68,9 @@ export function BattleLog({ logs }: BattleLogProps) {
             >
               <span className="mr-1 text-xs text-text-muted">
                 R{entry.round}
+              </span>
+              <span aria-hidden="true" className="mr-1">
+                {SKILL_TYPE_PREFIX[entry.skillType]}
               </span>
               {formatLogEntry(entry)}
             </li>
