@@ -29,7 +29,7 @@ export const SUB_ROLE_BASE_STATS: SubRoleBaseStats = {
  * 50명 영웅의 OW 기반 스탯 메타데이터
  *
  * 각 영웅의 adjustments는 서브역할군 기본 스탯 대비 편차이며, 합계 0을 유지한다.
- * rationale는 OW에서의 캐릭터 특성을 기반으로 한 조정 근거이다.
+ * 각 항목의 인라인 주석에 OW 캐릭터 특성 기반 조정 근거를 기술한다.
  *
  * docs/preset-design.md "영웅별 미세 조정 기준" 참조.
  */
