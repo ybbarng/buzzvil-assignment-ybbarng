@@ -95,17 +95,23 @@ export function SettingScreen() {
   const contentRef = useRef<HTMLDivElement>(null);
   const isExiting = useRef(false);
   const [enterDirection, setEnterDirection] = useState<Direction>("forward");
+  const [indicatorStep, setIndicatorStep] = useState<SettingStep>(step);
 
   const withExit = (
     direction: Direction,
     callback: () => void,
-    includeIndicator = false,
+    options?: { includeIndicator?: boolean; targetStep?: SettingStep },
   ) => {
     if (isExiting.current) return;
     isExiting.current = true;
     setEnterDirection(direction);
+    if (options?.targetStep) {
+      setIndicatorStep(options.targetStep);
+    }
     const extra =
-      includeIndicator && indicatorRef.current ? [indicatorRef.current] : [];
+      options?.includeIndicator && indicatorRef.current
+        ? [indicatorRef.current]
+        : [];
     animateExitThenDo(
       contentRef.current,
       direction,
@@ -120,7 +126,7 @@ export function SettingScreen() {
   const handleStep1Submit = (data: NameStatFormData) => {
     setName(data.name);
     setStats(data.stats);
-    withExit("forward", () => setStep(2));
+    withExit("forward", () => setStep(2), { targetStep: 2 });
   };
 
   const slideIn = slideInClass(enterDirection);
@@ -138,9 +144,11 @@ export function SettingScreen() {
 
       <div ref={indicatorRef} className="animate-slide-in-right">
         <StepIndicator
-          currentStep={step}
+          currentStep={indicatorStep}
           onStepClick={(s) =>
-            withExit(s < step ? "backward" : "forward", () => setStep(s))
+            withExit(s < step ? "backward" : "forward", () => setStep(s), {
+              targetStep: s,
+            })
           }
         />
       </div>
@@ -166,8 +174,12 @@ export function SettingScreen() {
             skills={skills}
             onAddSkill={addSkill}
             onRemoveSkill={removeSkill}
-            onPrev={() => withExit("backward", () => setStep(1))}
-            onNext={() => withExit("forward", () => setStep(3))}
+            onPrev={() =>
+              withExit("backward", () => setStep(1), { targetStep: 1 })
+            }
+            onNext={() =>
+              withExit("forward", () => setStep(3), { targetStep: 3 })
+            }
             enterDirection={enterDirection}
           />
         )}
@@ -177,8 +189,12 @@ export function SettingScreen() {
             <DifficultyForm
               difficulty={difficulty}
               onSelect={setDifficulty}
-              onPrev={() => withExit("backward", () => setStep(2))}
-              onStartBattle={() => withExit("forward", startBattle, true)}
+              onPrev={() =>
+                withExit("backward", () => setStep(2), { targetStep: 2 })
+              }
+              onStartBattle={() =>
+                withExit("forward", startBattle, { includeIndicator: true })
+              }
             />
           </div>
         )}
