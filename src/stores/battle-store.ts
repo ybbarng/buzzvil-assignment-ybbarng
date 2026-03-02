@@ -184,7 +184,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       }
     }
 
-    set(updates as BattleState);
+    set(updates);
 
     // battle-end 이벤트 처리: 결과 화면 전환
     if (event.type === "battle-end") {
