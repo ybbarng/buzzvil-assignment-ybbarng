@@ -26,11 +26,4 @@ export interface BattleCharacter {
 }
 
 /** CharacterPanel 표시용 스냅샷 (스킬 목록 제외) */
-export interface CharacterSnapshot {
-  name: string;
-  baseStats: Stats;
-  currentHp: number;
-  currentMp: number;
-  isDefending: boolean;
-  buffs: ActiveBuff[];
-}
+export type CharacterSnapshot = Omit<BattleCharacter, "skills">;
