@@ -169,6 +169,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             <span>{SKILL_RANGES.mpCost.min}</span>
             <span>{SKILL_RANGES.mpCost.max}</span>
           </div>
+          {errors.mpCost && (
+            <p className="text-xs text-damage">{errors.mpCost.message}</p>
+          )}
         </div>
 
         {skillType === "attack" && (
@@ -193,6 +196,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               <span>{SKILL_RANGES.multiplier.min.toFixed(1)}</span>
               <span>{SKILL_RANGES.multiplier.max.toFixed(1)}</span>
             </div>
+            {"multiplier" in errors && errors.multiplier && (
+              <p className="text-xs text-damage">{errors.multiplier.message}</p>
+            )}
           </div>
         )}
 
@@ -216,6 +222,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
               <span>{SKILL_RANGES.healAmount.min}</span>
               <span>{SKILL_RANGES.healAmount.max}</span>
             </div>
+            {"healAmount" in errors && errors.healAmount && (
+              <p className="text-xs text-damage">{errors.healAmount.message}</p>
+            )}
           </div>
         )}
 
@@ -257,6 +266,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 <span>{SKILL_RANGES.value.min}</span>
                 <span>{SKILL_RANGES.value.max}</span>
               </div>
+              {"value" in errors && errors.value && (
+                <p className="text-xs text-damage">{errors.value.message}</p>
+              )}
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -277,6 +289,9 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
                 <span>{SKILL_RANGES.duration.min}</span>
                 <span>{SKILL_RANGES.duration.max}</span>
               </div>
+              {"duration" in errors && errors.duration && (
+                <p className="text-xs text-damage">{errors.duration.message}</p>
+              )}
             </div>
           </>
         )}
