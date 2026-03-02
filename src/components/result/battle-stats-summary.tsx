@@ -1,5 +1,6 @@
 import { STAGGER_MS } from "@/constants/theme";
 import { useCountUp } from "@/hooks/use-count-up";
+import { cn } from "@/lib/utils";
 import type { BattleStats } from "@/logic/battle-stats";
 
 interface BattleStatsSummaryProps {
@@ -50,7 +51,7 @@ function StatItem({
   return (
     <div className="flex items-center justify-between">
       <span className="text-sm text-text-muted">{label}</span>
-      <span className={`text-lg font-bold ${color}`}>{displayed}</span>
+      <span className={cn("text-lg font-bold", color)}>{displayed}</span>
     </div>
   );
 }
