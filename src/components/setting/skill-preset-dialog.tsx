@@ -55,7 +55,7 @@ function getSkillDescription(skill: SkillPresetEntry): string {
   switch (skill.type) {
     case "attack":
       return `${STAT_LABELS.atk.ko} × ${skill.multiplier}`;
-    case "defend":
+    case "defend": // 프리셋 스킬에 defend는 없지만, SkillPresetEntry 타입 완전성을 위해 유지
       return "받는 피해 50% 감소";
     case "heal":
       return `체력(HP) ${skill.healAmount} 회복`;
