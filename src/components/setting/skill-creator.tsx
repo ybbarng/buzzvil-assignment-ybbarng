@@ -117,6 +117,7 @@ export function SkillCreator({ onAdd, onCancel }: SkillCreatorProps) {
             <Input
               data-testid="skill-name-input"
               placeholder="스킬 이름 (최대 8자)"
+              maxLength={8}
               className="border-none bg-transparent text-text-primary shadow-none placeholder:text-text-muted"
               {...register("name")}
             />
