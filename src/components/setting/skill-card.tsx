@@ -34,7 +34,11 @@ export function SkillCard({ skill, onRemove }: SkillCardProps) {
           <span className="font-semibold text-text-primary">{skill.name}</span>
           {(() => {
             const Icon = SKILL_TYPE_ICONS[skill.type];
-            return <Icon className="size-4 text-text-muted" />;
+            return (
+              <Icon
+                className={`size-4 ${SKILL_TYPE_COLORS[skill.type].text}`}
+              />
+            );
           })()}
           {skill.mpCost > 0 && (
             <span className="text-xs text-mp">MP {skill.mpCost}</span>
