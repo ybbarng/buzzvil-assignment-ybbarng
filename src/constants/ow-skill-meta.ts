@@ -53,7 +53,7 @@ export const CONVERSION_RULES: Record<OwSkillCategory, ConversionRule> = {
     gameType: "buff",
     target: "def",
     mpCost: { min: 7, max: 18 },
-    value: { min: 5, max: 10 },
+    value: { min: 4, max: 10 },
     duration: { min: 1, max: 4 },
   },
   healing: {
@@ -1686,7 +1686,7 @@ export const OW_HERO_META: OwHeroMeta[] = [
       },
       {
         name: "볼륨을 높여라!",
-        category: "attack_buff",
+        category: "barrier",
         description: "현재 노래 효과 증폭 (치유 또는 이동속도)",
         gameValues: {
           type: "buff",

@@ -19,7 +19,7 @@
 | 궁극기 (강화) | buff | value 8~10, dur 3~5 | 18~25 |
 | 일반 공격 능력 | attack | 배율 1.3~2.0 | 8~15 |
 | 이동기/회피기 | buff DEF | value 3~6, dur 1~2 | 5~10 |
-| 방벽/보호막 | buff DEF | value 5~10, dur 1~4 | 7~18 |
+| 방벽/보호막 | buff DEF | value 4~10, dur 1~4 | 7~18 |
 | 힐링 능력 | heal | amount 15~35 | 8~18 |
 | 자가 치유/무적 | heal | amount 15~30 | 8~15 |
 | 공격 강화 | buff ATK | value 3~8, dur 2~4 | 8~15 |
