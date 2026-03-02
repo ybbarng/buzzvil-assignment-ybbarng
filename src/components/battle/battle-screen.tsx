@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { ActionPanel } from "@/components/battle/action-panel";
 import { BattleLog } from "@/components/battle/battle-log";
 import { CharacterPanel } from "@/components/battle/character-panel";
-import { EVENT_DELAYS } from "@/constants/battle";
+import { ACTOR_CHANGE_DELAY, EVENT_DELAYS } from "@/constants/battle";
 import { SKEW, SKEW_TEXT } from "@/constants/theme";
 import { josa } from "@/lib/utils";
 import { useBattleStore } from "@/stores/battle-store";
@@ -44,14 +44,25 @@ export function BattleScreen() {
     if (pendingEvents.length === 0) return;
 
     const nextEvent = pendingEvents[0];
-    const delay = EVENT_DELAYS[nextEvent.type] ?? 600;
+    let delay = EVENT_DELAYS[nextEvent.type] ?? 600;
+
+    // 직전 이벤트와 시전자가 바뀌면 추가 여백
+    const lastEvent = events[events.length - 1];
+    if (
+      lastEvent &&
+      "actor" in lastEvent &&
+      "actor" in nextEvent &&
+      lastEvent.actor !== nextEvent.actor
+    ) {
+      delay += ACTOR_CHANGE_DELAY;
+    }
 
     const timer = setTimeout(() => {
       advanceEvent();
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [pendingEvents, advanceEvent]);
+  }, [pendingEvents, events, advanceEvent]);
 
   if (!player || !enemy) return null;
 

@@ -14,3 +14,6 @@ export const EVENT_DELAYS: Record<string, number> = {
   "buff-expire": 1000,
   "battle-end": 800,
 };
+
+/** 시전자가 바뀔 때 추가 여백 (ms) */
+export const ACTOR_CHANGE_DELAY = 500;
