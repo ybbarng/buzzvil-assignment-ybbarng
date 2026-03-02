@@ -58,6 +58,7 @@ function processTurn(
   }
 
   // 행동 전 검증: MP 부족이면 스킵 (상태 불변 → 입력 스냅샷 재사용)
+  // 플레이어는 store에서 사전 차단되므로 실제로는 적만 해당한다.
   if (skill.mpCost > actor.currentMp) {
     events.push({
       type: "skip-turn",

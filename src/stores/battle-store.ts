@@ -118,6 +118,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
     const playerSkill = state.player.skills[skillIndex];
     if (!playerSkill) return;
+    // 플레이어 MP 부족은 여기서 사전 차단한다.
+    // 적의 MP 부족은 generateRoundEvents 내에서 skip-turn 이벤트로 처리된다.
     if (playerSkill.mpCost > state.player.currentMp) return;
 
     const result = generateRoundEvents(
