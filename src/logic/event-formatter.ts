@@ -34,6 +34,12 @@ export function formatEvent(event: RoundEvent): string {
           return `${event.actorName}의 ${event.skillName}!`;
       }
 
+    case "skip-turn":
+      if (event.reason === "defeated") {
+        return `${event.actorName}${josa(event.actorName, "은", "는")} 쓰러졌습니다.`;
+      }
+      return `${event.actorName}${josa(event.actorName, "은", "는")} 마나가 부족하여 ${event.skillName}${josa(event.skillName ?? "", "을", "를")} 시전하지 못했습니다.`;
+
     case "buff-expire":
       return `${event.targetName}의 ${event.buffTarget.toUpperCase()} ${event.wasBuff ? "강화" : "약화"} 효과가 만료되었습니다.`;
 

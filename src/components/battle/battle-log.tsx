@@ -2,6 +2,7 @@ import {
   AlertTriangle,
   ArrowDown,
   ArrowUp,
+  Ban,
   Clock,
   Flag,
   Heart,
@@ -22,6 +23,7 @@ const EVENT_ICON: Record<RoundEvent["type"], LucideIcon> = {
   "speed-compare": Zap,
   "skill-use": Zap,
   "skill-effect": Sword,
+  "skip-turn": Ban,
   "buff-expire": Clock,
   "battle-end": AlertTriangle,
 };
@@ -54,6 +56,7 @@ function getIconColor(event: RoundEvent): string {
     "speed-compare": "text-text-muted",
     "skill-use": "text-text-secondary",
     "skill-effect": "text-text-secondary",
+    "skip-turn": "text-text-muted",
     "buff-expire": "text-text-muted",
     "battle-end": "text-accent-orange",
   };

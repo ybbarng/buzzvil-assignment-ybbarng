@@ -10,6 +10,7 @@ export const EVENT_DELAYS: Record<string, number> = {
   "speed-compare": 800,
   "skill-use": 600,
   "skill-effect": 700,
+  "skip-turn": 600,
   "buff-expire": 600,
   "battle-end": 400,
 };

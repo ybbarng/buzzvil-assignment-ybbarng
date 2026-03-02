@@ -150,6 +150,9 @@ describe("battle-store", () => {
   });
 
   it("액션 실행 시 전투 로그가 생성된다", () => {
+    // 적 AI가 공격(index 0)을 선택하도록 고정
+    vi.spyOn(Math, "random").mockReturnValue(0.9);
+
     const stats = { hp: 100, mp: 50, atk: 20, def: 10, spd: 99 };
     const skills = [
       {

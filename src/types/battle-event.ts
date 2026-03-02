@@ -46,6 +46,14 @@ export interface SkillEffectEvent extends EventBase {
   value: number;
 }
 
+export interface SkipTurnEvent extends EventBase {
+  type: "skip-turn";
+  actor: "player" | "enemy";
+  actorName: string;
+  reason: "defeated" | "no-mp";
+  skillName?: string;
+}
+
 export interface BuffExpireEvent extends EventBase {
   type: "buff-expire";
   targetName: string;
@@ -64,5 +72,6 @@ export type RoundEvent =
   | SpeedCompareEvent
   | SkillUseEvent
   | SkillEffectEvent
+  | SkipTurnEvent
   | BuffExpireEvent
   | BattleEndEvent;

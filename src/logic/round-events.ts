@@ -108,8 +108,31 @@ export function generateRoundEvents(
     const target = isPlayerTurn ? e : p;
 
     // 행동 전 검증: 쓰러졌거나 MP 부족이면 스킵
-    if (actor.currentHp <= 0) continue;
-    if (turn.skill.mpCost > actor.currentMp) continue;
+    if (actor.currentHp <= 0) {
+      events.push({
+        type: "skip-turn",
+        round,
+        actor: turn.role,
+        actorName: actor.name,
+        reason: "defeated",
+        playerSnapshot: toSnapshot(p),
+        enemySnapshot: toSnapshot(e),
+      });
+      continue;
+    }
+    if (turn.skill.mpCost > actor.currentMp) {
+      events.push({
+        type: "skip-turn",
+        round,
+        actor: turn.role,
+        actorName: actor.name,
+        reason: "no-mp",
+        skillName: turn.skill.name,
+        playerSnapshot: toSnapshot(p),
+        enemySnapshot: toSnapshot(e),
+      });
+      continue;
+    }
 
     // skill-use: MP만 차감한 중간 스냅샷
     const mpCost = turn.skill.mpCost;
