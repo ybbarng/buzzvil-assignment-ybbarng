@@ -175,7 +175,12 @@ export function SettingScreen() {
               : ""
         }`}
         onAnimationEnd={
-          introPhase === "moving" ? () => setIntroPhase("done") : undefined
+          introPhase === "moving"
+            ? (e) => {
+                if (e.animationName !== "intro-settle") return;
+                setIntroPhase("done");
+              }
+            : undefined
         }
       >
         <h1 className="animate-title-blaze text-6xl font-bold tracking-wide text-accent-orange uppercase">
