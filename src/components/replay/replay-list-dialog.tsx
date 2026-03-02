@@ -91,8 +91,12 @@ export function ReplayListDialog({
                   <span className="shrink-0 text-xs text-text-muted">
                     {formatDate(replay.timestamp)}
                   </span>
-                  <span className="min-w-0 truncate text-sm text-text-primary">
-                    {replay.playerName} vs {replay.enemyName}
+                  <span className="shrink-0 text-sm">
+                    <span className="text-accent-blue">
+                      {replay.playerName}
+                    </span>
+                    <span className="text-text-muted"> vs </span>
+                    <span className="text-damage">{replay.enemyName}</span>
                   </span>
                   <span className="shrink-0 text-xs text-text-secondary">
                     {DIFFICULTY_LABELS[replay.difficulty]}
