@@ -5,7 +5,7 @@ import { NameStatForm } from "@/components/setting/name-stat-form";
 import { SkillForm } from "@/components/setting/skill-form";
 import { StepIndicator } from "@/components/setting/step-indicator";
 import { slideInClass, staggerDelay } from "@/constants/theme";
-import { josa } from "@/lib/utils";
+import { cn, josa } from "@/lib/utils";
 import type { NameStatFormData } from "@/schemas/name-stat.schema";
 import { useGameStore } from "@/stores/game-store";
 import { useSettingStore } from "@/stores/setting-store";
@@ -179,7 +179,7 @@ export function SettingScreen() {
   return (
     <div>
       <div
-        className={`mb-8 text-center ${INTRO_PHASE_CLASS[introPhase]}`}
+        className={cn("mb-8 text-center", INTRO_PHASE_CLASS[introPhase])}
         onAnimationEnd={
           introPhase === "moving"
             ? (e) => {
