@@ -1,6 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { useBattleStore } from "@/stores/battle-store";
 import { useGameStore } from "@/stores/game-store";
+import { useReplayStore } from "@/stores/replay-store";
 import { useSettingStore } from "@/stores/setting-store";
 
 export function resetStores() {
@@ -8,6 +9,8 @@ export function resetStores() {
   useSettingStore.getState().reset();
   useBattleStore.getState().reset();
   useBattleStore.getState().setAnimationEnabled(false);
+  useReplayStore.getState().reset();
+  localStorage.removeItem("buzz-arena-replays");
 }
 
 /**

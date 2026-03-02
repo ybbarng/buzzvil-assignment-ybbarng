@@ -1,4 +1,9 @@
-export type GamePhase = "setting" | "battle" | "result";
+export type GamePhase =
+  | "setting"
+  | "battle"
+  | "result"
+  | "replay"
+  | "replay-result";
 
 export type SettingStep = 1 | 2 | 3;
 

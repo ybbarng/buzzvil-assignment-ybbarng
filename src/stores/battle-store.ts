@@ -3,6 +3,7 @@ import { ENEMIES } from "@/constants/enemies";
 import { generateRoundEvents } from "@/logic/round-events";
 import { toSnapshot } from "@/logic/snapshot";
 import { useGameStore } from "@/stores/game-store";
+import { useReplayStore } from "@/stores/replay-store";
 import type { BattleCharacter, CharacterSnapshot } from "@/types/battle";
 import type { RoundEvent } from "@/types/battle-event";
 import type { Stats } from "@/types/character";
@@ -16,6 +17,9 @@ interface BattleState {
   difficulty: Difficulty;
   round: number;
   outcome: BattleOutcome | null;
+
+  // 리플레이
+  isReplaying: boolean;
 
   // 이벤트 시스템
   events: RoundEvent[];
@@ -32,6 +36,7 @@ interface BattleState {
     skills: Skill[],
     difficulty: Difficulty,
   ) => void;
+  initReplay: (events: RoundEvent[]) => void;
   executePlayerAction: (skillIndex: number) => void;
   advanceEvent: () => void;
   flushEvents: () => void;
@@ -55,12 +60,37 @@ function createCharacter(
   };
 }
 
+/** battle-end 후 리플레이 저장 + 결과 화면 전환 */
+function handleBattleEnd(get: () => BattleState) {
+  const { outcome, round, isReplaying, player, enemy, difficulty, events } =
+    get();
+  if (!outcome) return;
+  if (isReplaying) {
+    useGameStore.getState().showReplayResult(outcome, round - 1);
+  } else {
+    if (player && enemy) {
+      useReplayStore.getState().save({
+        id: crypto.randomUUID(),
+        timestamp: Date.now(),
+        playerName: player.name,
+        enemyName: enemy.name,
+        difficulty,
+        outcome,
+        totalTurns: round - 1,
+        events,
+      });
+    }
+    useGameStore.getState().showResult(outcome, round - 1);
+  }
+}
+
 export const useBattleStore = create<BattleState>((set, get) => ({
   player: null,
   enemy: null,
   difficulty: "normal" as Difficulty,
   round: 1,
   outcome: null,
+  isReplaying: false,
 
   events: [],
   pendingEvents: [],
@@ -99,6 +129,27 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       displayEnemy: enemySnapshot,
       isAnimating: false,
       activeActor: null,
+    });
+  },
+
+  initReplay: (replayEvents) => {
+    const [first, ...rest] = replayEvents;
+    const snap = first.playerSnapshot;
+    const enemySnap = first.enemySnapshot;
+    // CharacterPanel 표시용 더미 캐릭터 (로직에는 사용하지 않음)
+    const dummyPlayer = createCharacter(snap.name, snap.baseStats, []);
+    const dummyEnemy = createCharacter(enemySnap.name, enemySnap.baseStats, []);
+    set({
+      isReplaying: true,
+      player: dummyPlayer,
+      enemy: dummyEnemy,
+      events: [first],
+      pendingEvents: rest,
+      displayPlayer: first.playerSnapshot,
+      displayEnemy: first.enemySnapshot,
+      isAnimating: true,
+      activeActor: null,
+      outcome: null,
     });
   },
 
@@ -156,7 +207,11 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
     if (remaining.length === 0) {
       // 마지막 이벤트 처리 완료 — 다음 round-start 추가 또는 애니메이션 종료
-      if (event.type !== "round-start" && !state.outcome) {
+      if (
+        event.type !== "round-start" &&
+        !state.outcome &&
+        !state.isReplaying
+      ) {
         // 전투 계속: 다음 round-start를 pendingEvents에 추가
         updates.pendingEvents = [
           {
@@ -175,12 +230,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
     set(updates);
 
-    // battle-end 이벤트 처리: 결과 화면 전환
     if (event.type === "battle-end") {
-      const { outcome, round } = get();
-      if (outcome) {
-        useGameStore.getState().showResult(outcome, round - 1);
-      }
+      handleBattleEnd(get);
     }
   },
 
@@ -191,8 +242,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     const allEvents = [...state.events, ...state.pendingEvents];
     const lastEvent = state.pendingEvents[state.pendingEvents.length - 1];
 
-    // 전투 종료가 아니면 다음 round-start도 추가
-    if (!state.outcome) {
+    // 전투 종료가 아니면 다음 round-start도 추가 (리플레이에서는 불필요)
+    if (!state.outcome && !state.isReplaying) {
       allEvents.push({
         type: "round-start",
         round: state.round,
@@ -210,13 +261,11 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       activeActor: null,
     });
 
-    // battle-end 이벤트가 포함되어 있으면 결과 화면 전환
-    const battleEnd = state.pendingEvents.find((e) => e.type === "battle-end");
-    if (battleEnd) {
-      const { outcome, round } = get();
-      if (outcome) {
-        useGameStore.getState().showResult(outcome, round - 1);
-      }
+    const hasBattleEnd = state.pendingEvents.some(
+      (e) => e.type === "battle-end",
+    );
+    if (hasBattleEnd) {
+      handleBattleEnd(get);
     }
   },
 
@@ -229,6 +278,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       difficulty: "normal" as Difficulty,
       round: 1,
       outcome: null,
+      isReplaying: false,
       events: [],
       pendingEvents: [],
       displayPlayer: null,
