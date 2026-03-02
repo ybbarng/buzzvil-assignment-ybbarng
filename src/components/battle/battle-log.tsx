@@ -72,13 +72,14 @@ function colorizeNames(
   playerName: string,
   enemyName: string,
 ): React.ReactNode {
+  const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const patterns: { regex: RegExp; className: string }[] = [
     {
-      regex: new RegExp(playerName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+      regex: new RegExp(escapeRe(playerName), "g"),
       className: "font-bold text-accent-blue",
     },
     {
-      regex: new RegExp(enemyName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+      regex: new RegExp(escapeRe(enemyName), "g"),
       className: "font-bold text-damage",
     },
     { regex: /\d+/g, className: "font-bold text-hp" },
@@ -203,7 +204,9 @@ export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
                 className="flex items-center gap-1 text-sm text-text-secondary"
               >
                 <Icon className={`size-3 shrink-0 ${iconColor}`} />
-                {colorizeNames(formatEvent(event), playerName, enemyName)}
+                <span>
+                  {colorizeNames(formatEvent(event), playerName, enemyName)}
+                </span>
               </li>
             );
           })}
