@@ -16,7 +16,7 @@ function App() {
 
   return (
     <TooltipProvider>
-      <GameContainer>
+      <GameContainer align={phase === "setting" ? "start" : "center"}>
         {phase === "setting" && <SettingScreen />}
         {phase === "battle" && <BattleScreen />}
         {phase === "result" && <ResultScreen />}

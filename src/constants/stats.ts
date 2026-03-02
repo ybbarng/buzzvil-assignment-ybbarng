@@ -23,8 +23,8 @@ export const DEFAULT_STATS: Stats = {
 export const STAT_LABELS: Record<StatKey, { en: string; ko: string }> = {
   hp: { en: "HP", ko: "체력" },
   mp: { en: "MP", ko: "마나" },
-  atk: { en: "ATK", ko: "공격" },
-  def: { en: "DEF", ko: "방어" },
+  atk: { en: "ATK", ko: "공격력" },
+  def: { en: "DEF", ko: "방어력" },
   spd: { en: "SPD", ko: "속도" },
 };
 
