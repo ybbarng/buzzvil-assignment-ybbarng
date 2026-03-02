@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GameButton } from "@/components/ui/game-button";
 import { cn } from "@/lib/utils";
 import type { Difficulty } from "@/types/game";
 
@@ -44,11 +43,11 @@ export function DifficultyForm({
 }: DifficultyFormProps) {
   return (
     <div className="space-y-6">
-      <Card className="border-border bg-bg-secondary">
-        <CardHeader>
-          <CardTitle className="text-accent-orange">난이도 선택</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+      <section className="border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4">
+        <h2 className="mb-3 text-sm font-bold tracking-wider text-accent-orange uppercase">
+          난이도 선택
+        </h2>
+        <div className="space-y-3">
           {DIFFICULTY_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -66,27 +65,28 @@ export function DifficultyForm({
               <div className="text-sm text-text-muted">{opt.description}</div>
             </button>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
       <div className="flex gap-2">
-        <Button
+        <GameButton
           type="button"
-          variant="outline"
+          variant="blue"
           data-testid="prev-button"
           className="flex-1"
           onClick={onPrev}
         >
           이전
-        </Button>
-        <Button
+        </GameButton>
+        <GameButton
           type="button"
+          active
           data-testid="start-battle-button"
-          className="flex-1 bg-accent-orange font-bold text-bg-primary hover:bg-accent-orange-hover"
+          className="flex-1"
           onClick={onStartBattle}
         >
           전투 시작
-        </Button>
+        </GameButton>
       </div>
     </div>
   );
