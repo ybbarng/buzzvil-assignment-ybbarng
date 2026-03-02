@@ -97,12 +97,14 @@ export function SettingScreen() {
   const stats = useSettingStore((s) => s.stats);
   const skills = useSettingStore((s) => s.skills);
   const difficulty = useSettingStore((s) => s.difficulty);
+  const presetId = useSettingStore((s) => s.presetId);
   const setStep = useSettingStore((s) => s.setStep);
   const setName = useSettingStore((s) => s.setName);
   const setStats = useSettingStore((s) => s.setStats);
   const addSkill = useSettingStore((s) => s.addSkill);
   const removeSkill = useSettingStore((s) => s.removeSkill);
   const setDifficulty = useSettingStore((s) => s.setDifficulty);
+  const setPresetId = useSettingStore((s) => s.setPresetId);
   const startBattle = useGameStore((s) => s.startBattle);
 
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -165,9 +167,13 @@ export function SettingScreen() {
     );
   };
 
-  const handleStep1Submit = (data: NameStatFormData) => {
+  const handleStep1Submit = (
+    data: NameStatFormData,
+    selectedPresetId: string | null,
+  ) => {
     setName(data.name);
     setStats(data.stats);
+    setPresetId(selectedPresetId);
     withExit("forward", () => setStep(2), { targetStep: 2 });
   };
 
@@ -218,6 +224,7 @@ export function SettingScreen() {
               <NameStatForm
                 defaultName={name}
                 defaultStats={stats}
+                defaultPresetId={presetId}
                 onSubmit={handleStep1Submit}
                 enterDirection={enterDirection}
               />
@@ -226,6 +233,7 @@ export function SettingScreen() {
             {step === 2 && (
               <SkillForm
                 skills={skills}
+                presetId={presetId}
                 onAddSkill={addSkill}
                 onRemoveSkill={removeSkill}
                 onPrev={() =>
@@ -239,17 +247,19 @@ export function SettingScreen() {
             )}
 
             {step === 3 && (
-              <DifficultyForm
-                difficulty={difficulty}
-                onSelect={setDifficulty}
-                onPrev={() =>
-                  withExit("backward", () => setStep(2), { targetStep: 2 })
-                }
-                onStartBattle={() =>
-                  withExit("forward", startBattle, { includeIndicator: true })
-                }
-                enterDirection={enterDirection}
-              />
+              <div className={slideIn} data-animate style={staggerDelay(2)}>
+                <DifficultyForm
+                  difficulty={difficulty}
+                  onSelect={setDifficulty}
+                  onPrev={() =>
+                    withExit("backward", () => setStep(2), { targetStep: 2 })
+                  }
+                  onStartBattle={() =>
+                    withExit("forward", startBattle, { includeIndicator: true })
+                  }
+                  enterDirection={enterDirection}
+                />
+              </div>
             )}
           </div>
         </>

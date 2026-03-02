@@ -8,6 +8,7 @@ import { SkillForm } from "./skill-form";
 describe("SkillForm", () => {
   const defaultProps = {
     skills: [...DEFAULT_SKILLS],
+    presetId: null as string | null,
     onAddSkill: vi.fn(),
     onRemoveSkill: vi.fn(),
     onPrev: vi.fn(),
