@@ -91,7 +91,7 @@ describe("NameStatForm", () => {
     await user.click(screen.getByTestId("next-button"));
     expect(onSubmit).toHaveBeenCalledWith(
       { name: "테스터", stats: completeStats },
-      expect.anything(),
+      null,
     );
   });
 

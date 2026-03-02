@@ -16,6 +16,7 @@ import type { Skill } from "@/types/skill";
 
 interface SkillFormProps {
   skills: Skill[];
+  presetId: string | null;
   onAddSkill: (skill: Skill) => void;
   onRemoveSkill: (index: number) => void;
   onPrev: () => void;
@@ -25,6 +26,7 @@ interface SkillFormProps {
 
 export function SkillForm({
   skills,
+  presetId,
   onAddSkill,
   onRemoveSkill,
   onPrev,

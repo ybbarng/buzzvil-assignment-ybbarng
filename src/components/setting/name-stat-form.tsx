@@ -18,13 +18,15 @@ import type { HeroPreset } from "@/types/preset";
 interface NameStatFormProps {
   defaultName: string;
   defaultStats: Stats;
-  onSubmit: (data: NameStatFormData) => void;
+  defaultPresetId?: string | null;
+  onSubmit: (data: NameStatFormData, presetId: string | null) => void;
   enterDirection?: Direction;
 }
 
 export function NameStatForm({
   defaultName,
   defaultStats,
+  defaultPresetId = null,
   onSubmit,
   enterDirection = "forward",
 }: NameStatFormProps) {
@@ -43,6 +45,9 @@ export function NameStatForm({
   });
 
   const [presetOpen, setPresetOpen] = useState(false);
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(
+    defaultPresetId,
+  );
 
   const stats = watch("stats");
   const totalUsed = Object.values(stats).reduce((a, b) => a + b, 0);
@@ -55,13 +60,17 @@ export function NameStatForm({
   const handlePresetSelect = (hero: HeroPreset) => {
     setValue("name", hero.name, { shouldValidate: true });
     setValue("stats", hero.stats, { shouldValidate: true });
+    setSelectedPresetId(hero.id);
     setPresetOpen(false);
   };
 
   const slideIn = slideInClass(enterDirection);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={handleSubmit((data) => onSubmit(data, selectedPresetId))}
+      className="space-y-6"
+    >
       {/* 캐릭터 이름 */}
       <section
         className={`${slideIn} border-l-2 border-accent-orange bg-bg-secondary/60 px-5 py-4`}
