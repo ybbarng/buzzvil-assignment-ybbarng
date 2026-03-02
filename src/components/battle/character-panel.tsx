@@ -47,9 +47,7 @@ function BuffIndicator({ buff }: { buff: ActiveBuff }) {
     <span
       className={cn(
         "inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-xs font-medium",
-        isBuff
-          ? "bg-accent-orange/20 text-accent-orange"
-          : "bg-damage/20 text-damage",
+        isBuff ? "bg-buff/20 text-buff" : "bg-debuff/20 text-debuff",
       )}
     >
       {label}
