@@ -127,7 +127,11 @@ export function BattleScreen() {
         className="animate-slide-in-bottom"
         style={{ animationDelay: "1800ms" }}
       >
-        <BattleLog events={events} />
+        <BattleLog
+          events={events}
+          playerName={player.name}
+          enemyName={enemy.name}
+        />
       </div>
     </div>
   );

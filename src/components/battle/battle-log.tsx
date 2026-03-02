@@ -10,9 +10,9 @@ import {
   Sword,
   Zap,
 } from "lucide-react";
+import type React from "react";
 import { useEffect, useRef } from "react";
 import { SKILL_TYPE_COLORS } from "@/constants/skills";
-import { cn } from "@/lib/utils";
 import { formatEvent } from "@/logic/event-formatter";
 import type { RoundEvent } from "@/types/battle-event";
 
@@ -39,7 +39,7 @@ function getEventIcon(event: RoundEvent): LucideIcon {
   return EVENT_ICON[event.type];
 }
 
-function getEventColor(event: RoundEvent): string {
+function getIconColor(event: RoundEvent): string {
   if (event.type === "action") {
     return SKILL_TYPE_COLORS[event.skillType]?.text ?? "text-text-secondary";
   }
@@ -55,27 +55,62 @@ function getEventColor(event: RoundEvent): string {
   return colorMap[event.type];
 }
 
-function getTextColor(event: RoundEvent): string {
-  if (event.type === "action") {
-    const logColors: Record<string, string> = {
-      attack: "text-damage",
-      defend: "text-accent-blue",
-      heal: "text-hp",
-      buff: "text-accent-orange",
-      debuff: "text-text-muted",
-    };
-    return logColors[event.skillType] ?? "text-text-secondary";
+/**
+ * 문자열 내 플레이어/적 이름을 각각의 팀 색상 span으로 교체한 React 노드를 반환한다.
+ * 이름이 겹치지 않는다고 가정한다.
+ */
+function colorizeNames(
+  text: string,
+  playerName: string,
+  enemyName: string,
+): React.ReactNode {
+  const names = [
+    { name: playerName, color: "text-accent-blue" },
+    { name: enemyName, color: "text-damage" },
+  ];
+
+  const segments: React.ReactNode[] = [];
+  let remaining = text;
+  let key = 0;
+
+  while (remaining.length > 0) {
+    let earliest = -1;
+    let matched: (typeof names)[number] | null = null;
+
+    for (const entry of names) {
+      const idx = remaining.indexOf(entry.name);
+      if (idx !== -1 && (earliest === -1 || idx < earliest)) {
+        earliest = idx;
+        matched = entry;
+      }
+    }
+
+    if (earliest === -1 || !matched) {
+      segments.push(remaining);
+      break;
+    }
+
+    if (earliest > 0) {
+      segments.push(remaining.slice(0, earliest));
+    }
+    segments.push(
+      <span key={key++} className={matched.color}>
+        {matched.name}
+      </span>,
+    );
+    remaining = remaining.slice(earliest + matched.name.length);
   }
-  if (event.type === "round-start") return "text-accent-orange";
-  if (event.type === "battle-end") return "text-accent-orange";
-  return "text-text-secondary";
+
+  return segments;
 }
 
 interface BattleLogProps {
   events: RoundEvent[];
+  playerName: string;
+  enemyName: string;
 }
 
-export function BattleLog({ events }: BattleLogProps) {
+export function BattleLog({ events, playerName, enemyName }: BattleLogProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: events.length 변화 시 스크롤 필요
@@ -99,8 +134,7 @@ export function BattleLog({ events }: BattleLogProps) {
         <ul className="space-y-1">
           {events.map((event, index) => {
             const Icon = getEventIcon(event);
-            const iconColor = getEventColor(event);
-            const textColor = getTextColor(event);
+            const iconColor = getIconColor(event);
 
             if (event.type === "round-start") {
               return (
@@ -116,14 +150,27 @@ export function BattleLog({ events }: BattleLogProps) {
               );
             }
 
+            if (event.type === "battle-end") {
+              return (
+                <li
+                  // biome-ignore lint/suspicious/noArrayIndexKey: 이벤트는 추가만 되고 순서가 변하지 않음
+                  key={index}
+                  className="flex items-center gap-1 text-sm text-accent-orange"
+                >
+                  <Icon className={`size-3 shrink-0 ${iconColor}`} />
+                  {formatEvent(event)}
+                </li>
+              );
+            }
+
             return (
               <li
                 // biome-ignore lint/suspicious/noArrayIndexKey: 이벤트는 추가만 되고 순서가 변하지 않음
                 key={index}
-                className={cn("flex items-center gap-1 text-sm", textColor)}
+                className="flex items-center gap-1 text-sm text-white"
               >
                 <Icon className={`size-3 shrink-0 ${iconColor}`} />
-                {formatEvent(event)}
+                {colorizeNames(formatEvent(event), playerName, enemyName)}
               </li>
             );
           })}
