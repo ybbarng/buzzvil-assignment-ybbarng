@@ -29,6 +29,7 @@ export function BattleScreen() {
   const advanceEvent = useBattleStore((s) => s.advanceEvent);
   const activeActor = useBattleStore((s) => s.activeActor);
 
+  const isReplaying = useBattleStore((s) => s.isReplaying);
   const initialized = useRef(false);
 
   // events 배열에서 마지막 round-start의 round를 표시용으로 사용
@@ -42,9 +43,11 @@ export function BattleScreen() {
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
-    const { name, stats, skills, difficulty } = useSettingStore.getState();
-    initBattle(name, stats, skills, difficulty);
-  }, [initBattle]);
+    if (!isReplaying) {
+      const { name, stats, skills, difficulty } = useSettingStore.getState();
+      initBattle(name, stats, skills, difficulty);
+    }
+  }, [initBattle, isReplaying]);
 
   // 이벤트 애니메이션 타이머
   useEffect(() => {
@@ -124,21 +127,27 @@ export function BattleScreen() {
           className="animate-slide-in-bottom space-y-2"
           style={{ animationDelay: "1400ms" }}
         >
-          <p className="text-sm text-text-secondary">
-            {displayRound === 1
-              ? "전투가 시작되었습니다. "
-              : `${displayRound} 라운드입니다. `}
-            <span className="text-white">{player.name}</span>
-            {josa(player.name, "은", "는")}{" "}
-            {displayRound === 1
-              ? "첫 라운드에서 무엇을 하시겠습니까?"
-              : "무엇을 하시겠습니까?"}
-          </p>
-          <ActionPanel
-            player={player}
-            onAction={executePlayerAction}
-            disabled={isAnimating}
-          />
+          {isReplaying ? (
+            <p className="text-sm text-text-muted">리플레이 재생 중...</p>
+          ) : (
+            <>
+              <p className="text-sm text-text-secondary">
+                {displayRound === 1
+                  ? "전투가 시작되었습니다. "
+                  : `${displayRound} 라운드입니다. `}
+                <span className="text-white">{player.name}</span>
+                {josa(player.name, "은", "는")}{" "}
+                {displayRound === 1
+                  ? "첫 라운드에서 무엇을 하시겠습니까?"
+                  : "무엇을 하시겠습니까?"}
+              </p>
+              <ActionPanel
+                player={player}
+                onAction={executePlayerAction}
+                disabled={isAnimating}
+              />
+            </>
+          )}
         </div>
       )}
 
