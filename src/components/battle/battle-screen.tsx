@@ -101,7 +101,7 @@ export function BattleScreen() {
       </div>
 
       {/* 안내 문구 + 액션 패널: 아래에서 슬라이드 */}
-      {!outcome && (
+      {(!outcome || isAnimating) && (
         <div
           className="animate-slide-in-bottom space-y-2"
           style={{ animationDelay: "1400ms" }}
