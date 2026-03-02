@@ -12,4 +12,14 @@ export default defineConfig({
       "@": resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "zustand"],
+          ui: ["radix-ui", "lucide-react", "class-variance-authority"],
+        },
+      },
+    },
+  },
 });

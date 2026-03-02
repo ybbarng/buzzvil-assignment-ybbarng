@@ -1,12 +1,21 @@
-import { useEffect } from "react";
-import { BattleScreen } from "@/components/battle/battle-screen";
+import { lazy, Suspense, useEffect } from "react";
 import { GameContainer } from "@/components/layout/game-container";
-import { ResultScreen } from "@/components/result/result-screen";
 import { SettingScreen } from "@/components/setting/setting-screen";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { FONT_ITALIC } from "@/constants/theme";
 import { useGameStore } from "@/stores/game-store";
 import { useReplayStore } from "@/stores/replay-store";
+
+const BattleScreen = lazy(() =>
+  import("@/components/battle/battle-screen").then((m) => ({
+    default: m.BattleScreen,
+  })),
+);
+const ResultScreen = lazy(() =>
+  import("@/components/result/result-screen").then((m) => ({
+    default: m.ResultScreen,
+  })),
+);
 
 function App() {
   const phase = useGameStore((s) => s.phase);
@@ -29,9 +38,11 @@ function App() {
             </h1>
           </div>
         )}
-        {phase === "setting" && <SettingScreen />}
-        {isBattle && <BattleScreen />}
-        {isResult && <ResultScreen />}
+        <Suspense>
+          {phase === "setting" && <SettingScreen />}
+          {isBattle && <BattleScreen />}
+          {isResult && <ResultScreen />}
+        </Suspense>
       </GameContainer>
     </TooltipProvider>
   );
