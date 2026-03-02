@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { SkillCard } from "@/components/setting/skill-card";
 import { SkillCreator } from "@/components/setting/skill-creator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { GameButton } from "@/components/ui/game-button";
 import { MAX_CUSTOM_SKILLS } from "@/constants/skills";
 import { SKEW, SKEW_TEXT, slideInClass, staggerDelay } from "@/constants/theme";
@@ -84,9 +91,22 @@ export function SkillForm({
         </div>
       </section>
 
-      {isCreating && (
-        <SkillCreator onAdd={handleAdd} onCancel={() => setIsCreating(false)} />
-      )}
+      <Dialog open={isCreating} onOpenChange={setIsCreating}>
+        <DialogContent className="border-accent-orange/30 bg-bg-secondary">
+          <DialogHeader>
+            <DialogTitle className="text-sm font-bold tracking-wider text-accent-orange uppercase">
+              커스텀 스킬 생성
+            </DialogTitle>
+            <DialogDescription className="text-text-muted">
+              새로운 스킬의 속성을 설정하세요.
+            </DialogDescription>
+          </DialogHeader>
+          <SkillCreator
+            onAdd={handleAdd}
+            onCancel={() => setIsCreating(false)}
+          />
+        </DialogContent>
+      </Dialog>
 
       <div
         className={`${slideIn} flex gap-2`}
