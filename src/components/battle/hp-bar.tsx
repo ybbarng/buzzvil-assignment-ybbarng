@@ -52,6 +52,11 @@ export function HpBar({ current, max, type }: HpBarProps) {
         </span>
       </div>
       <div
+        role="progressbar"
+        aria-label={type === "hp" ? "체력" : "마나"}
+        aria-valuenow={current}
+        aria-valuemin={0}
+        aria-valuemax={max}
         className={cn(
           "relative h-2 overflow-hidden bg-bg-tertiary",
           SKEW,
