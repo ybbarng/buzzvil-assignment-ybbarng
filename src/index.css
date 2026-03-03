@@ -339,7 +339,9 @@ textarea {
 }
 
 /* 모션 감소 선호 시 애니메이션 비활성화.
-   모든 선언을 강제로 덮어써야 하므로 !important 필수. */
+   모든 선언을 강제로 덮어써야 하므로 !important 필수.
+   animation-delay/transition-delay도 0으로 리셋해야 fill-mode: both 사용 시
+   딜레이 동안 opacity: 0 상태로 머무르는 것을 방지한다. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -347,8 +349,12 @@ textarea {
     /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
     animation-duration: 0.01ms !important;
     /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
+    animation-delay: 0s !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
     animation-iteration-count: 1 !important;
     /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
     transition-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 접근성 리셋은 모든 애니메이션을 강제로 비활성화해야 함 */
+    transition-delay: 0s !important;
   }
 }

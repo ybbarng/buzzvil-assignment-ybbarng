@@ -217,4 +217,67 @@ describe("자동 채점 시나리오", () => {
       expect(screen.getByTestId("name-input")).toBeInTheDocument();
     });
   });
+
+  describe("애니메이션 타이밍 보호", () => {
+    it("인트로 애니메이션이 세팅 폼 접근을 차단하지 않는다", () => {
+      render(<App />);
+      // prefers-reduced-motion 활성화 시 introPhase="done"으로 즉시 폼 렌더링
+      // 이 assertion이 동기적으로 통과해야 인트로가 폼을 차단하지 않음을 보장
+      expect(screen.getByTestId("name-input")).toBeInTheDocument();
+      expect(screen.getByTestId("next-button")).toBeInTheDocument();
+    });
+
+    it("전투 종료 후 결과 요소가 지연 없이 접근 가능하다", async () => {
+      vi.spyOn(Math, "random").mockReturnValue(0.9);
+
+      render(<App />);
+      await userEvent.type(screen.getByTestId("name-input"), "테스터");
+      allocateStats();
+      await userEvent.click(screen.getByTestId("next-button"));
+      await userEvent.click(screen.getByTestId("next-button"));
+      await userEvent.click(screen.getByTestId("difficulty-easy"));
+      await userEvent.click(screen.getByTestId("start-battle-button"));
+      await screen.findByTestId("round-display");
+      useBattleStore.getState().setAnimationEnabled(false);
+
+      for (let i = 0; i < 20; i++) {
+        const button = screen.queryByTestId("skill-button-0");
+        if (!button) break;
+        await userEvent.click(button);
+      }
+
+      // result-title, result-turns, restart-button 모두 지연 없이 접근 가능해야 함
+      const title = await screen.findByTestId("result-title");
+      expect(title).toBeInTheDocument();
+      expect(screen.getByTestId("result-turns")).toBeInTheDocument();
+      expect(screen.getByTestId("restart-button")).toBeInTheDocument();
+    });
+
+    it("재시작 후 인트로 애니메이션이 폼 접근을 차단하지 않는다", async () => {
+      vi.spyOn(Math, "random").mockReturnValue(0.9);
+
+      render(<App />);
+      await userEvent.type(screen.getByTestId("name-input"), "테스터");
+      allocateStats();
+      await userEvent.click(screen.getByTestId("next-button"));
+      await userEvent.click(screen.getByTestId("next-button"));
+      await userEvent.click(screen.getByTestId("difficulty-easy"));
+      await userEvent.click(screen.getByTestId("start-battle-button"));
+      await screen.findByTestId("round-display");
+      useBattleStore.getState().setAnimationEnabled(false);
+
+      for (let i = 0; i < 20; i++) {
+        const button = screen.queryByTestId("skill-button-0");
+        if (!button) break;
+        await userEvent.click(button);
+      }
+      await screen.findByTestId("result-title");
+
+      // 재시작 → SettingScreen 리마운트 시 인트로 재생 여부 확인
+      await userEvent.click(screen.getByTestId("restart-button"));
+      // 동기적으로 접근 가능해야 함 (인트로가 폼 렌더링을 차단하면 실패)
+      expect(screen.getByTestId("name-input")).toBeInTheDocument();
+      expect(screen.getByTestId("next-button")).toBeInTheDocument();
+    });
+  });
 });
