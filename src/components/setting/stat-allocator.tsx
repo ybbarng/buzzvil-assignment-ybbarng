@@ -40,8 +40,11 @@ export function StatAllocator({ stats, onChange }: StatAllocatorProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-end gap-3">
+        <span data-testid="remaining-points" className="sr-only">
+          {remaining}
+        </span>
         <span
-          data-testid="remaining-points"
+          aria-hidden="true"
           className={cn(
             "text-lg font-bold tabular-nums",
             remaining === 0
