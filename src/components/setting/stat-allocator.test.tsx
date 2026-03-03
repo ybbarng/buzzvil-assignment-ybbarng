@@ -2,7 +2,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { STAT_KEYS, TOTAL_POINTS } from "@/constants/stats";
+import { STAT_KEYS } from "@/constants/stats";
 import type { Stats } from "@/types/character";
 import { StatAllocator } from "./stat-allocator";
 
