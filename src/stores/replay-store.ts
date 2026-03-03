@@ -30,7 +30,11 @@ function readFromStorage(): ReplayData[] {
 }
 
 function writeToStorage(replays: ReplayData[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(replays));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(replays));
+  } catch {
+    // Private Browsing, 스토리지 할당량 초과 등 — 저장 실패는 무시
+  }
 }
 
 export const useReplayStore = create<ReplayState>((set, get) => ({
@@ -56,7 +60,11 @@ export const useReplayStore = create<ReplayState>((set, get) => ({
   setActive: (replay) => set({ activeReplay: replay }),
 
   reset: () => {
-    localStorage.removeItem(STORAGE_KEY);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // 삭제 실패는 무시
+    }
     set({ replays: [], activeReplay: null });
   },
 }));

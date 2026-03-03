@@ -1,12 +1,21 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
+import { useBattleStore } from "./stores/battle-store";
 import { allocateStats, resetStores, setStatValue } from "./test/helpers";
 
 /**
  * 자동 채점 시나리오 시뮬레이션
- * data-testid만 사용하여 채점 스크립트의 동작을 재현합니다.
+ *
+ * 이 테스트는 외부 자동 채점 스크립트가 data-testid를 통해 앱을 검증하는
+ * 시나리오를 재현한다. 채점 환경에서의 동작을 보장하는 것이 목적이므로,
+ * 개별 컴포넌트의 기능 검증(접근성, 상태 변화, 엣지 케이스 등)은
+ * 각 컴포넌트 테스트 파일에서 독립적으로 수행한다.
+ *
+ * 일부 assertion이 컴포넌트 테스트와 겹칠 수 있지만,
+ * 이 파일은 "채점 스크립트 관점의 통합 흐름"을,
+ * 컴포넌트 테스트는 "개별 기능의 단위 검증"을 담당하므로 목적이 다르다.
  */
 
 describe("자동 채점 시나리오", () => {
@@ -117,7 +126,7 @@ describe("자동 채점 시나리오", () => {
       await userEvent.click(screen.getByTestId("difficulty-easy"));
       await userEvent.click(screen.getByTestId("start-battle-button"));
 
-      expect(screen.getByTestId("round-display")).toBeInTheDocument();
+      expect(await screen.findByTestId("round-display")).toBeInTheDocument();
       expect(screen.getByTestId("player-panel")).toBeInTheDocument();
       expect(screen.getByTestId("enemy-panel")).toBeInTheDocument();
     });
@@ -135,6 +144,10 @@ describe("자동 채점 시나리오", () => {
       await userEvent.click(screen.getByTestId("next-button"));
       await userEvent.click(screen.getByTestId("difficulty-easy"));
       await userEvent.click(screen.getByTestId("start-battle-button"));
+      // lazy 로딩 대기
+      await screen.findByTestId("round-display");
+      // 테스트 환경에서는 애니메이션 타이머 없이 즉시 이벤트 처리
+      useBattleStore.getState().setAnimationEnabled(false);
     });
 
     it("player-name과 enemy-name이 표시된다", () => {
@@ -164,11 +177,12 @@ describe("자동 채점 시나리오", () => {
         await userEvent.click(button);
       }
 
-      // 전투가 실제로 종료되었는지 확인
-      expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
+      // 전투 종료 + 결과 화면 lazy 로딩 대기
+      await waitFor(() => {
+        expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
+      });
 
-      // 결과 화면의 요소가 나타나야 함
-      expect(screen.getByTestId("result-title")).toBeInTheDocument();
+      expect(await screen.findByTestId("result-title")).toBeInTheDocument();
       expect(screen.getByTestId("result-turns")).toBeInTheDocument();
       expect(screen.getByTestId("restart-button")).toBeInTheDocument();
     });
@@ -185,6 +199,9 @@ describe("자동 채점 시나리오", () => {
       await userEvent.click(screen.getByTestId("next-button"));
       await userEvent.click(screen.getByTestId("difficulty-easy"));
       await userEvent.click(screen.getByTestId("start-battle-button"));
+      // lazy 로딩 대기
+      await screen.findByTestId("round-display");
+      useBattleStore.getState().setAnimationEnabled(false);
 
       for (let i = 0; i < 20; i++) {
         const button = screen.queryByTestId("skill-button-0");
@@ -192,6 +209,8 @@ describe("자동 채점 시나리오", () => {
         await userEvent.click(button);
       }
       expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
+      // 결과 화면 lazy 로딩 대기
+      await screen.findByTestId("result-title");
     });
 
     it("승리 시 result-title에 '승리'가 표시된다", () => {

@@ -2,7 +2,8 @@ import type { RoundEvent, SkillEffectEvent } from "@/types/battle-event";
 
 export interface BattleStats {
   damageDealt: number;
-  damageReceived: number;
+  /** 방어 중 받은 피해 (방어 자세 적용 후 실제 피해량) */
+  damageMitigated: number;
   healingDone: number;
   skillsUsed: number;
 }
@@ -13,9 +14,17 @@ export function computeBattleStats(
   actorName: string,
 ): BattleStats {
   let damageDealt = 0;
-  let damageReceived = 0;
+  let damageMitigated = 0;
   let healingDone = 0;
   let skillsUsed = 0;
+
+  // 방어한 라운드 수집
+  const defendedRounds = new Set<number>();
+  for (const e of events) {
+    if (e.type === "defend" && e.actorName === actorName) {
+      defendedRounds.add(e.round);
+    }
+  }
 
   const effects = events.filter(
     (e): e is SkillEffectEvent => e.type === "skill-effect",
@@ -30,11 +39,12 @@ export function computeBattleStats(
         healingDone += effect.value;
       }
     } else {
-      if (effect.skillType === "attack") {
-        damageReceived += effect.value;
+      // 방어 중 받은 공격: value는 방어 적용 후 실제 피해량
+      if (effect.skillType === "attack" && defendedRounds.has(effect.round)) {
+        damageMitigated += effect.value;
       }
     }
   }
 
-  return { damageDealt, damageReceived, healingDone, skillsUsed };
+  return { damageDealt, damageMitigated, healingDone, skillsUsed };
 }

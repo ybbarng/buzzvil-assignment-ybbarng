@@ -18,19 +18,20 @@ describe("App", () => {
     expect(screen.getByText("BUZZ ARENA")).toBeInTheDocument();
   });
 
-  it("battle phase에서 전투 화면을 렌더링한다", () => {
+  it("battle phase에서 전투 화면을 렌더링한다", async () => {
     useSettingStore.setState({ name: "테스터" });
     useGameStore.setState({ phase: "battle" });
     render(<App />);
-    expect(screen.getByTestId("round-display")).toBeInTheDocument();
+    expect(await screen.findByTestId("round-display")).toBeInTheDocument();
     expect(screen.getByTestId("player-panel")).toBeInTheDocument();
     expect(screen.getByTestId("enemy-panel")).toBeInTheDocument();
   });
 
-  it("result phase에서 결과 화면을 렌더링한다", () => {
+  it("result phase에서 결과 화면을 렌더링한다", async () => {
     useGameStore.setState({ phase: "result", outcome: "win", totalTurns: 5 });
     render(<App />);
-    expect(screen.getByTestId("result-title")).toHaveTextContent("승리");
+    const title = await screen.findByTestId("result-title");
+    expect(title).toHaveTextContent("승리");
     expect(screen.getByTestId("result-turns")).toHaveTextContent("5턴");
   });
 
@@ -38,7 +39,8 @@ describe("App", () => {
     useGameStore.setState({ phase: "result", outcome: "win", totalTurns: 5 });
     render(<App />);
 
-    await userEvent.click(screen.getByTestId("restart-button"));
+    const restartButton = await screen.findByTestId("restart-button");
+    await userEvent.click(restartButton);
 
     expect(useGameStore.getState().phase).toBe("setting");
     expect(screen.getByText("BUZZ ARENA")).toBeInTheDocument();

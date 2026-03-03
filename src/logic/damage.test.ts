@@ -18,14 +18,14 @@ function makeCharacter(
 }
 
 describe("calculateDamage", () => {
-  it("기본 데미지를 계산한다 (ATK * 배율 - DEF * 0.5)", () => {
+  it("기본 대미지를 계산한다 (ATK * 배율 - DEF * 0.5)", () => {
     const attacker = makeCharacter();
     const defender = makeCharacter();
     // 20 * 1.0 - 10 * 0.5 = 15
     expect(calculateDamage(attacker, defender, 1.0)).toBe(15);
   });
 
-  it("방어 중일 때 데미지가 50% 감소한다", () => {
+  it("방어 중일 때 대미지가 50% 감소한다", () => {
     const attacker = makeCharacter();
     const defender = makeCharacter({ isDefending: true });
     // (20 * 1.0 - 10 * 0.5) * 0.5 = 7.5 -> 7
@@ -39,7 +39,7 @@ describe("calculateDamage", () => {
     expect(calculateDamage(attacker, defender, 1.5)).toBe(25);
   });
 
-  it("ATK 버프가 데미지에 반영된다", () => {
+  it("ATK 버프가 대미지에 반영된다", () => {
     const attacker = makeCharacter({
       buffs: [{ target: "atk", value: 10, remainingTurns: 2 }],
     });
@@ -48,7 +48,7 @@ describe("calculateDamage", () => {
     expect(calculateDamage(attacker, defender, 1.0)).toBe(25);
   });
 
-  it("DEF 디버프가 데미지에 반영된다", () => {
+  it("DEF 디버프가 대미지에 반영된다", () => {
     const attacker = makeCharacter();
     const defender = makeCharacter({
       buffs: [{ target: "def", value: -5, remainingTurns: 2 }],
@@ -57,7 +57,7 @@ describe("calculateDamage", () => {
     expect(calculateDamage(attacker, defender, 1.0)).toBe(17);
   });
 
-  it("최소 데미지 1이 보장된다", () => {
+  it("최소 대미지 1이 보장된다", () => {
     const attacker = makeCharacter({
       baseStats: { hp: 100, mp: 50, atk: 5, def: 10, spd: 10 },
     });

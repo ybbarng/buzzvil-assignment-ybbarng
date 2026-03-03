@@ -34,13 +34,13 @@ describe("computeBattleStats", () => {
     const result = computeBattleStats([], "용사");
     expect(result).toEqual<BattleStats>({
       damageDealt: 0,
-      damageReceived: 0,
+      damageMitigated: 0,
       healingDone: 0,
       skillsUsed: 0,
     });
   });
 
-  it("공격 이벤트에서 가한 데미지를 합산한다", () => {
+  it("공격 이벤트에서 가한 대미지를 합산한다", () => {
     const events: RoundEvent[] = [
       effect({
         actorName: "용사",
@@ -60,25 +60,37 @@ describe("computeBattleStats", () => {
     expect(result.skillsUsed).toBe(2);
   });
 
-  it("상대의 공격 이벤트에서 받은 데미지를 합산한다", () => {
+  it("방어 중 받은 공격의 경감 대미지를 합산한다", () => {
     const events: RoundEvent[] = [
+      // 라운드 1: 용사가 방어
+      {
+        type: "defend",
+        round: 1,
+        actor: "player",
+        actorName: "용사",
+        playerSnapshot: DUMMY_SNAPSHOT,
+        enemySnapshot: DUMMY_SNAPSHOT,
+      },
       effect({
+        round: 1,
+        actor: "enemy",
+        actorName: "적",
+        targetName: "용사",
+        skillType: "attack",
+        value: 10,
+      }),
+      // 라운드 2: 방어 없이 공격 → 경감 없음
+      effect({
+        round: 2,
         actor: "enemy",
         actorName: "적",
         targetName: "용사",
         skillType: "attack",
         value: 20,
       }),
-      effect({
-        actor: "enemy",
-        actorName: "적",
-        targetName: "용사",
-        skillType: "attack",
-        value: 15,
-      }),
     ];
     const result = computeBattleStats(events, "용사");
-    expect(result.damageReceived).toBe(35);
+    expect(result.damageMitigated).toBe(10);
   });
 
   it("회복 이벤트에서 회복량을 합산한다", () => {
@@ -124,33 +136,49 @@ describe("computeBattleStats", () => {
 
   it("혼합 이벤트에서 올바르게 분류한다", () => {
     const events: RoundEvent[] = [
+      // 라운드 1: 용사 방어 + 적 공격
+      {
+        type: "defend",
+        round: 1,
+        actor: "player",
+        actorName: "용사",
+        playerSnapshot: DUMMY_SNAPSHOT,
+        enemySnapshot: DUMMY_SNAPSHOT,
+      },
       effect({
+        round: 1,
+        actor: "enemy",
+        actorName: "적",
+        targetName: "용사",
+        skillType: "attack",
+        value: 15,
+      }),
+      // 라운드 2: 용사 공격 + 적 공격 (방어 없음)
+      effect({
+        round: 2,
         actorName: "용사",
         targetName: "적",
         skillType: "attack",
         value: 50,
       }),
       effect({
+        round: 2,
         actor: "enemy",
         actorName: "적",
         targetName: "용사",
         skillType: "attack",
         value: 30,
       }),
+      // 라운드 3: 회복 + 버프
       effect({
+        round: 3,
         actorName: "용사",
         targetName: "용사",
         skillType: "heal",
         value: 20,
       }),
       effect({
-        actor: "enemy",
-        actorName: "적",
-        targetName: "적",
-        skillType: "heal",
-        value: 15,
-      }),
-      effect({
+        round: 3,
         actorName: "용사",
         targetName: "용사",
         skillType: "buff",
@@ -160,7 +188,7 @@ describe("computeBattleStats", () => {
     const result = computeBattleStats(events, "용사");
     expect(result).toEqual<BattleStats>({
       damageDealt: 50,
-      damageReceived: 30,
+      damageMitigated: 15,
       healingDone: 20,
       skillsUsed: 3,
     });

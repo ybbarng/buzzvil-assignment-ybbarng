@@ -38,6 +38,7 @@ export function StepIndicator({
           <button
             type="button"
             disabled={isCurrent || isFuture}
+            aria-current={isCurrent ? "step" : undefined}
             onClick={() => isCompleted && onStepClick?.(step)}
             className={cn(
               `${SKEW} px-6 py-2 transition-all duration-300`,

@@ -18,17 +18,22 @@ type IntroPhase = "center" | "moving" | "done";
 
 /** fade-in(800ms) 완료 후 여유 시간을 포함한 대기 시간 */
 export const INTRO_FADE_IN_WAIT_MS = 1500;
-/** intro-settle(700ms) + 여유. onAnimationEnd가 동작하지 않을 때의 fallback */
+/** intro 위치 전환(700ms) + 여유. onTransitionEnd가 동작하지 않을 때의 fallback */
 export const INTRO_SETTLE_FALLBACK_MS = 800;
-/** CSS @keyframes 이름. onAnimationEnd에서 버블링 필터링에 사용 */
-const INTRO_SETTLE_ANIMATION = "intro-settle";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
+/** 위치(transform)는 인라인 스타일 + transition으로 제어하여 클래스 교체 시 1프레임 점프를 방지한다. */
 const INTRO_PHASE_CLASS: Record<IntroPhase, string> = {
-  center: "animate-intro-fade-in",
-  moving: "animate-intro-settle",
+  center: "animate-intro-fade-in transition-transform duration-700 ease-in-out",
+  moving: "transition-transform duration-700 ease-in-out",
   done: "",
 };
+
+function getIntroStyle(phase: IntroPhase): React.CSSProperties | undefined {
+  if (phase === "center") return { transform: "translateY(calc(50svh - 50%))" };
+  if (phase === "moving") return { transform: "translateY(0)" };
+  return undefined;
+}
 
 function getStepGuide(step: SettingStep, name: string): React.ReactNode {
   if (step === 2 && name) {
@@ -96,14 +101,16 @@ function animateExitThenDo(
 
 /**
  * 전투 시작 퇴장 애니메이션.
- * 헤더([data-header])는 위로, 설정 구성요소들은 아래로 동시 퇴장시킨 뒤 callback을 호출한다.
+ * 헤더는 위로, 설정 구성요소들은 아래로 동시 퇴장시킨 뒤 callback을 호출한다.
  */
 function animateBattleExitThenDo(
+  headerEl: HTMLElement | null,
   settingEls: HTMLElement[],
   callback: () => void,
 ) {
-  const headerEl = document.querySelector<HTMLElement>("[data-header]");
-  const allEls = [headerEl, ...settingEls].filter(Boolean) as HTMLElement[];
+  const allEls = [headerEl, ...settingEls].filter(
+    (el): el is HTMLElement => el != null,
+  );
 
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
@@ -165,6 +172,7 @@ export function SettingScreen() {
   const replays = useReplayStore((s) => s.replays);
   const [replayOpen, setReplayOpen] = useState(false);
 
+  const headerRef = useRef<HTMLElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isExiting = useRef(false);
@@ -239,13 +247,14 @@ export function SettingScreen() {
 
   return (
     <div>
-      <div
-        data-header
+      <header
+        ref={headerRef}
         className={cn("mb-8 text-center", INTRO_PHASE_CLASS[introPhase])}
-        onAnimationEnd={
+        style={getIntroStyle(introPhase)}
+        onTransitionEnd={
           introPhase === "moving"
             ? (e) => {
-                if (e.animationName !== INTRO_SETTLE_ANIMATION) return;
+                if (e.propertyName !== "transform") return;
                 setIntroPhase("done");
               }
             : undefined
@@ -257,7 +266,7 @@ export function SettingScreen() {
         <p className="mt-2 text-base tracking-wide text-text-secondary">
           자신만의 강력한 영웅을 구성하고 치열한 전투에 참가해보세요!
         </p>
-      </div>
+      </header>
 
       {introPhase === "done" && (
         <>
@@ -332,11 +341,15 @@ export function SettingScreen() {
                     const settingEls = [
                       indicatorRef.current,
                       contentRef.current,
-                    ].filter(Boolean) as HTMLElement[];
-                    animateBattleExitThenDo(settingEls, () => {
-                      isExiting.current = false;
-                      startBattle();
-                    });
+                    ].filter((el): el is HTMLDivElement => el != null);
+                    animateBattleExitThenDo(
+                      headerRef.current,
+                      settingEls,
+                      () => {
+                        isExiting.current = false;
+                        startBattle();
+                      },
+                    );
                   }}
                   enterDirection={enterDirection}
                 />

@@ -131,7 +131,7 @@ describe("battle-store", () => {
     expect(enemyHpAfter).toBeLessThan(enemyHpBefore);
   });
 
-  it("방어 후 받는 데미지가 감소한다", () => {
+  it("방어 후 받는 대미지가 감소한다", () => {
     // 적 AI가 항상 기본 공격(index 0)을 선택하도록 고정
     vi.spyOn(Math, "random").mockReturnValue(0.9);
 
@@ -148,13 +148,13 @@ describe("battle-store", () => {
       { name: "방어", type: "defend" as const, mpCost: 0, isDefault: true },
     ];
 
-    // 공격 시 받는 데미지
+    // 공격 시 받는 대미지
     useBattleStore.getState().initBattle("테스터", stats, skills, "easy");
     useBattleStore.getState().executePlayerAction(0);
     const hpAfterAttack = getPlayer().currentHp;
     const damageWithoutDefend = 100 - hpAfterAttack;
 
-    // 방어 시 받는 데미지
+    // 방어 시 받는 대미지
     useBattleStore.getState().reset();
     useBattleStore.getState().setAnimationEnabled(false);
     useBattleStore.getState().initBattle("테스터", stats, skills, "easy");

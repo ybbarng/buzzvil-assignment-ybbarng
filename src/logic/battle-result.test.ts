@@ -29,6 +29,10 @@ describe("checkBattleEnd", () => {
     );
   });
 
+  it("양쪽 HP가 모두 0이면 승리로 판정한다", () => {
+    expect(checkBattleEnd(makeCharacter(0), makeCharacter(0), 5)).toBe("win");
+  });
+
   it("아직 진행 중이면 null", () => {
     expect(checkBattleEnd(makeCharacter(50), makeCharacter(50), 5)).toBeNull();
   });

@@ -8,6 +8,7 @@ interface GameContainerProps {
   stretch?: boolean;
 }
 
+/** select-none: 게임 특성상 버튼 연타·드래그 시 의도치 않은 텍스트 선택을 방지 */
 export function GameContainer({
   children,
   align = "center",
@@ -21,11 +22,11 @@ export function GameContainer({
         align === "start" ? "items-start" : "items-center",
       )}
     >
-      <div
+      <main
         className={cn("w-full max-w-2xl", stretch && "flex h-full flex-col")}
       >
         {children}
-      </div>
+      </main>
     </div>
   );
 }

@@ -126,7 +126,7 @@ describe("formatEvent", () => {
       playerSnapshot: snap,
       enemySnapshot: snap,
     };
-    expect(formatEvent(event)).toBe("테스터의 강타! 훈련 로봇에게 25 데미지!");
+    expect(formatEvent(event)).toBe("테스터의 강타! 훈련 로봇에게 25 대미지!");
   });
 
   it("skill-effect(heal) 이벤트를 포맷한다", () => {
