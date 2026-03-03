@@ -215,6 +215,7 @@ describe("자동 채점 시나리오", () => {
     it("restart-button을 누르면 세팅 화면으로 돌아간다", async () => {
       await userEvent.click(screen.getByTestId("restart-button"));
       expect(screen.getByTestId("name-input")).toBeInTheDocument();
+      expect(screen.getByTestId("next-button")).toBeInTheDocument();
     });
   });
 });
