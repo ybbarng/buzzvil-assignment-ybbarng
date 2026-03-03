@@ -218,4 +218,38 @@ describe("자동 채점 시나리오", () => {
       expect(screen.getByTestId("next-button")).toBeInTheDocument();
     });
   });
+
+  describe("prefers-reduced-motion 전투 가속", () => {
+    it("prefers-reduced-motion 환경에서 수동 설정 없이 전투가 즉시 진행된다", async () => {
+      vi.spyOn(Math, "random").mockReturnValue(0.9);
+
+      render(<App />);
+      await userEvent.type(screen.getByTestId("name-input"), "테스터");
+      allocateStats();
+      await userEvent.click(screen.getByTestId("next-button"));
+      await userEvent.click(screen.getByTestId("next-button"));
+      await userEvent.click(screen.getByTestId("difficulty-easy"));
+      await userEvent.click(screen.getByTestId("start-battle-button"));
+      await screen.findByTestId("round-display");
+
+      // setAnimationEnabled(false)를 수동 호출하지 않음 —
+      // prefers-reduced-motion이 활성화된 환경에서는 BattleScreen이
+      // 자동으로 animationEnabled를 비활성화하여 이벤트를 즉시 처리해야 한다.
+      expect(useBattleStore.getState().animationEnabled).toBe(false);
+
+      for (let i = 0; i < 20; i++) {
+        const button = screen.queryByTestId("skill-button-0");
+        if (!button) break;
+        await userEvent.click(button);
+      }
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("skill-button-0")).not.toBeInTheDocument();
+      });
+
+      expect(await screen.findByTestId("result-title")).toBeInTheDocument();
+      expect(screen.getByTestId("result-turns")).toBeInTheDocument();
+      expect(screen.getByTestId("restart-button")).toBeInTheDocument();
+    });
+  });
 });

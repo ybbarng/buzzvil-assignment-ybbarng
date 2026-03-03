@@ -49,6 +49,9 @@ export function BattleScreen() {
       const { name, stats, skills, difficulty } = useSettingStore.getState();
       initBattle(name, stats, skills, difficulty);
     }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      useBattleStore.getState().setAnimationEnabled(false);
+    }
   }, [initBattle, isReplaying]);
 
   // 이벤트 애니메이션 타이머
