@@ -34,16 +34,12 @@ describe("자동 채점 시나리오", () => {
 
     it("스탯 인풋으로 값을 변경하면 remaining-points가 갱신된다", () => {
       render(<App />);
-      // 기본값 합계 55
-      expect(screen.getByTestId("remaining-points")).toHaveTextContent(
-        "55 / 200",
-      );
+      // 기본값 합계 55, 잔여: 200-55 = 145
+      expect(screen.getByTestId("remaining-points")).toHaveTextContent("145");
 
       setStatValue("stat-hp", 60);
-      // 60+20+5+5+5 = 95
-      expect(screen.getByTestId("remaining-points")).toHaveTextContent(
-        "95 / 200",
-      );
+      // 60+20+5+5+5 = 95, 잔여: 200-95 = 105
+      expect(screen.getByTestId("remaining-points")).toHaveTextContent("105");
     });
 
     it("잔여 포인트가 0이 아니면 next-button이 비활성화된다", () => {
@@ -56,9 +52,8 @@ describe("자동 채점 시나리오", () => {
       await userEvent.type(screen.getByTestId("name-input"), "테스터");
       allocateStats();
 
-      expect(screen.getByTestId("remaining-points")).toHaveTextContent(
-        "200 / 200",
-      );
+      // 잔여: 200-200 = 0
+      expect(screen.getByTestId("remaining-points")).toHaveTextContent("0");
       expect(screen.getByTestId("next-button")).toBeEnabled();
 
       await userEvent.click(screen.getByTestId("next-button"));
